@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import sys
 from pathlib import Path
 
@@ -16,13 +17,19 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QVBoxLayout,
     QWidget,
+    QTextEdit,
+    QDockWidget,
+    QSplitter,
 )
 
 from atrain_transcriber import ATrainTranscriber
 from clip_model import Clip, ClipsAIWrapper
+from logger import setup_logging
 from preview_player import PreviewPlayer
 from srt_viewer import SRTViewer
 from time_utils import format_timestamp
+
+logger = logging.getLogger("ai_videoclipper")
 
 
 class Worker(QObject):
@@ -37,8 +44,11 @@ class Worker(QObject):
 
     def run(self) -> None:
         try:
+            logger.debug(f"Worker running: {self.func.__name__}")
             result = self.func(*self.args, **self.kwargs)
+            logger.debug(f"Worker completed: {self.func.__name__}")
         except Exception as exc:
+            logger.exception(f"Worker error in {self.func.__name__}: {exc}")
             self.error.emit(str(exc))
         else:
             self.finished.emit(result)
@@ -76,7 +86,9 @@ class ClipEditor(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("AI VideoClipper")
-        self.resize(1200, 900)
+        self.resize(1400, 900)
+
+        logger.info("Initializing AI VideoClipper")
 
         self.transcriber = ATrainTranscriber()
         self.clip_wrapper = ClipsAIWrapper()
@@ -87,6 +99,11 @@ class ClipEditor(QMainWindow):
         self.output_dir = Path(__file__).resolve().parent / "output" / "clips"
 
         self._threads: list[QThread] = []
+
+        # Setup logging window
+        log_file = Path(__file__).resolve().parent / "logs" / "ai_videoclipper.log"
+        self.logger, self.log_emitter = setup_logging(log_file)
+        logger.info(f"Logging to: {log_file}")
 
         self._build_ui()
 
@@ -141,7 +158,27 @@ class ClipEditor(QMainWindow):
         body_layout.addLayout(right_layout, stretch=2)
 
         main_layout.addLayout(body_layout)
+
+        # Add logging dock widget
+        log_dock = QDockWidget("Logs", self)
+        self.log_display = QTextEdit()
+        self.log_display.setReadOnly(True)
+        self.log_display.setMaximumHeight(150)
+        self.log_display.setStyleSheet("background-color: #1e1e1e; color: #e0e0e0; font-family: monospace;")
+        log_dock.setWidget(self.log_display)
+        self.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, log_dock)
+
+        # Connect logging signal to display
+        self.log_emitter.log_message.connect(self.on_log_message)
+
         self.setCentralWidget(container)
+
+    def on_log_message(self, message: str) -> None:
+        """Display log message in the log window."""
+        self.log_display.append(message)
+        # Auto-scroll to bottom
+        scrollbar = self.log_display.verticalScrollBar()
+        scrollbar.setValue(scrollbar.maximum())
 
     def select_file(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
@@ -153,28 +190,39 @@ class ClipEditor(QMainWindow):
         if not file_path:
             return
         self.video_path = Path(file_path)
+        logger.info(f"Selected video file: {file_path}")
         self.status_label.setText("Status: transcribing")
         self.export_all_button.setEnabled(False)
         self.clips = []
         self.clip_list.clear()
         self.srt_viewer.clear()
+        logger.info("Loading video for preview...")
         self.preview_player.load_media(file_path)
 
+        logger.info("Starting transcription worker...")
         self._run_worker(self._transcribe_and_find_clips, self.on_transcription_ready, self.on_error)
 
     def _transcribe_and_find_clips(self):
+        logger.info(f"Transcribing: {self.video_path}")
         result = self.transcriber.transcribe(str(self.video_path))
+        logger.info(f"Transcription complete: {len(result.segments)} segments")
+
+        logger.info("Finding clips using ClipsAI...")
         clips = self.clip_wrapper.find_clips(result.segments, max_clips=6)
+        logger.info(f"Found {len(clips)} clips")
         return result, clips
 
     def on_transcription_ready(self, payload) -> None:
+        logger.info("Processing transcription results...")
         result, clips = payload
         self.transcription = result
         self.clips = clips
+        logger.info(f"Setting up viewer with {len(result.segments)} segments and {len(clips)} clips")
         self.srt_viewer.set_segments(result.segments)
         self.populate_clips()
         self.export_all_button.setEnabled(bool(self.clips))
         self.status_label.setText(f"Status: {len(self.clips)} clips found")
+        logger.info(f"Ready to export {len(self.clips)} clips")
 
     def populate_clips(self) -> None:
         self.clip_list.clear()
@@ -241,6 +289,7 @@ class ClipEditor(QMainWindow):
             self.output_label.setText(str(self.output_dir))
 
     def on_error(self, message: str) -> None:
+        logger.error(f"Error occurred: {message}")
         self.status_label.setText("Status: error")
         QMessageBox.critical(self, "Error", message)
 
