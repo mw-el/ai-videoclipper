@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from PyQt6.QtCore import QObject, QThread, Qt, pyqtSignal
@@ -257,15 +258,16 @@ class ClipEditor(QMainWindow):
             logger.info("Scene detection mode: AUTO (ClipsAI auto-detect clips)")
 
     def _setup_output_dir(self) -> None:
-        """Set up output directory based on source video location."""
+        """Set up output directory based on source video location with timestamp."""
         if not self.video_path:
             logger.error("Video path not set")
             return
 
-        # Create folder: {video_name}_clips in same directory as video
+        # Create folder: {video_name}_clips/{timestamp} in same directory as video
         video_dir = self.video_path.parent
         video_name = self.video_path.stem  # Name without extension
-        self.output_dir = video_dir / f"{video_name}_clips"
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.output_dir = video_dir / f"{video_name}_clips" / timestamp
 
         logger.info(f"Output directory will be: {self.output_dir}")
         self.output_label.setText(f"Output: {self.output_dir}")
@@ -507,6 +509,30 @@ class ClipEditor(QMainWindow):
             self.on_error,
         )
 
+    def _text_to_slug(self, text: str) -> str:
+        """
+        Convert text to a filesystem-safe slug.
+        Takes first few words and converts to lowercase with underscores.
+        """
+        if not text:
+            return ""
+
+        # Get first 3-4 words
+        words = text.split()[:4]
+        if not words:
+            return ""
+
+        # Join words and sanitize for filesystem
+        slug = "_".join(words).lower()
+        # Remove non-alphanumeric chars except underscore and hyphen
+        slug = ''.join(c if c.isalnum() or c in '-_' else '' for c in slug)
+        # Clean up multiple underscores
+        while '__' in slug:
+            slug = slug.replace('__', '_')
+        slug = slug.strip('_')
+
+        return slug if slug else ""
+
     def _get_clip_folder_name(self, index: int, clip: Clip) -> str:
         """
         Generate folder name from first 5-6 words of clip text.
@@ -531,6 +557,60 @@ class ClipEditor(QMainWindow):
 
         return folder_name if folder_name else f"clip_{index + 1:02d}"
 
+    def _get_clip_slug(self, clip: Clip) -> str:
+        """
+        Get slug from the first segment that falls within the clip's time range.
+        """
+        if not self.transcription or not self.transcription.segments:
+            return ""
+
+        # Find first segment within clip time range
+        for segment in self.transcription.segments:
+            if segment.start >= clip.start_time:
+                # Use first few words from this segment
+                return self._text_to_slug(segment.text)
+
+        # Fallback to clip text if no segments found
+        return self._text_to_slug(clip.text)
+
+    def _export_clip_srt(self, clip: Clip, srt_path: Path) -> None:
+        """
+        Export SRT file for a clip with all segments within the clip's time range.
+        Adjusts timing so the clip starts at 0:00:00.
+        """
+        from srt_utils import SrtSegment, segments_to_srt_text
+
+        if not self.transcription or not self.transcription.segments:
+            logger.warning(f"No transcription segments available for SRT export")
+            return
+
+        # Collect all segments that fall within the clip's time range
+        clip_segments = []
+        for segment in self.transcription.segments:
+            # Check if segment overlaps with clip time range
+            if segment.end > clip.start_time and segment.start < clip.end_time:
+                # Adjust timing: subtract clip start time so clip starts at 0
+                adjusted_start = max(0, segment.start - clip.start_time)
+                adjusted_end = min(clip.end_time - clip.start_time, segment.end - clip.start_time)
+
+                adjusted_segment = SrtSegment(
+                    index=len(clip_segments) + 1,
+                    start=adjusted_start,
+                    end=adjusted_end,
+                    text=segment.text
+                )
+                clip_segments.append(adjusted_segment)
+
+        if not clip_segments:
+            logger.warning(f"No segments found for clip in time range [{clip.start_time}, {clip.end_time}]")
+            return
+
+        # Generate SRT content and write to file
+        srt_content = segments_to_srt_text(clip_segments)
+        logger.info(f"Saving clip SRT with {len(clip_segments)} segments to: {srt_path}")
+        srt_path.write_text(srt_content, encoding="utf-8")
+        logger.info(f"✓ SRT exported: {len(clip_segments)} segments, adjusted timing from clip start")
+
     def _export_single_clip(self, index: int, clip: Clip) -> Path:
         if not self.output_dir:
             logger.error("Output directory not set")
@@ -539,28 +619,23 @@ class ClipEditor(QMainWindow):
         # Create main clips folder
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create subfolder for this clip based on its text
-        clip_folder_name = self._get_clip_folder_name(index, clip)
-        clip_folder = self.output_dir / clip_folder_name
+        # Get slug from first segment in the clip
+        clip_slug = self._get_clip_slug(clip)
+        if not clip_slug:
+            clip_slug = f"clip_{index + 1:02d}"
+
+        # Create folder using the slug name
+        clip_folder = self.output_dir / clip_slug
         clip_folder.mkdir(parents=True, exist_ok=True)
 
-        # Export video clip
-        video_path = clip_folder / f"clip_{index + 1:02d}.mp4"
+        # Export video clip - use slug for video filename
+        video_path = clip_folder / f"{clip_slug}.mp4"
         logger.info(f"Exporting clip {index + 1} video to: {video_path}")
         self.clip_wrapper.trim_clip(self.video_path, clip.start_time, clip.end_time, video_path)
 
-        # Export SRT file for this clip
-        from srt_utils import SrtSegment, segments_to_srt_text
-        clip_segment = SrtSegment(
-            index=1,
-            start=0,  # SRT in clip starts at 0
-            end=clip.end_time - clip.start_time,
-            text=clip.text
-        )
-        srt_content = segments_to_srt_text([clip_segment])
-        srt_path = clip_folder / f"clip_{index + 1:02d}.srt"
-        logger.info(f"Saving clip {index + 1} SRT to: {srt_path}")
-        srt_path.write_text(srt_content, encoding="utf-8")
+        # Export SRT file with all segments within the clip, adjusted timing
+        srt_path = clip_folder / f"{clip_slug}.srt"
+        self._export_clip_srt(clip, srt_path)
 
         logger.info(f"✓ Exported clip {index + 1} to: {clip_folder}")
         return clip_folder
