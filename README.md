@@ -1,7 +1,7 @@
 # AI VideoClipper
 
 Local PyQt6 desktop app for creating short clips from a long video. Transcription uses aTrainCore
-(atrain env) and clip selection uses ClipsAI.
+(atrain env) and clip selection uses ClipsAI when available (otherwise a built-in heuristic).
 
 ## Requirements
 - Ubuntu 24.04 or similar
