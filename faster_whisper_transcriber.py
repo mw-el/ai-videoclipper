@@ -44,9 +44,11 @@ class FasterWhisperTranscriber:
         self,
         conda_sh: str = "~/miniconda3/etc/profile.d/conda.sh",
         conda_env: str = "fasterwhisper",
+        progress_callback=None,
     ) -> None:
         self.conda_sh = Path(conda_sh).expanduser()
         self.conda_env = conda_env
+        self.progress_callback = progress_callback
         log_and_print("Using faster-whisper via subprocess")
 
     def transcribe(
@@ -110,14 +112,24 @@ print("OK")
         log_and_print(f"Using environment: {self.conda_env}")
         start_time = time.time()
 
+        if self.progress_callback:
+            self.progress_callback("Loading model...")
+
         try:
-            log_and_print("Calling faster-whisper process...")
+            log_and_print("Calling faster-whisper process (this will take 30-60 seconds)...")
+            if self.progress_callback:
+                self.progress_callback("Model loaded. Starting transcription...")
+
             result = subprocess.run(
                 ["bash", "-lc", cmd],
                 capture_output=True,
                 text=True,
                 timeout=3600,
             )
+
+            if self.progress_callback:
+                self.progress_callback("Process completed")
+
             log_and_print("faster-whisper process completed")
 
         except subprocess.TimeoutExpired:
@@ -145,12 +157,18 @@ print("OK")
 
         log_and_print(f"SRT file size: {temp_srt.stat().st_size} bytes")
 
+        log_and_print("Parsing SRT file...")
+
         # Parse the SRT file
         segments = parse_srt(str(temp_srt))
         text = " ".join(seg.text for seg in segments).strip()
 
         log_and_print(f"Parsed {len(segments)} segments")
         log_and_print(f"Total text length: {len(text)} characters")
+
+        # Report final segments via callback
+        if self.progress_callback:
+            self.progress_callback(f"✓ Transcription complete: {len(segments)} segments")
 
         return TranscriptionResult(srt_path=temp_srt, segments=segments, text=text)
 

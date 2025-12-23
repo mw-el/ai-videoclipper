@@ -95,7 +95,7 @@ class ClipEditor(QMainWindow):
         logger.info("Initializing AI VideoClipper")
 
         logger.info("Setting up faster-whisper transcriber...")
-        self.transcriber = FasterWhisperTranscriber()
+        self.transcriber = FasterWhisperTranscriber(progress_callback=self._log_progress)
         logger.info("✓ Transcriber initialized")
 
         self.clip_wrapper = ClipsAIWrapper()
@@ -187,6 +187,10 @@ class ClipEditor(QMainWindow):
         scrollbar = self.log_display.verticalScrollBar()
         scrollbar.setValue(scrollbar.maximum())
 
+    def _log_progress(self, message: str) -> None:
+        """Log progress messages from transcriber."""
+        logger.info(f"[PROGRESS] {message}")
+
     def select_file(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -211,8 +215,10 @@ class ClipEditor(QMainWindow):
 
     def _transcribe_and_find_clips(self):
         logger.info(f"Transcribing: {self.video_path}")
+        logger.info("=" * 60)
         result = self.transcriber.transcribe(str(self.video_path))
-        logger.info(f"Transcription complete: {len(result.segments)} segments")
+        logger.info("=" * 60)
+        logger.info(f"✓ Transcription complete: {len(result.segments)} segments")
 
         logger.info("Finding clips using ClipsAI...")
         clips = self.clip_wrapper.find_clips(result.segments, max_clips=6)
@@ -224,12 +230,19 @@ class ClipEditor(QMainWindow):
         result, clips = payload
         self.transcription = result
         self.clips = clips
+
         logger.info(f"Setting up viewer with {len(result.segments)} segments and {len(clips)} clips")
+
+        # Display segments in the SRT viewer
+        logger.info("Displaying transcript in viewer...")
         self.srt_viewer.set_segments(result.segments)
+        logger.info(f"✓ Transcript displayed: {len(result.segments)} segments visible")
+
+        # Populate clips
         self.populate_clips()
         self.export_all_button.setEnabled(bool(self.clips))
         self.status_label.setText(f"Status: {len(self.clips)} clips found")
-        logger.info(f"Ready to export {len(self.clips)} clips")
+        logger.info(f"✓ Ready to export {len(self.clips)} clips")
 
     def populate_clips(self) -> None:
         self.clip_list.clear()
