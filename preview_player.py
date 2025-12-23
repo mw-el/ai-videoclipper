@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt, QUrl, pyqtSignal
+from PyQt6.QtCore import Qt, QUrl, QSize, pyqtSignal
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QSlider
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtMultimediaWidgets import QVideoWidget
@@ -49,7 +49,19 @@ class PreviewPlayer(QWidget):
         self.player.playbackStateChanged.connect(self._on_state_changed)
 
     def _build_layout(self) -> None:
-        layout = QHBoxLayout(self)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        # TOP: Video player with 16:9 aspect ratio, 200px height
+        # Width = 200 * 16/9 = 355.56px
+        self.video_widget.setMinimumHeight(200)
+        self.video_widget.setMaximumHeight(200)
+        self.video_widget.setMinimumWidth(int(200 * 16 / 9))
+        self.video_widget.setMaximumWidth(int(200 * 16 / 9))
+        layout.addWidget(self.video_widget, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+        # MIDDLE/BOTTOM: Horizontal layout with sliders on left
+        main_content = QHBoxLayout()
 
         # LEFT: Sliders (2/3 width)
         sliders_widget = QWidget()
@@ -73,10 +85,9 @@ class PreviewPlayer(QWidget):
         markers_layout.addLayout(end_row)
         sliders_layout.addLayout(markers_layout)
 
-        layout.addWidget(sliders_widget, stretch=2)
+        main_content.addWidget(sliders_widget, stretch=2)
 
-        # RIGHT: Video player (1/3 width)
-        layout.addWidget(self.video_widget, stretch=1)
+        layout.addLayout(main_content)
 
     def load_media(self, path: str) -> None:
         self.player.setSource(QUrl.fromLocalFile(path))
