@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python=3.12
   - pyqt=6.7.*
-  - pyqt-multimedia
+  - pyqt6-multimedia
   - ffmpeg
   - libmagic
   - pip
