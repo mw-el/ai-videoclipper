@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
     QSplitter,
 )
 
-from atrain_transcriber import ATrainTranscriber
+from faster_whisper_transcriber import FasterWhisperTranscriber
 from clip_model import Clip, ClipsAIWrapper
 from logger import setup_logging
 from preview_player import PreviewPlayer
@@ -44,11 +44,15 @@ class Worker(QObject):
 
     def run(self) -> None:
         try:
-            logger.debug(f"Worker running: {self.func.__name__}")
+            import time
+            logger.info(f"[WORKER] START: {self.func.__name__} at {time.strftime('%H:%M:%S')}")
+            print(f"[WORKER THREAD] Starting {self.func.__name__}", file=__import__('sys').stderr, flush=True)
             result = self.func(*self.args, **self.kwargs)
-            logger.debug(f"Worker completed: {self.func.__name__}")
+            logger.info(f"[WORKER] COMPLETE: {self.func.__name__} at {time.strftime('%H:%M:%S')}")
+            print(f"[WORKER THREAD] Completed {self.func.__name__}", file=__import__('sys').stderr, flush=True)
         except Exception as exc:
-            logger.exception(f"Worker error in {self.func.__name__}: {exc}")
+            logger.exception(f"[WORKER] ERROR in {self.func.__name__}: {exc}")
+            print(f"[WORKER THREAD] ERROR: {exc}", file=__import__('sys').stderr, flush=True)
             self.error.emit(str(exc))
         else:
             self.finished.emit(result)
@@ -90,7 +94,10 @@ class ClipEditor(QMainWindow):
 
         logger.info("Initializing AI VideoClipper")
 
-        self.transcriber = ATrainTranscriber()
+        logger.info("Setting up faster-whisper transcriber...")
+        self.transcriber = FasterWhisperTranscriber()
+        logger.info("✓ Transcriber initialized")
+
         self.clip_wrapper = ClipsAIWrapper()
 
         self.video_path: Path | None = None

@@ -130,72 +130,104 @@ class ATrainTranscriber:
         start_ts = time.time()
 
         try:
+            log_and_print(f"Subprocess call with: bash -lc [command]")
+            log_and_print(f"Command length: {len(cmd)} characters")
+
             # Note: if self.runner is mocked in tests, it may not support timeout
             # Try with timeout, fall back without if unsupported
             try:
+                log_and_print("Calling subprocess.run with 3600s timeout...")
                 result = self.runner(["bash", "-lc", cmd], capture_output=True, text=True, timeout=3600)
-            except TypeError:
+                log_and_print("subprocess.run returned")
+            except TypeError as te:
                 # Runner doesn't support timeout (e.g., in tests)
+                log_and_print(f"Timeout not supported, calling without timeout: {te}")
                 result = self.runner(["bash", "-lc", cmd], capture_output=True, text=True)
-        except subprocess.TimeoutExpired:
+                log_and_print("subprocess.run returned (no timeout)")
+        except subprocess.TimeoutExpired as te:
             log_and_print("ERROR: aTrain_core timed out after 1 hour", "ERROR")
             raise TranscriptionError("aTrain_core transcription timed out after 1 hour")
         except Exception as e:
-            log_and_print(f"ERROR: Failed to run aTrain_core: {e}", "ERROR")
+            log_and_print(f"ERROR: Failed to run aTrain_core: {type(e).__name__}: {e}", "ERROR")
+            import traceback
+            log_and_print(f"Traceback: {traceback.format_exc()}", "ERROR")
             raise TranscriptionError(f"Failed to run aTrain_core: {e}")
         finally:
             # Clean up temp file if it was created
-            if temp_file and temp_file.exists():
-                try:
-                    temp_file.unlink()
-                    log_and_print(f"Cleaned up temp file: {temp_file}")
-                except Exception as e:
-                    log_and_print(f"Warning: Could not delete temp file {temp_file}: {e}", "WARNING")
+            if temp_file:
+                log_and_print(f"Checking for temp file cleanup: {temp_file}")
+                if temp_file.exists():
+                    try:
+                        log_and_print(f"Deleting temp file...")
+                        temp_file.unlink()
+                        log_and_print(f"Cleaned up temp file: {temp_file}")
+                    except Exception as e:
+                        log_and_print(f"Warning: Could not delete temp file {temp_file}: {e}", "WARNING")
+                else:
+                    log_and_print(f"Temp file already deleted: {temp_file}")
 
         elapsed = time.time() - start_ts
         log_and_print(f"aTrain_core completed in {elapsed:.1f} seconds (return code: {result.returncode})")
+        log_and_print(f"Output stdout length: {len(result.stdout)} chars")
+        log_and_print(f"Output stderr length: {len(result.stderr)} chars")
 
         if result.returncode != 0:
             stderr = (result.stderr or "").strip()
             log_and_print(f"aTrain_core failed with code {result.returncode}", "ERROR")
-            log_and_print(f"stderr: {stderr}", "ERROR")
-            log_and_print(f"stdout: {result.stdout}", "ERROR")
+            log_and_print(f"stderr (first 500 chars): {stderr[:500]}", "ERROR")
+            log_and_print(f"stdout (first 500 chars): {result.stdout[:500]}", "ERROR")
             raise TranscriptionError(
                 f"aTrain_core failed with code {result.returncode}: {stderr}"
             )
 
-        log_and_print("aTrain_core completed successfully")
+        log_and_print("aTrain_core completed successfully, searching for SRT file...")
+        log_and_print(f"Start timestamp for search: {start_ts}")
         srt_path = self.find_latest_srt(start_ts, source_path)
         log_and_print(f"Found SRT file: {srt_path}")
 
+        log_and_print(f"Parsing SRT file...")
         segments = parse_srt(str(srt_path))
         text = " ".join(segment.text for segment in segments).strip()
         log_and_print(f"Parsed {len(segments)} segments from SRT")
+        log_and_print(f"Total text length: {len(text)} characters")
 
         return TranscriptionResult(srt_path=srt_path, segments=segments, text=text)
 
     def find_latest_srt(self, start_ts: float, source_path: Path) -> Path:
+        log_and_print(f"find_latest_srt called with start_ts={start_ts}")
+        log_and_print(f"Output dir: {self.output_dir}")
+
         if not self.output_dir.exists():
             log_and_print(f"Output directory not found: {self.output_dir}", "ERROR")
             raise TranscriptionError(f"Output directory not found: {self.output_dir}")
 
         base = source_path.stem.lower()
-        log_and_print(f"Looking for SRT files in: {self.output_dir}", "DEBUG")
-        log_and_print(f"Base name filter: {base}", "DEBUG")
+        log_and_print(f"Looking for SRT files in: {self.output_dir}")
+        log_and_print(f"Base name filter: {base}")
 
         # Wait a moment for aTrain to fully write files
+        log_and_print(f"Waiting 1 second for files to be written...")
         time.sleep(1)
+        log_and_print(f"Resume search after wait")
+
+        log_and_print(f"Current time: {time.time()}")
+        log_and_print(f"Searching for files modified after: {start_ts - 2}")
 
         candidates = []
-        for path in self.output_dir.rglob("*.srt"):
+        all_srt_files = list(self.output_dir.rglob("*.srt"))
+        log_and_print(f"Total SRT files found in tree: {len(all_srt_files)}")
+
+        for path in all_srt_files:
+            log_and_print(f"Checking: {path}")
             try:
                 mtime = path.stat().st_mtime
+                log_and_print(f"  mtime: {mtime} (is >= {start_ts - 2}? {mtime >= start_ts - 2})")
             except OSError as e:
                 log_and_print(f"Could not stat {path}: {e}", "WARNING")
                 continue
             if mtime >= start_ts - 2:
                 candidates.append((mtime, path))
-                log_and_print(f"Found SRT candidate: {path} (mtime={mtime})", "DEBUG")
+                log_and_print(f"✓ Found SRT candidate: {path.parent.name}/{path.name}")
 
         if not candidates:
             log_and_print("No SRT output found from aTrain_core", "ERROR")
