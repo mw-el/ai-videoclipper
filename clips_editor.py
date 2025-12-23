@@ -45,6 +45,7 @@ class Worker(QObject):
         self.func = func
         self.args = args
         self.kwargs = kwargs
+        logger.info(f"[WORKER] Worker created for {func.__name__} with args={args}, kwargs={kwargs}")
 
     def run(self) -> None:
         try:
@@ -111,6 +112,10 @@ class ClipEditor(QMainWindow):
         top_bar.addWidget(self.status_label)
 
         main_layout.addLayout(top_bar)
+
+        # Video preview player
+        self.preview_player = PreviewPlayer()
+        main_layout.addWidget(self.preview_player)
 
         # Body: Two-column layout (clips on left, SRT viewer on right)
         body_layout = QHBoxLayout()
@@ -531,24 +536,28 @@ class ClipEditor(QMainWindow):
         QMessageBox.critical(self, "Error", message)
 
     def _run_worker(self, func, on_finished, on_error) -> None:
-        logger.info(f"[RUN_WORKER] Starting worker thread for {func.__name__}")
-        logger.info(f"[RUN_WORKER] on_finished={on_finished.__name__ if hasattr(on_finished, '__name__') else on_finished}")
-        logger.info(f"[RUN_WORKER] on_error={on_error.__name__ if hasattr(on_error, '__name__') else on_error}")
+        logger.info(f"[RUN_WORKER] ============ STARTING WORKER THREAD ============")
+        logger.info(f"[RUN_WORKER] Function: {func.__name__}")
+        logger.info(f"[RUN_WORKER] on_finished: {on_finished.__name__ if hasattr(on_finished, '__name__') else on_finished}")
+        logger.info(f"[RUN_WORKER] on_error: {on_error.__name__ if hasattr(on_error, '__name__') else on_error}")
 
         thread = QThread(self)
-        worker = Worker(func)
-        worker.moveToThread(thread)
+        logger.info(f"[RUN_WORKER] Created QThread: {thread}")
 
+        worker = Worker(func)
+        logger.info(f"[RUN_WORKER] Created Worker: {worker}")
+
+        worker.moveToThread(thread)
         logger.info(f"[RUN_WORKER] Worker moved to thread")
 
         thread.started.connect(worker.run)
-        logger.info(f"[RUN_WORKER] Connected thread.started -> worker.run")
+        logger.info(f"[RUN_WORKER] ✓ Connected thread.started -> worker.run")
 
         worker.finished.connect(on_finished)
-        logger.info(f"[RUN_WORKER] Connected worker.finished -> on_finished")
+        logger.info(f"[RUN_WORKER] ✓ Connected worker.finished -> on_finished")
 
         worker.error.connect(on_error)
-        logger.info(f"[RUN_WORKER] Connected worker.error -> on_error")
+        logger.info(f"[RUN_WORKER] ✓ Connected worker.error -> on_error")
 
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
@@ -556,9 +565,9 @@ class ClipEditor(QMainWindow):
         thread.finished.connect(lambda: self._threads.remove(thread) if thread in self._threads else None)
 
         self._threads.append(thread)
-        logger.info(f"[RUN_WORKER] Starting thread...")
+        logger.info(f"[RUN_WORKER] About to start thread (total threads before: {len(self._threads)})")
         thread.start()
-        logger.info(f"[RUN_WORKER] Thread started (total threads: {len(self._threads)})")
+        logger.info(f"[RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: {len(self._threads)})")
 
 
 def main() -> None:
