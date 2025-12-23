@@ -73,6 +73,11 @@ class ClipEditor(QMainWindow):
         self.setWindowTitle("AI VideoClipper")
         self.resize(1400, 900)
 
+        # Setup logging FIRST before any logging calls
+        log_file = Path(__file__).resolve().parent / "logs" / "ai_videoclipper.log"
+        self.logger, self.log_emitter = setup_logging(log_file)
+        logger.info(f"Logging to: {log_file}")
+
         logger.info("Initializing AI VideoClipper")
 
         logger.info("Setting up faster-whisper transcriber...")
@@ -88,11 +93,6 @@ class ClipEditor(QMainWindow):
         self.last_clicked_segment_index: int = -1  # For Set Start/End operations
 
         self._threads: list[QThread] = []
-
-        # Setup logging window
-        log_file = Path(__file__).resolve().parent / "logs" / "ai_videoclipper.log"
-        self.logger, self.log_emitter = setup_logging(log_file)
-        logger.info(f"Logging to: {log_file}")
 
         self._build_ui()
 

@@ -141,3 +141,23 @@
 20:25:43 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
 20:25:57 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
 20:25:57 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+20:27:40 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+20:28:56 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+20:29:06 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+20:29:06 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+20:29:06 - ai_videoclipper - INFO - Loading video for preview...
+20:29:50 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+20:29:50 - ai_videoclipper - INFO - Initializing AI VideoClipper
+20:29:50 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+20:29:50 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+20:29:50 - ai_videoclipper - INFO - ✓ Transcriber initialized
+20:30:02 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+20:30:02 - ai_videoclipper - INFO - Initializing AI VideoClipper
+20:30:02 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+20:30:02 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+20:30:02 - ai_videoclipper - INFO - ✓ Transcriber initialized
+20:30:52 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+20:30:52 - ai_videoclipper - INFO - Initializing AI VideoClipper
+20:30:52 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+20:30:52 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+20:30:52 - ai_videoclipper - INFO - ✓ Transcriber initialized
