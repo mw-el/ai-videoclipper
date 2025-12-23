@@ -14,6 +14,8 @@ class Clip:
     end_time: float
     text: str = ""
     score: Optional[float] = None
+    segment_start_index: int = 0  # Index of first segment in clip
+    segment_end_index: int = 0    # Index of last segment in clip
 
 
 class ClipsAIWrapper:
@@ -39,8 +41,10 @@ class ClipsAIWrapper:
             clip_finder = self._clip_finder_cls()
             raw_clips = self._try_clip_finder(clip_finder, payload)
             if raw_clips:
-                return self._normalize_clips(raw_clips, max_clips)
-        return self._fallback_clips(segments, max_clips)
+                clips = self._normalize_clips(raw_clips, max_clips)
+                return self._add_segment_indices(clips, segments)
+        clips = self._fallback_clips(segments, max_clips)
+        return self._add_segment_indices(clips, segments)
 
     def trim_clip(
         self,
@@ -194,3 +198,26 @@ class ClipsAIWrapper:
             Clip(float(chunk["start"]), float(chunk["end"]), chunk["text"].strip())
             for chunk in selected
         ]
+
+    @staticmethod
+    def _add_segment_indices(clips: List[Clip], segments: List[SrtSegment]) -> List[Clip]:
+        """Add segment start/end indices to clips based on timing."""
+        for clip in clips:
+            # Find first segment that starts at or after clip start time
+            start_idx = 0
+            for i, seg in enumerate(segments):
+                if seg.start >= clip.start_time:
+                    start_idx = i
+                    break
+
+            # Find last segment that ends at or before clip end time
+            end_idx = len(segments) - 1
+            for i in range(len(segments) - 1, -1, -1):
+                if segments[i].end <= clip.end_time:
+                    end_idx = i
+                    break
+
+            clip.segment_start_index = start_idx
+            clip.segment_end_index = end_idx
+
+        return clips

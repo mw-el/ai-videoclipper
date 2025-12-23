@@ -29,6 +29,7 @@ class SRTSyntaxHighlighter(QSyntaxHighlighter):
 
 class SRTViewer(QTextEdit):
     marker_changed = pyqtSignal(float, float)
+    segment_clicked = pyqtSignal(int)  # Emitted when user clicks on a segment
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -39,8 +40,14 @@ class SRTViewer(QTextEdit):
         self._block_to_segment: Dict[int, int] = {}
         self._segment_to_blocks: Dict[int, List[int]] = {}
         self._current_segment_index = None
+        self._highlighted_range_start = None  # For range highlighting (clip boundaries)
+        self._highlighted_range_end = None
 
     def set_segments(self, segments: List[SrtSegment]) -> None:
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+        logger.info(f"[SRT_VIEWER] set_segments() called with {len(segments)} segments")
+
         self._segments = list(segments)
         self._block_to_segment.clear()
         self._segment_to_blocks.clear()
@@ -75,6 +82,7 @@ class SRTViewer(QTextEdit):
         self.setPlainText("\n".join(lines).strip() + "\n")
         self._current_segment_index = None
         self.setExtraSelections([])
+        logger.info(f"[SRT_VIEWER] Display updated with {len(self._segments)} segments and {len(lines)} display lines")
 
     def highlight_for_time(self, seconds: float) -> None:
         if not self._segments:
@@ -107,6 +115,50 @@ class SRTViewer(QTextEdit):
         self.setExtraSelections([selection])
         self._current_segment_index = segment_index
 
+    def highlight_segment_range(self, start_index: int, end_index: int, auto_scroll: bool = True) -> None:
+        """Highlight a range of segments (for showing active clip).
+
+        Args:
+            start_index: First segment index (inclusive)
+            end_index: Last segment index (inclusive)
+            auto_scroll: If True, scroll so start_index appears at top
+        """
+        self._highlighted_range_start = start_index
+        self._highlighted_range_end = end_index
+
+        # Collect all blocks in range
+        all_blocks = []
+        for seg_idx in range(start_index, end_index + 1):
+            blocks = self._segment_to_blocks.get(seg_idx, [])
+            all_blocks.extend(blocks)
+
+        if not all_blocks:
+            self.setExtraSelections([])
+            return
+
+        doc = self.document()
+        first_block = doc.findBlockByNumber(all_blocks[0])
+        last_block = doc.findBlockByNumber(all_blocks[-1])
+
+        if not first_block.isValid() or not last_block.isValid():
+            self.setExtraSelections([])
+            return
+
+        # Create selection for range
+        cursor = QTextCursor(first_block)
+        cursor.setPosition(last_block.position() + last_block.length() - 1, QTextCursor.MoveMode.KeepAnchor)
+
+        selection = QTextEdit.ExtraSelection()
+        selection.cursor = cursor
+        selection.format.setBackground(QColor("#c3f0ca"))  # Green highlight for active clip
+        self.setExtraSelections([selection])
+
+        # Auto-scroll to show start segment at top
+        if auto_scroll:
+            self.verticalScrollBar().setValue(0)  # Reset scroll
+            self.setTextCursor(cursor)
+            self.ensureCursorVisible()
+
     def mousePressEvent(self, event) -> None:
         cursor = self.cursorForPosition(event.pos())
         block_number = cursor.blockNumber()
@@ -116,4 +168,11 @@ class SRTViewer(QTextEdit):
             return
         segment = self._segments[segment_index]
         self.marker_changed.emit(segment.start, segment.end)
+        self.segment_clicked.emit(segment_index)
         super().mousePressEvent(event)
+
+    def get_segment_at_index(self, index: int) -> SrtSegment | None:
+        """Get segment by index."""
+        if 0 <= index < len(self._segments):
+            return self._segments[index]
+        return None
