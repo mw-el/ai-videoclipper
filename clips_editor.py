@@ -204,9 +204,7 @@ class ClipEditor(QMainWindow):
         self._setup_output_dir()
 
         self.status_label.setText("Status: transcribing")
-        self.export_all_button.setEnabled(False)
         self.clips = []
-        self.clip_list.clear()
         self.srt_viewer.clear()
         logger.info("Loading video for preview...")
         self.preview_player.load_media(file_path)
@@ -278,7 +276,6 @@ class ClipEditor(QMainWindow):
         self.populate_clips()
         logger.info(f"[CLIPS] ✓ Populated {len(self.clips)} clips in list widget")
 
-        self.export_all_button.setEnabled(bool(self.clips))
         self.status_label.setText(f"Status: {len(self.clips)} clips found")
         logger.info(f"✓ Ready to export {len(self.clips)} clips")
 
