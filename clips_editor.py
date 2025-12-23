@@ -179,6 +179,13 @@ class ClipEditor(QMainWindow):
         self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
         right_layout.addWidget(self.srt_viewer)
 
+        # Current file path display (under SRT viewer)
+        self.file_path_label = QLabel("No file selected")
+        self.file_path_label.setWordWrap(True)
+        self.file_path_label.setMaximumHeight(40)
+        self.file_path_label.setStyleSheet("background-color: #f5f5f5; padding: 4px; border-top: 1px solid #ccc;")
+        right_layout.addWidget(self.file_path_label)
+
         # Add panels to body layout
         body_layout.addWidget(left_panel, stretch=0)
         body_layout.setStretchFactor(left_panel, 0)
@@ -226,6 +233,9 @@ class ClipEditor(QMainWindow):
             return
         self.video_path = Path(file_path)
         logger.info(f"Selected video file: {file_path}")
+
+        # Update file path display
+        self.file_path_label.setText(f"Selected: {file_path}")
 
         # Determine output directory based on source video location
         self._setup_output_dir()
