@@ -49,14 +49,18 @@ class PreviewPlayer(QWidget):
         self.player.playbackStateChanged.connect(self._on_state_changed)
 
     def _build_layout(self) -> None:
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.video_widget)
+        layout = QHBoxLayout(self)
+
+        # LEFT: Sliders (2/3 width)
+        sliders_widget = QWidget()
+        sliders_layout = QVBoxLayout(sliders_widget)
+        sliders_layout.setContentsMargins(0, 0, 0, 0)
 
         controls = QHBoxLayout()
         controls.addWidget(self.play_button)
         controls.addWidget(self.position_slider, stretch=1)
         controls.addWidget(self.time_label)
-        layout.addLayout(controls)
+        sliders_layout.addLayout(controls)
 
         markers_layout = QVBoxLayout()
         start_row = QHBoxLayout()
@@ -67,8 +71,12 @@ class PreviewPlayer(QWidget):
         end_row.addWidget(self.end_slider, stretch=1)
         markers_layout.addLayout(start_row)
         markers_layout.addLayout(end_row)
+        sliders_layout.addLayout(markers_layout)
 
-        layout.addLayout(markers_layout)
+        layout.addWidget(sliders_widget, stretch=2)
+
+        # RIGHT: Video player (1/3 width)
+        layout.addWidget(self.video_widget, stretch=1)
 
     def load_media(self, path: str) -> None:
         self.player.setSource(QUrl.fromLocalFile(path))
