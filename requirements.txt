@@ -1,5 +1,4 @@
 PyQt6>=6.7,<6.8
-PyQt6-Multimedia
 clipsai
 numpy
 pandas
