@@ -1,0 +1,16 @@
+name: ai-videoclipper
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.12
+  - pyqt=6.7.*
+  - ffmpeg
+  - libmagic
+  - pytorch
+  - torchaudio
+  - pip
+  - pip:
+      - clipsai
+      - numpy
+      - pandas
