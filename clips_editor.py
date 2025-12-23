@@ -278,8 +278,14 @@ class ClipEditor(QMainWindow):
 
         # Populate clips
         logger.info("[CLIPS] Populating clips list...")
-        self.populate_clips()
-        logger.info(f"[CLIPS] ✓ Populated {len(self.clips)} clips in list widget")
+        try:
+            self.populate_clips()
+            logger.info(f"[CLIPS] ✓ Populated {len(self.clips)} clips in list widget")
+        except Exception as e:
+            logger.error(f"[CLIPS] Failed to populate clips: {e}")
+            import traceback
+            logger.error(f"[CLIPS] Traceback: {traceback.format_exc()}")
+            raise
 
         self.status_label.setText(f"Status: {len(self.clips)} clips found")
         logger.info(f"✓ Ready to export {len(self.clips)} clips")

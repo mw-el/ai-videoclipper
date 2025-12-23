@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QListWidget, QListWidgetItem, QPushButton,
     QHBoxLayout, QLabel
 )
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont
 
 from clip_model import Clip
@@ -55,16 +55,31 @@ class ClipListWidget(QWidget):
 
     def set_clips(self, clips: list[Clip]):
         """Set clips to display in list."""
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+        logger.info(f"[CLIP_LIST] set_clips() called with {len(clips)} clips")
+
         self.clips = clips
         self.clip_list.clear()
         self.current_clip_index = -1
 
         for i, clip in enumerate(clips):
-            self._add_clip_row(i, clip)
+            try:
+                self._add_clip_row(i, clip)
+                logger.info(f"[CLIP_LIST] Added clip row {i + 1}/{len(clips)}")
+            except Exception as e:
+                logger.error(f"[CLIP_LIST] Failed to add clip row {i}: {e}", exc_info=True)
+                raise
 
         # Select first clip by default
         if clips:
-            self.clip_list.setCurrentRow(0)
+            logger.info(f"[CLIP_LIST] Setting current row to 0...")
+            try:
+                self.clip_list.setCurrentRow(0)
+                logger.info(f"[CLIP_LIST] ✓ Current row set")
+            except Exception as e:
+                logger.error(f"[CLIP_LIST] Failed to set current row: {e}", exc_info=True)
+                raise
 
     def _add_clip_row(self, index: int, clip: Clip):
         """Add a clip row to the list."""
@@ -79,7 +94,8 @@ class ClipListWidget(QWidget):
         item.setData(Qt.ItemDataRole.UserRole, index)  # Store clip index
 
         # Set fixed height for each row (3 lines)
-        item.setSizeHint(self.get_item_height())
+        height = self.get_item_height()
+        item.setSizeHint(QSize(200, height))
 
         self.clip_list.addItem(item)
 
@@ -90,15 +106,24 @@ class ClipListWidget(QWidget):
 
     def _on_clip_selected(self):
         """Handle clip selection."""
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+
         current_item = self.clip_list.currentItem()
         if current_item is None:
+            logger.info("[CLIP_LIST] No item selected")
             self.current_clip_index = -1
             self.delete_clip_btn.setEnabled(False)
             return
 
-        self.current_clip_index = current_item.data(Qt.ItemDataRole.UserRole)
-        self.delete_clip_btn.setEnabled(True)
-        self.clip_selected.emit(self.current_clip_index)
+        try:
+            self.current_clip_index = current_item.data(Qt.ItemDataRole.UserRole)
+            logger.info(f"[CLIP_LIST] Clip selected at index {self.current_clip_index}")
+            self.delete_clip_btn.setEnabled(True)
+            self.clip_selected.emit(self.current_clip_index)
+        except Exception as e:
+            logger.error(f"[CLIP_LIST] Error in _on_clip_selected: {e}", exc_info=True)
+            raise
 
     def _on_delete_clicked(self):
         """Handle delete button click."""
