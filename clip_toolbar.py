@@ -12,6 +12,8 @@ class ClipToolbar(QWidget):
     duplicate_clicked = pyqtSignal()
     split_clicked = pyqtSignal()
     export_all_clicked = pyqtSignal()
+    load_config_clicked = pyqtSignal()
+    save_config_clicked = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -47,5 +49,15 @@ class ClipToolbar(QWidget):
         btn_export_all = QPushButton("💾 Export All")
         btn_export_all.clicked.connect(self.export_all_clicked.emit)
         layout.addWidget(btn_export_all)
+
+        layout.addSpacing(10)
+
+        btn_load_config = QPushButton("📂 Load Config")
+        btn_load_config.clicked.connect(self.load_config_clicked.emit)
+        layout.addWidget(btn_load_config)
+
+        btn_save_config = QPushButton("💾 Save Config")
+        btn_save_config.clicked.connect(self.save_config_clicked.emit)
+        layout.addWidget(btn_save_config)
 
         layout.addStretch()

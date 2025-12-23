@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import sys
 from pathlib import Path
@@ -7,6 +8,7 @@ from pathlib import Path
 from PyQt6.QtCore import QObject, QThread, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
+    QCheckBox,
     QDialog,
     QFileDialog,
     QLabel,
@@ -92,6 +94,7 @@ class ClipEditor(QMainWindow):
         self.clips: list[Clip] = []
         self.output_dir: Path | None = None  # Will be set based on source video location
         self.last_clicked_segment_index: int = -1  # For Set Start/End operations
+        self.auto_scene_detection: bool = False  # Scene detection mode (False=Manual, True=Auto)
 
         self._threads: list[QThread] = []
 
@@ -101,14 +104,30 @@ class ClipEditor(QMainWindow):
         container = QWidget(self)
         main_layout = QVBoxLayout(container)
 
-        # Top bar: Select File button and Status label
+        # Top bar: Select File button, Mode checkboxes, and Status label
         top_bar = QHBoxLayout()
         self.open_button = QPushButton("Select File")
         self.open_button.clicked.connect(self.select_file)
+        top_bar.addWidget(self.open_button)
+
+        # Scene detection mode checkboxes (mutually exclusive)
+        top_bar.addSpacing(20)
+        label_mode = QLabel("Scene Detection:")
+        top_bar.addWidget(label_mode)
+
+        self.checkbox_manual = QCheckBox("Manual (default)")
+        self.checkbox_manual.setChecked(True)
+        self.checkbox_manual.stateChanged.connect(self._on_manual_mode_toggled)
+        top_bar.addWidget(self.checkbox_manual)
+
+        self.checkbox_auto = QCheckBox("Auto (ClipsAI)")
+        self.checkbox_auto.setChecked(False)
+        self.checkbox_auto.stateChanged.connect(self._on_auto_mode_toggled)
+        top_bar.addWidget(self.checkbox_auto)
+
+        top_bar.addStretch()
         self.status_label = QLabel("Status: idle")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        top_bar.addWidget(self.open_button)
-        top_bar.addStretch()
         top_bar.addWidget(self.status_label)
 
         main_layout.addLayout(top_bar)
@@ -149,6 +168,8 @@ class ClipEditor(QMainWindow):
         self.clip_toolbar.duplicate_clicked.connect(self._on_duplicate_clip)
         self.clip_toolbar.split_clicked.connect(self._on_split_clip)
         self.clip_toolbar.export_all_clicked.connect(self.export_all)
+        self.clip_toolbar.load_config_clicked.connect(self.load_clips_config)
+        self.clip_toolbar.save_config_clicked.connect(self.save_clips_config)
         right_layout.addWidget(self.clip_toolbar)
 
         # SRT Viewer
@@ -217,6 +238,24 @@ class ClipEditor(QMainWindow):
         logger.info("Starting transcription worker...")
         self._run_worker(self._transcribe_and_find_clips, self.on_transcription_ready, self.on_error)
 
+    def _on_manual_mode_toggled(self, state: int) -> None:
+        """Handle manual mode checkbox toggle."""
+        if state:  # Manual checkbox is checked
+            self.auto_scene_detection = False
+            self.checkbox_auto.blockSignals(True)
+            self.checkbox_auto.setChecked(False)
+            self.checkbox_auto.blockSignals(False)
+            logger.info("Scene detection mode: MANUAL (create full transcript + default full-video scene)")
+
+    def _on_auto_mode_toggled(self, state: int) -> None:
+        """Handle auto mode checkbox toggle."""
+        if state:  # Auto checkbox is checked
+            self.auto_scene_detection = True
+            self.checkbox_manual.blockSignals(True)
+            self.checkbox_manual.setChecked(False)
+            self.checkbox_manual.blockSignals(False)
+            logger.info("Scene detection mode: AUTO (ClipsAI auto-detect clips)")
+
     def _setup_output_dir(self) -> None:
         """Set up output directory based on source video location."""
         if not self.video_path:
@@ -238,9 +277,30 @@ class ClipEditor(QMainWindow):
         logger.info("=" * 60)
         logger.info(f"✓ Transcription complete: {len(result.segments)} segments")
 
-        logger.info("Finding clips using ClipsAI...")
-        clips = self.clip_wrapper.find_clips(result.segments, max_clips=6)
-        logger.info(f"Found {len(clips)} clips")
+        if self.auto_scene_detection:
+            logger.info("Finding clips using ClipsAI (AUTO mode)...")
+            clips = self.clip_wrapper.find_clips(result.segments, max_clips=6)
+            logger.info(f"Found {len(clips)} clips")
+        else:
+            logger.info("Creating default full-video clip (MANUAL mode)...")
+            if result.segments:
+                # Create a single clip spanning the entire video
+                first_segment = result.segments[0]
+                last_segment = result.segments[-1]
+                default_clip = Clip(
+                    start_time=first_segment.start,
+                    end_time=last_segment.end,
+                    text="Full Video",
+                    score=None,
+                    segment_start_index=0,
+                    segment_end_index=len(result.segments) - 1
+                )
+                clips = [default_clip]
+                logger.info("Created 1 default full-video clip")
+            else:
+                logger.warning("No segments found in transcription")
+                clips = []
+
         return result, clips
 
     def on_transcription_ready(self, payload) -> None:
@@ -528,6 +588,173 @@ class ClipEditor(QMainWindow):
 
     def on_export_done(self, output_path) -> None:
         self.status_label.setText(f"Status: export complete ({output_path})")
+
+    def load_clips_config(self) -> None:
+        """Load clip configuration from JSON file."""
+        if not self.transcription:
+            QMessageBox.warning(self, "No Transcription", "Please transcribe a video first before loading clips configuration.")
+            return
+
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Load Clips Configuration",
+            "",
+            "JSON Files (*.json);;All Files (*)"
+        )
+        if not file_path:
+            return
+
+        try:
+            logger.info(f"[CONFIG] Loading clips configuration from: {file_path}")
+            with open(file_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+
+            mode = config.get("mode", "auto")
+            logger.info(f"[CONFIG] Configuration mode: {mode}")
+
+            if mode == "auto":
+                self._load_auto_clips(config)
+            elif mode == "manual":
+                self._load_manual_clips(config)
+            else:
+                raise ValueError(f"Unknown mode: {mode}")
+
+            logger.info(f"[CONFIG] ✓ Successfully loaded {len(self.clips)} clips")
+            self.populate_clips()
+            self.status_label.setText(f"Status: loaded {len(self.clips)} clips from config")
+
+        except Exception as e:
+            logger.error(f"[CONFIG] Failed to load clips config: {e}", exc_info=True)
+            QMessageBox.critical(self, "Error Loading Config", f"Failed to load clips configuration:\n{str(e)}")
+
+    def _load_auto_clips(self, config: dict) -> None:
+        """Load auto-detected clips configuration."""
+        max_clips = config.get("max_clips", 6)
+        logger.info(f"[CONFIG] Auto-mode: finding clips with max_clips={max_clips}")
+
+        # Use ClipsAI to find clips
+        clips = self.clip_wrapper.find_clips(self.transcription.segments, max_clips=max_clips)
+        clips = self.clip_wrapper._add_segment_indices(clips, self.transcription.segments)
+        self.clips = clips
+        logger.info(f"[CONFIG] ✓ Auto-mode found {len(clips)} clips")
+
+    def _load_manual_clips(self, config: dict) -> None:
+        """Load manually defined clips configuration."""
+        selection_type = config.get("selection_type")
+        clips_data = config.get("clips", [])
+
+        if not selection_type:
+            raise ValueError("Manual mode requires 'selection_type' field")
+
+        if selection_type == "time":
+            self._load_manual_clips_by_time(clips_data)
+        elif selection_type == "segments":
+            self._load_manual_clips_by_segments(clips_data)
+        else:
+            raise ValueError(f"Unknown selection_type: {selection_type}")
+
+    def _load_manual_clips_by_time(self, clips_data: list) -> None:
+        """Load clips defined by start_time and end_time."""
+        logger.info(f"[CONFIG] Manual-mode (by time): loading {len(clips_data)} clips")
+
+        clips = []
+        for i, clip_data in enumerate(clips_data):
+            start_time = float(clip_data.get("start_time"))
+            end_time = float(clip_data.get("end_time"))
+            name = clip_data.get("name", f"Clip {i + 1}")
+
+            if end_time <= start_time:
+                raise ValueError(f"Clip {i + 1}: end_time must be greater than start_time")
+
+            clip = Clip(start_time=start_time, end_time=end_time, text=name)
+            clips.append(clip)
+            logger.info(f"[CONFIG]   Clip {i + 1}: {name} ({format_timestamp(start_time)} - {format_timestamp(end_time)})")
+
+        # Add segment indices
+        clips = self.clip_wrapper._add_segment_indices(clips, self.transcription.segments)
+        self.clips = clips
+        logger.info(f"[CONFIG] ✓ Loaded {len(clips)} clips by time")
+
+    def _load_manual_clips_by_segments(self, clips_data: list) -> None:
+        """Load clips defined by segment indices (1-indexed)."""
+        logger.info(f"[CONFIG] Manual-mode (by segments): loading {len(clips_data)} clips")
+
+        segments = self.transcription.segments
+        clips = []
+
+        for i, clip_data in enumerate(clips_data):
+            start_seg = int(clip_data.get("start_segment")) - 1  # Convert to 0-indexed
+            end_seg = int(clip_data.get("end_segment")) - 1      # Convert to 0-indexed
+            name = clip_data.get("name", f"Clip {i + 1}")
+
+            if start_seg < 0 or end_seg >= len(segments):
+                raise ValueError(f"Clip {i + 1}: segment index out of range (valid: 1-{len(segments)})")
+
+            if end_seg < start_seg:
+                raise ValueError(f"Clip {i + 1}: end_segment must be >= start_segment")
+
+            # Get timing from segments
+            start_time = segments[start_seg].start
+            end_time = segments[end_seg].end
+
+            clip = Clip(
+                start_time=start_time,
+                end_time=end_time,
+                text=name,
+                segment_start_index=start_seg,
+                segment_end_index=end_seg
+            )
+            clips.append(clip)
+            logger.info(f"[CONFIG]   Clip {i + 1}: {name} (segments {start_seg + 1}-{end_seg + 1})")
+
+        self.clips = clips
+        logger.info(f"[CONFIG] ✓ Loaded {len(clips)} clips by segments")
+
+    def save_clips_config(self) -> None:
+        """Save current clips to a JSON configuration file."""
+        if not self.clips:
+            QMessageBox.warning(self, "No Clips", "No clips to save.")
+            return
+
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Clips Configuration",
+            "clips.json",
+            "JSON Files (*.json);;All Files (*)"
+        )
+        if not file_path:
+            return
+
+        try:
+            logger.info(f"[CONFIG] Saving {len(self.clips)} clips to: {file_path}")
+
+            # Create config with both time and segment information
+            config = {
+                "mode": "manual",
+                "selection_type": "time",
+                "clips": []
+            }
+
+            for i, clip in enumerate(self.clips):
+                clip_entry = {
+                    "name": clip.text or f"Clip {i + 1}",
+                    "start_time": round(clip.start_time, 3),
+                    "end_time": round(clip.end_time, 3)
+                }
+                config["clips"].append(clip_entry)
+                logger.info(f"[CONFIG]   Clip {i + 1}: {clip_entry['name']} ({clip_entry['start_time']}s - {clip_entry['end_time']}s)")
+
+            # Write to file
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(config, f, indent=2, ensure_ascii=False)
+
+            logger.info(f"[CONFIG] ✓ Successfully saved clips configuration")
+            self.status_label.setText(f"Status: saved clips config to {Path(file_path).name}")
+            QMessageBox.information(self, "Success", f"Clips configuration saved to:\n{file_path}")
+
+        except Exception as e:
+            logger.error(f"[CONFIG] Failed to save clips config: {e}", exc_info=True)
+            QMessageBox.critical(self, "Error Saving Config", f"Failed to save clips configuration:\n{str(e)}")
 
     def on_marker_changed(self, start_seconds: float, end_seconds: float) -> None:
         self.preview_player.set_markers(start_seconds, end_seconds)
