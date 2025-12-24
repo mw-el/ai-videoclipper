@@ -1,5 +1,5 @@
 **Aufgabe:**
-Analysiere die SRT-Datei und identifiziere interessante Szenen für Social Media Clips (Podcast-Teaser, Reels, Shorts).
+Analysiere die SRT-Datei und identifiziere die **besten und interessantesten** Szenen für Social Media Clips (Podcast-Teaser, Reels, Shorts).
 
 **Kriterien:**
 * **Länge:** Mindestens 30 Sekunden, maximal 90 Sekunden
@@ -10,12 +10,18 @@ Analysiere die SRT-Datei und identifiziere interessante Szenen für Social Media
   - Ein Konzept mit Erklärung
   - Dialog-Szenen mit mehreren Sprechern (besonders lebendig!)
   - Frage-Antwort-Sequenzen mit Ausführung
-* **Qualität:**
+* **Qualität vor Quantität:**
   - Vollständige Gedankengänge, nicht nur einzelne Aussagen
   - Der Gedanke muss sich entwickeln und abschließen
   - Keine abgebrochenen Sätze oder Fragmente
+  - **Nur wirklich starke, eigenständige Momente auswählen**
 
-**Wichtig:** Finde 8-12 Szenen. Bevorzuge Szenen mit Dialog oder ausgeführten Gedankengängen.
+**Wichtig:**
+- Qualität geht vor Quantität - lieber wenige starke Clips als viele mittelmäßige
+- Bei langen Videos (>20 Min): Bis zu 10 der besten Szenen
+- Bei mittleren Videos (10-20 Min): 5-8 der besten Szenen
+- Bei kurzen Videos (<10 Min): 3-5 der besten Szenen
+- Bevorzuge Szenen mit Dialog oder besonders prägnanten Gedankengängen
 
 **Ausgabeformat:**
 
