@@ -144,6 +144,23 @@ class StyleManager:
     }}
     """
 
+    @staticmethod
+    def _darken_hex_color(hex_color: str, amount: float = 0.12) -> str:
+        """Return a slightly darkened hex color for hover states."""
+        if not isinstance(hex_color, str) or not hex_color.startswith("#") or len(hex_color) != 7:
+            return hex_color
+        try:
+            r = int(hex_color[1:3], 16)
+            g = int(hex_color[3:5], 16)
+            b = int(hex_color[5:7], 16)
+        except ValueError:
+            return hex_color
+        scale = max(0.0, min(1.0, 1.0 - amount))
+        r = max(0, min(255, int(r * scale)))
+        g = max(0, min(255, int(g * scale)))
+        b = max(0, min(255, int(b * scale)))
+        return f"#{r:02x}{g:02x}{b:02x}"
+
     @classmethod
     def apply_button_style(cls, button: QPushButton) -> None:
         """Apply default button style."""
@@ -172,6 +189,7 @@ class StyleManager:
             bg_color: Background color (hex string)
             icon_color: Icon color (hex string, default white)
         """
+        hover_color = cls._darken_hex_color(bg_color)
         style = f"""
         QPushButton {{
             background-color: {bg_color};
@@ -182,7 +200,7 @@ class StyleManager:
             min-width: 36px;
         }}
         QPushButton:hover {{
-            background-color: {bg_color};
+            background-color: {hover_color};
             padding: 3px;
             min-height: 37px;
             min-width: 37px;
