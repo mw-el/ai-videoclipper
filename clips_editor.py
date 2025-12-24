@@ -36,8 +36,8 @@ from time_utils import format_timestamp
 from clip_list_widget import ClipListWidget
 from clip_toolbar import ClipToolbar
 from new_clip_dialog import NewClipDialog
-from icon_manager import IconManager
-from style_manager import StyleManager
+from design.icon_manager import IconManager
+from design.style_manager import StyleManager
 
 logger = logging.getLogger("ai_videoclipper")
 

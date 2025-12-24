@@ -2,8 +2,8 @@
 
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton
 from PyQt6.QtCore import pyqtSignal, QSize
-from icon_manager import IconManager
-from style_manager import StyleManager
+from design.icon_manager import IconManager
+from design.style_manager import StyleManager
 
 
 class ClipToolbar(QWidget):

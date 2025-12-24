@@ -68,7 +68,7 @@ class IconManager:
             size: Default font size for icons (default: 18)
         """
         if font_path is None:
-            font_path = str(Path(__file__).parent / 'assets' / 'fonts' / 'MaterialIcons-Regular.ttf')
+            font_path = str(Path(__file__).parent / 'fonts' / 'MaterialIcons-Regular.ttf')
 
         cls._font_size = size
         cls._font = QFont()
