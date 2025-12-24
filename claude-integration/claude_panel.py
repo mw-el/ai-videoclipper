@@ -593,38 +593,55 @@ class ClaudePanel(QWidget):
 
     def _load_config_from_output(self) -> None:
         """Extract clips config JSON from terminal output and load it."""
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+
         output = self._terminal._output.toPlainText()
+        logger.info(f"[CLAUDE] Attempting to extract config from {len(output)} chars of output")
 
         # Look for JSON blocks in output
         json_pattern = r'```json\s*(.*?)\s*```'
         matches = re.findall(json_pattern, output, re.DOTALL)
 
+        logger.info(f"[CLAUDE] Found {len(matches)} JSON blocks in output")
+
         if not matches:
             self._status_label.setText("⚠ No JSON found in output")
+            logger.warning("[CLAUDE] No JSON blocks found in terminal output")
             QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+            QMessageBox.information(self, "No JSON Found", "No JSON configuration found in Claude's output.\n\nMake sure Claude returned a JSON code block with clips configuration.")
             return
 
         # Use the LAST JSON block found (most recent)
         json_text = matches[-1]
+        logger.info(f"[CLAUDE] Using last JSON block ({len(json_text)} chars)")
 
         try:
             config = json.loads(json_text)
+            logger.info(f"[CLAUDE] Successfully parsed JSON: {config.keys()}")
 
             # Validate that it's a clips config (has required fields)
             if "mode" not in config:
                 self._status_label.setText("⚠ Invalid clips config format")
+                logger.error(f"[CLAUDE] Config missing 'mode' field. Keys: {config.keys()}")
                 QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+                QMessageBox.warning(self, "Invalid Format", "JSON is missing required 'mode' field.\n\nExpected format:\n{\n  \"mode\": \"manual\",\n  \"selection_type\": \"time\",\n  \"clips\": [...]\n}")
                 return
 
             # Emit signal to parent to load this config
-            print(f"[CLAUDE] ✓ Extracted clips config with {len(config.get('clips', []))} clips")
+            num_clips = len(config.get('clips', []))
+            logger.info(f"[CLAUDE] ✓ Extracted clips config with {num_clips} clips")
+            logger.info(f"[CLAUDE] Emitting load_clips_config signal")
             self.load_clips_config.emit(config)
-            self._status_label.setText("✓ Config loaded from Claude")
-            QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+            self._status_label.setText(f"✓ Loaded {num_clips} clips from Claude")
+            QTimer.singleShot(3000, lambda: self._status_label.setText(self._terminal.status_text()))
 
         except json.JSONDecodeError as e:
-            self._status_label.setText(f"⚠ JSON parse error: {str(e)[:30]}")
+            self._status_label.setText(f"⚠ JSON parse error")
+            logger.error(f"[CLAUDE] JSON parse error: {e}")
+            logger.error(f"[CLAUDE] Failed JSON text: {json_text[:200]}...")
             QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+            QMessageBox.critical(self, "JSON Parse Error", f"Failed to parse JSON:\n{str(e)}\n\nCheck the Claude output for syntax errors.")
 
     def _send_custom_prompt(self) -> None:
         """Send custom prompt in headless mode."""

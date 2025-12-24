@@ -854,30 +854,40 @@ class ClipEditor(QMainWindow):
         Args:
             config: Dictionary with clips configuration (manual mode with time or segments)
         """
+        logger.info(f"[CLAUDE] _handle_claude_clips_config called with config keys: {config.keys()}")
+
         if not self.transcription or not self.transcription.segments:
             logger.warning("[CLAUDE] No transcription available to load clips config")
+            QMessageBox.warning(self, "No Transcription", "Please transcribe a video first before loading clips configuration.")
             return
 
         try:
             mode = config.get("mode", "manual")
-            logger.info(f"[CLAUDE] Loading clips configuration (mode: {mode})")
+            selection_type = config.get("selection_type", "unknown")
+            num_clips = len(config.get("clips", []))
+            logger.info(f"[CLAUDE] Loading {num_clips} clips (mode: {mode}, selection_type: {selection_type})")
 
             if mode == "auto":
+                logger.info("[CLAUDE] Using auto mode")
                 self._load_auto_clips(config)
             elif mode == "manual":
+                logger.info("[CLAUDE] Using manual mode")
                 self._load_manual_clips(config)
             else:
                 logger.error(f"[CLAUDE] Unknown mode: {mode}")
                 self.status_label.setText(f"Error: unknown mode {mode}")
+                QMessageBox.critical(self, "Invalid Mode", f"Unknown mode '{mode}'.\n\nExpected 'auto' or 'manual'.")
                 return
 
             logger.info(f"[CLAUDE] ✓ Successfully loaded {len(self.clips)} clips from config")
             self.populate_clips()
             self.status_label.setText(f"Status: loaded {len(self.clips)} clips from Claude")
+            QMessageBox.information(self, "Success", f"Successfully loaded {len(self.clips)} clips from Claude!")
 
         except Exception as e:
             logger.error(f"[CLAUDE] Failed to load clips config: {e}", exc_info=True)
             self.status_label.setText(f"Error loading config: {str(e)[:30]}")
+            QMessageBox.critical(self, "Error Loading Config", f"Failed to load clips:\n{str(e)}")
 
     def _on_new_clip(self) -> None:
         """Create a new clip by selecting segment range."""
