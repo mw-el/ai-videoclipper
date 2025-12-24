@@ -311,7 +311,12 @@ class ClipEditor(QMainWindow):
     def _create_claude_panel(self) -> QWidget:
         try:
             ClaudePanel = self._load_claude_panel_class()
-            return ClaudePanel()
+            panel = ClaudePanel()
+            # Connect scene data signal to handler
+            if hasattr(panel, 'scene_data_received'):
+                panel.scene_data_received.connect(self._handle_scene_data)
+                logger.info("[CLAUDE] Connected scene_data_received signal")
+            return panel
         except Exception as exc:
             logger.warning(f"[CLAUDE] Failed to load Claude panel: {exc}")
             panel = QWidget()
@@ -750,6 +755,94 @@ class ClipEditor(QMainWindow):
             del self.clips[clip_index]
             self.populate_clips()
             logger.info(f"[CLIP_EDIT] Deleted clip {clip_index + 1}")
+
+    def _parse_timestamp(self, ts_str: str) -> float:
+        """Convert HH:MM:SS.mmm timestamp string to seconds.
+
+        Args:
+            ts_str: Timestamp in format "HH:MM:SS.mmm" or "MM:SS.mmm"
+
+        Returns:
+            Time in seconds as float
+        """
+        parts = ts_str.split(':')
+        if len(parts) == 3:
+            hours = int(parts[0])
+            minutes = int(parts[1])
+            seconds = float(parts[2])
+            return hours * 3600 + minutes * 60 + seconds
+        elif len(parts) == 2:
+            minutes = int(parts[0])
+            seconds = float(parts[1])
+            return minutes * 60 + seconds
+        else:
+            logger.error(f"[CLAUDE] Invalid timestamp format: {ts_str}")
+            return 0.0
+
+    def _handle_scene_data(self, scene_data: dict) -> None:
+        """Handle scene cut points from Claude and create clips.
+
+        Args:
+            scene_data: Dictionary with 'cut_points' list containing scene information
+        """
+        if not self.transcription or not self.transcription.segments:
+            logger.warning("[CLAUDE] No transcription available to create clips from scene data")
+            return
+
+        cut_points = scene_data.get('cut_points', [])
+        if not cut_points:
+            logger.warning("[CLAUDE] No cut points found in scene data")
+            return
+
+        logger.info(f"[CLAUDE] Received {len(cut_points)} scene suggestions from Claude")
+
+        # Clear existing clips (we're replacing with Claude's suggestions)
+        self.clips = []
+
+        # Create clips from cut points
+        for i, cut_point in enumerate(cut_points):
+            timestamp_str = cut_point.get('timestamp', '')
+            confidence = cut_point.get('confidence', 'unknown')
+            reason = cut_point.get('reason', 'Scene detected')
+
+            # Parse timestamp to seconds
+            start_time = self._parse_timestamp(timestamp_str)
+
+            # Determine clip duration based on confidence
+            # High confidence: 60s, Medium: 45s, Low: 30s
+            duration_map = {'high': 60.0, 'medium': 45.0, 'low': 30.0}
+            duration = duration_map.get(confidence.lower(), 30.0)
+            end_time = start_time + duration
+
+            # Find segment indices for this time range
+            start_idx = self._find_segment_index_for_time(start_time, prefer_start=True)
+            end_idx = self._find_segment_index_for_time(end_time, prefer_start=False)
+
+            if start_idx is None or end_idx is None:
+                logger.warning(f"[CLAUDE] Could not find segment indices for cut point {i+1} at {timestamp_str}")
+                continue
+
+            # Create clip with descriptive text from reason
+            clip_text = f"Scene {i+1}: {reason}"
+            clip = Clip(
+                start_time=start_time,
+                end_time=end_time,
+                text=clip_text,
+                score=None,
+                segment_start_index=start_idx,
+                segment_end_index=end_idx
+            )
+            self.clips.append(clip)
+            logger.info(f"[CLAUDE]   ✓ Created clip {i+1}: {timestamp_str} ({confidence}) - {reason[:50]}...")
+
+        # Refresh clip list display
+        if self.clips:
+            self.populate_clips()
+            logger.info(f"[CLAUDE] ✓ Created {len(self.clips)} clips from Claude scene detection")
+            self.status_label.setText(f"Status: created {len(self.clips)} clips from Claude")
+        else:
+            logger.warning("[CLAUDE] No clips were created from scene data")
+            self.status_label.setText("Status: no clips created from scene data")
 
     def _on_new_clip(self) -> None:
         """Create a new clip by selecting segment range."""
