@@ -35,6 +35,7 @@ from faster_whisper_transcriber import FasterWhisperTranscriber, TranscriptionRe
 from clip_model import Clip, ClipsAIWrapper
 from logger import setup_logging
 from preview_player import PreviewPlayer
+from importlib import util as importlib_util
 from srt_viewer import SRTViewer
 from srt_utils import parse_srt
 from time_utils import format_timestamp
@@ -84,7 +85,7 @@ class ClipEditor(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("AI VideoClipper")
-        self.resize(1400, 900)
+        self.resize(1800, 950)
 
         # Setup logging FIRST before any logging calls
         log_file = Path(__file__).resolve().parent / "logs" / "ai_videoclipper.log"
@@ -118,45 +119,51 @@ class ClipEditor(QMainWindow):
 
     def _build_ui(self) -> None:
         container = QWidget(self)
-        main_layout = QVBoxLayout(container)
+        main_layout = QHBoxLayout(container)
 
-        # Top bar: Select File button, Mode checkboxes, and Status label
-        top_bar = QHBoxLayout()
+        # LEFT PANEL 0: Claude integration
+        self.claude_panel = self._create_claude_panel()
+        main_layout.addWidget(self.claude_panel, stretch=4)
+
+        # RIGHT CONTAINER: Main body
+        right_container = QWidget()
+        right_container_layout = QVBoxLayout(right_container)
+        right_container_layout.setContentsMargins(0, 0, 0, 0)
+
+        # MAIN BODY: Horizontal layout with sliders/SRT (center), video+clips (right)
+        body_layout = QHBoxLayout()
+
+        # LEFT PANEL 1: Sliders, Edit toolbar, and SRT Viewer (much broader, reaches to video)
+        left_panel = QWidget()
+        left_layout = QVBoxLayout(left_panel)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Select file button aligned above the preview controls
         self.open_button = QPushButton()
         self.open_button.setIcon(IconManager.create_icon('folder_open', color='white', size=20))
         self.open_button.setIconSize(QSize(20, 20))
         self.open_button.setToolTip("Select video file")
         self.open_button.clicked.connect(self.select_file)
         StyleManager.apply_colored_icon_button_style(self.open_button, Colors.BRIGHT_BLUE)
-        top_bar.addWidget(self.open_button)
+        open_row = QHBoxLayout()
+        open_row.setSpacing(8)
+        open_row.addWidget(self.open_button, alignment=Qt.AlignmentFlag.AlignVCenter)
 
-        # Scene detection mode checkboxes (mutually exclusive)
-        top_bar.setSpacing(6)
-        top_bar.addSpacing(6)
         label_mode = QLabel("Scene Detection:")
-        top_bar.addWidget(label_mode, alignment=Qt.AlignmentFlag.AlignVCenter)
+        open_row.addWidget(label_mode, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         self.checkbox_manual = QCheckBox("Manual (default)")
         self.checkbox_manual.setChecked(True)
         self.checkbox_manual.stateChanged.connect(self._on_manual_mode_toggled)
-        top_bar.addWidget(self.checkbox_manual, alignment=Qt.AlignmentFlag.AlignVCenter)
+        open_row.addWidget(self.checkbox_manual, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         self.checkbox_auto = QCheckBox("Auto (ClipsAI)")
         self.checkbox_auto.setChecked(False)
         self.checkbox_auto.stateChanged.connect(self._on_auto_mode_toggled)
-        top_bar.addWidget(self.checkbox_auto, alignment=Qt.AlignmentFlag.AlignVCenter)
+        open_row.addWidget(self.checkbox_auto, alignment=Qt.AlignmentFlag.AlignVCenter)
 
-        top_bar.addStretch()
-
-        main_layout.addLayout(top_bar)
-
-        # MAIN BODY: Horizontal layout with sliders/SRT on left, video+clips on right
-        body_layout = QHBoxLayout()
-
-        # LEFT PANEL: Sliders, Edit toolbar, and SRT Viewer (much broader, reaches to video)
-        left_panel = QWidget()
-        left_layout = QVBoxLayout(left_panel)
-        left_layout.setContentsMargins(0, 0, 0, 0)
+        open_row.addStretch()
+        left_layout.addLayout(open_row)
 
         # Preview player (contains sliders)
         self.preview_player = PreviewPlayer()
@@ -213,16 +220,17 @@ class ClipEditor(QMainWindow):
         self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
         left_layout.addWidget(self.srt_viewer, stretch=1)
 
-        body_layout.addWidget(left_panel, stretch=1)
+        body_layout.addWidget(left_panel, stretch=7)
 
         # RIGHT PANEL: Video preview (top) + Buttons (under video) + Clip list
         right_panel = QWidget()
         right_layout = QVBoxLayout(right_panel)
         right_layout.setContentsMargins(0, 0, 0, 0)
         right_layout.setSpacing(0)
+        right_panel.setFixedWidth(360)
 
         # Video preview at top
-        # Size already set in PreviewPlayer (480×270 for 16:9 aspect ratio)
+        # Size already set in PreviewPlayer (360×203 for 16:9 aspect ratio)
         right_layout.addWidget(self.preview_player.video_widget, stretch=0)
 
         # Toolbar with editing buttons (under video)
@@ -256,7 +264,8 @@ class ClipEditor(QMainWindow):
 
         body_layout.addWidget(right_panel, stretch=0)
 
-        main_layout.addLayout(body_layout)
+        right_container_layout.addLayout(body_layout)
+        main_layout.addWidget(right_container, stretch=7)
 
         # Add logging dock widget (without title bar)
         log_dock = QDockWidget(self)
@@ -299,6 +308,30 @@ class ClipEditor(QMainWindow):
         """Log progress messages from transcriber."""
         logger.info(f"[PROGRESS] {message}")
 
+    def _create_claude_panel(self) -> QWidget:
+        try:
+            ClaudePanel = self._load_claude_panel_class()
+            return ClaudePanel()
+        except Exception as exc:
+            logger.warning(f"[CLAUDE] Failed to load Claude panel: {exc}")
+            panel = QWidget()
+            layout = QVBoxLayout(panel)
+            layout.setContentsMargins(0, 0, 0, 0)
+            label = QLabel("Claude integration unavailable")
+            label.setStyleSheet("padding: 6px; font-weight: bold; color: #666;")
+            layout.addWidget(label)
+            layout.addStretch()
+            return panel
+
+    def _load_claude_panel_class(self):
+        panel_path = Path(__file__).resolve().parent / "claude-integration" / "claude_panel.py"
+        spec = importlib_util.spec_from_file_location("claude_panel", panel_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"Claude panel not found at {panel_path}")
+        module = importlib_util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.ClaudePanel
+
     def select_file(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -309,6 +342,8 @@ class ClipEditor(QMainWindow):
         if not file_path:
             return
         self.video_path = Path(file_path)
+        if hasattr(self, "claude_panel") and hasattr(self.claude_panel, "set_context"):
+            self.claude_panel.set_context(self.video_path, None)
         logger.info(f"Selected video file: {file_path}")
 
         # Determine output directory based on source video location
@@ -559,6 +594,8 @@ class ClipEditor(QMainWindow):
 
         self.transcription = result
         self.clips = clips
+        if hasattr(self, "claude_panel") and hasattr(self.claude_panel, "set_context"):
+            self.claude_panel.set_context(self.video_path, result.srt_path)
 
         logger.info(f"[CALLBACK] Result has {len(result.segments)} segments, {len(clips)} clips found")
         logger.info(f"[CALLBACK] First segment: {result.segments[0] if result.segments else 'NO SEGMENTS'}")

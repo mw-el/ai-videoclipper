@@ -61,9 +61,10 @@ class PreviewPlayer(QWidget):
         self._user_marker_change = False
 
         self.video_widget = QVideoWidget(self)
-        # Set size for video widget: 480px wide × 270px high (16:9 aspect ratio)
-        self.video_widget.setMinimumHeight(270)
-        self.video_widget.setMinimumWidth(480)
+        # Set size for video widget: 360px wide × 203px high (16:9 aspect ratio)
+        self.video_widget.setMinimumHeight(203)
+        self.video_widget.setMinimumWidth(360)
+        self.video_widget.setMaximumWidth(360)
 
         self.play_button = QPushButton()
         self.play_button.setIcon(IconManager.create_icon('play_arrow', color='white', size=20))
