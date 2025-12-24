@@ -74,7 +74,8 @@ class ClaudeTerminalWidget(QWidget):
             'echo "========================================"; '
             'echo ""; '
         )
-        cmd = f"{banner} claude; exec bash"
+        # Auto-answer "yes" to Claude Code startup confirmation
+        cmd = f"{banner} echo 'yes' | claude; exec bash"
         self._process = subprocess.Popen(
             ["bash", "-lc", cmd],
             stdin=self._slave_fd,
@@ -199,6 +200,27 @@ class ClaudeTerminalWidget(QWidget):
 
 
 class ClaudePanel(QWidget):
+    @staticmethod
+    def _build_scene_detection_icon():
+        """Build combined movie+search icon for scene detection button."""
+        size = 18
+        spacing = 2
+        try:
+            from PyQt6.QtGui import QIcon
+            left_icon = IconManager.create_icon("movie", color="white", size=size)
+            right_icon = IconManager.create_icon("search", color="white", size=size)
+
+            pixmap = QPixmap(size * 2 + spacing, size)
+            pixmap.fill(QColor(0, 0, 0, 0))
+            painter = QPainter(pixmap)
+            left_icon.paint(painter, 0, 0, size, size, Qt.AlignmentFlag.AlignCenter)
+            right_icon.paint(painter, size + spacing, 0, size, size, Qt.AlignmentFlag.AlignCenter)
+            painter.end()
+            return QIcon(pixmap)
+        except Exception as e:
+            print(f"Warning: Could not create scene detection icon: {e}")
+            return IconManager.create_icon("search", color="white", size=18)
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self._prompt_path = Path(__file__).resolve().parent / "scene-detection-prompt.txt"
@@ -338,23 +360,54 @@ class ClaudePanel(QWidget):
         return context_dir
 
     def _build_claude_md(self) -> str:
+        from datetime import datetime
+
         lines = [
-            "# AI VideoClipper Kontext",
+            "# AI VideoClipper - Video Editing Session",
             "",
-            "## Aktive Session",
+            "## Current Working Files",
         ]
         if self._video_path:
-            lines.append(f"- **Video:** {self._video_path}")
+            lines.append(f"- **Video:** `{self._video_path}`")
         if self._srt_path:
-            lines.append(f"- **SRT:** {self._srt_path}")
-        lines.extend(
-            [
-                "",
-                "## Hinweise",
-                f"- Szene-Detection Prompt: {self._prompt_path}",
-                "- Nutze das SRT als Grundlage für die Szenenauswahl.",
-            ]
-        )
+            lines.append(f"- **Subtitle (SRT):** `{self._srt_path}`")
+
+        lines.extend([
+            "",
+            "## Session Information",
+            f"- **Session Started:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            f"- **Working Directory:** `{self._work_dir}`",
+            "",
+            "## Available Operations",
+            "### Scene Detection & Analysis",
+            "- Analyze SRT file to identify scene boundaries",
+            "- Detect dialogue breaks and natural pause points",
+            "- Identify topic transitions and content changes",
+            "- Suggest optimal clip cut points with timestamps",
+            "",
+            "### File Reference Syntax",
+            "When referencing files in your analysis, use:",
+        ])
+
+        if self._video_path:
+            lines.append(f"- Video file: `@{self._video_path}`")
+        if self._srt_path:
+            lines.append(f"- SRT file: `@{self._srt_path}`")
+
+        lines.extend([
+            "",
+            "## Output Format Guidelines",
+            "- Use absolute paths for all file references",
+            "- Timestamps format: HH:MM:SS.mmm",
+            "- Provide clear reasoning for each suggestion",
+            "- Include SRT segment indices when relevant",
+            "",
+            "## Important Notes",
+            "- All file paths are absolute and pre-configured",
+            "- SRT timing must stay synchronized with video",
+            "- Scene detection prompt available at: `scene-detection-prompt.txt`",
+        ])
+
         return "\n".join(lines)
 
     def _sync_controls(self) -> None:
@@ -362,21 +415,6 @@ class ClaudePanel(QWidget):
         self._start_button.setEnabled(not running)
         self._stop_button.setEnabled(running)
         self._status_label.setText(self._terminal.status_text())
-
-    def _build_scene_detection_icon(self):
-        size = 18
-        spacing = 2
-        left_icon = IconManager.create_icon("movie", color="white", size=size)
-        right_icon = IconManager.create_icon("search", color="white", size=size)
-
-        pixmap = QPixmap(size * 2 + spacing, size)
-        pixmap.fill(QColor(0, 0, 0, 0))
-        painter = QPainter(pixmap)
-        left_icon.paint(painter, 0, 0, size, size, Qt.AlignmentFlag.AlignCenter)
-        right_icon.paint(painter, size + spacing, 0, size, size, Qt.AlignmentFlag.AlignCenter)
-        painter.end()
-        from PyQt6.QtGui import QIcon
-        return QIcon(pixmap)
 
 
 _ANSI_RE = re.compile(
