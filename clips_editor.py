@@ -954,6 +954,11 @@ def main() -> None:
             print("[MAIN] Creating QApplication...", file=sys.stderr, flush=True)
             app = QApplication(sys.argv)
             print("[MAIN] ✓ QApplication created", file=sys.stderr, flush=True)
+
+            # Apply global stylesheet with color variables
+            print("[MAIN] Applying global stylesheet...", file=sys.stderr, flush=True)
+            StyleManager.apply_global_style(app)
+            print("[MAIN] ✓ Global stylesheet applied", file=sys.stderr, flush=True)
         except Exception as e:
             print(f"[MAIN] FATAL: Failed to create QApplication: {e}", file=sys.stderr, flush=True)
             import traceback
