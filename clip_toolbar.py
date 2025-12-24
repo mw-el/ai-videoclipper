@@ -25,45 +25,23 @@ class ClipToolbar(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
 
-        # Create buttons (left side) - all same height
-        btn_set_start = QPushButton("Start")
-        btn_set_start.clicked.connect(self.set_start_clicked.emit)
-        btn_set_start.setMaximumWidth(50)
-        btn_set_start.setMinimumHeight(32)
-        layout.addWidget(btn_set_start)
+        # Note: Start, End, Duplicate, Split buttons are now in the left edit toolbar
+        # This toolbar now only contains Load, Save, and Run buttons
 
-        btn_set_end = QPushButton("End")
-        btn_set_end.clicked.connect(self.set_end_clicked.emit)
-        btn_set_end.setMaximumWidth(50)
-        btn_set_end.setMinimumHeight(32)
-        layout.addWidget(btn_set_end)
-
-        btn_duplicate = QPushButton("⧉")
-        btn_duplicate.clicked.connect(self.duplicate_clicked.emit)
-        btn_duplicate.setMaximumWidth(32)
-        btn_duplicate.setMinimumHeight(32)
-        layout.addWidget(btn_duplicate)
-
-        btn_split = QPushButton("➗")
-        btn_split.clicked.connect(self.split_clicked.emit)
-        btn_split.setMaximumWidth(32)
-        btn_split.setMinimumHeight(32)
-        layout.addWidget(btn_split)
-
-        # Stretch to push load/save to the right side
+        # Stretch to push load/save/run to the right side
         layout.addStretch()
 
-        btn_load_scenes = QPushButton("Load Clips")
-        btn_load_scenes.clicked.connect(self.load_config_clicked.emit)
-        btn_load_scenes.setMinimumWidth(90)
-        btn_load_scenes.setMinimumHeight(32)
-        layout.addWidget(btn_load_scenes)
+        btn_load_clips = QPushButton("Load Clips")
+        btn_load_clips.clicked.connect(self.load_config_clicked.emit)
+        btn_load_clips.setMinimumWidth(90)
+        btn_load_clips.setMinimumHeight(32)
+        layout.addWidget(btn_load_clips)
 
-        btn_save_scenes = QPushButton("Save Clips")
-        btn_save_scenes.clicked.connect(self.save_config_clicked.emit)
-        btn_save_scenes.setMinimumWidth(90)
-        btn_save_scenes.setMinimumHeight(32)
-        layout.addWidget(btn_save_scenes)
+        btn_save_clips = QPushButton("Save Clips")
+        btn_save_clips.clicked.connect(self.save_config_clicked.emit)
+        btn_save_clips.setMinimumWidth(90)
+        btn_save_clips.setMinimumHeight(32)
+        layout.addWidget(btn_save_clips)
 
         btn_run = QPushButton("▶ Run")
         btn_run.clicked.connect(self.export_all_clicked.emit)

@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from PyQt6.QtCore import QObject, QThread, Qt, pyqtSignal
+from PyQt6.QtCore import QObject, QThread, Qt, pyqtSignal, QSize
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -25,6 +25,7 @@ from PyQt6.QtWidgets import (
     QDockWidget,
     QSplitter,
 )
+from PyQt6.QtGui import QColor
 
 from faster_whisper_transcriber import FasterWhisperTranscriber
 from clip_model import Clip, ClipsAIWrapper
@@ -35,6 +36,7 @@ from time_utils import format_timestamp
 from clip_list_widget import ClipListWidget
 from clip_toolbar import ClipToolbar
 from new_clip_dialog import NewClipDialog
+from icon_manager import IconManager
 
 logger = logging.getLogger("ai_videoclipper")
 
@@ -82,6 +84,10 @@ class ClipEditor(QMainWindow):
         log_file = Path(__file__).resolve().parent / "logs" / "ai_videoclipper.log"
         self.logger, self.log_emitter = setup_logging(log_file)
         logger.info(f"Logging to: {log_file}")
+
+        # Initialize icon manager for Material Design Icons
+        IconManager.initialize(size=18)
+        logger.info("Icon manager initialized")
 
         logger.info("Initializing AI VideoClipper")
 
@@ -137,7 +143,7 @@ class ClipEditor(QMainWindow):
         # MAIN BODY: Horizontal layout with sliders/SRT on left, video+clips on right
         body_layout = QHBoxLayout()
 
-        # LEFT PANEL: Sliders and SRT Viewer (much broader, reaches to video)
+        # LEFT PANEL: Sliders, Edit toolbar, and SRT Viewer (much broader, reaches to video)
         left_panel = QWidget()
         left_layout = QVBoxLayout(left_panel)
         left_layout.setContentsMargins(0, 0, 0, 0)
@@ -145,6 +151,54 @@ class ClipEditor(QMainWindow):
         # Preview player (contains sliders)
         self.preview_player = PreviewPlayer()
         left_layout.addWidget(self.preview_player)
+
+        # Edit toolbar (Start, End, Duplicate, Split buttons above SRT)
+        edit_toolbar = QHBoxLayout()
+        edit_toolbar.setContentsMargins(4, 4, 4, 4)
+        edit_toolbar.setSpacing(4)
+
+        # Start button with Material Design icon (skip_previous = go to start)
+        self.btn_set_start = QPushButton()
+        self.btn_set_start.setIcon(IconManager.create_icon('skip_previous', color='#666666', size=20))
+        self.btn_set_start.setIconSize(QSize(20, 20))
+        self.btn_set_start.setToolTip("Set clip start point")
+        self.btn_set_start.setMaximumWidth(40)
+        self.btn_set_start.setMinimumHeight(36)
+        self.btn_set_start.clicked.connect(self._on_set_start)
+        edit_toolbar.addWidget(self.btn_set_start)
+
+        # End button with Material Design icon (skip_next = go to end)
+        self.btn_set_end = QPushButton()
+        self.btn_set_end.setIcon(IconManager.create_icon('skip_next', color='#666666', size=20))
+        self.btn_set_end.setIconSize(QSize(20, 20))
+        self.btn_set_end.setToolTip("Set clip end point")
+        self.btn_set_end.setMaximumWidth(40)
+        self.btn_set_end.setMinimumHeight(36)
+        self.btn_set_end.clicked.connect(self._on_set_end)
+        edit_toolbar.addWidget(self.btn_set_end)
+
+        # Duplicate button with Material Design icon (content_copy)
+        self.btn_duplicate = QPushButton()
+        self.btn_duplicate.setIcon(IconManager.create_icon('content_copy', color='#666666', size=20))
+        self.btn_duplicate.setIconSize(QSize(20, 20))
+        self.btn_duplicate.setToolTip("Duplicate clip")
+        self.btn_duplicate.setMaximumWidth(40)
+        self.btn_duplicate.setMinimumHeight(36)
+        self.btn_duplicate.clicked.connect(self._on_duplicate_clip)
+        edit_toolbar.addWidget(self.btn_duplicate)
+
+        # Split button with Material Design icon (cut = scissors)
+        self.btn_split = QPushButton()
+        self.btn_split.setIcon(IconManager.create_icon('cut', color='#666666', size=20))
+        self.btn_split.setIconSize(QSize(20, 20))
+        self.btn_split.setToolTip("Split clip at current position")
+        self.btn_split.setMaximumWidth(40)
+        self.btn_split.setMinimumHeight(36)
+        self.btn_split.clicked.connect(self._on_split_clip)
+        edit_toolbar.addWidget(self.btn_split)
+
+        edit_toolbar.addStretch()
+        left_layout.addLayout(edit_toolbar, stretch=0)
 
         # SRT Viewer (fills remaining space)
         self.srt_viewer = SRTViewer()
