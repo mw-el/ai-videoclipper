@@ -109,8 +109,12 @@ class ClipEditor(QMainWindow):
         self.clips: list[Clip] = []
         self.output_dir: Path | None = None  # Will be set based on source video location
         self.last_clicked_segment_index: int = -1  # For Set Start/End operations
-        self.auto_scene_detection: bool = False  # Scene detection mode (False=Manual, True=Auto)
+        self.scene_detection_mode: str = "manual"  # "manual", "clipsai", or "fallback"
         self._threads: list[QThread] = []
+
+        # Transcription progress animation
+        self._progress_timer: QTimer | None = None
+        self._progress_dots: int = 0
 
         self._build_ui()
 
@@ -152,15 +156,20 @@ class ClipEditor(QMainWindow):
         label_mode = QLabel("Scene Detection:")
         open_row.addWidget(label_mode, alignment=Qt.AlignmentFlag.AlignVCenter)
 
-        self.checkbox_manual = QCheckBox("Manual (default)")
+        self.checkbox_manual = QCheckBox("Manual")
         self.checkbox_manual.setChecked(True)
         self.checkbox_manual.stateChanged.connect(self._on_manual_mode_toggled)
         open_row.addWidget(self.checkbox_manual, alignment=Qt.AlignmentFlag.AlignVCenter)
 
-        self.checkbox_auto = QCheckBox("Auto (ClipsAI)")
-        self.checkbox_auto.setChecked(False)
-        self.checkbox_auto.stateChanged.connect(self._on_auto_mode_toggled)
-        open_row.addWidget(self.checkbox_auto, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.checkbox_clipsai = QCheckBox("Auto (ClipsAI)")
+        self.checkbox_clipsai.setChecked(False)
+        self.checkbox_clipsai.stateChanged.connect(self._on_clipsai_mode_toggled)
+        open_row.addWidget(self.checkbox_clipsai, alignment=Qt.AlignmentFlag.AlignVCenter)
+
+        self.checkbox_fallback = QCheckBox("Auto (Fallback)")
+        self.checkbox_fallback.setChecked(False)
+        self.checkbox_fallback.stateChanged.connect(self._on_fallback_mode_toggled)
+        open_row.addWidget(self.checkbox_fallback, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         open_row.addStretch()
         left_layout.addLayout(open_row)
@@ -168,6 +177,7 @@ class ClipEditor(QMainWindow):
         # Preview player (contains sliders)
         self.preview_player = PreviewPlayer()
         self.preview_player.user_marker_changed.connect(self._on_preview_markers_changed)
+        self.preview_player.marker_changed.connect(self._on_preview_markers_changed)
         left_layout.addWidget(self.preview_player)
 
         # Edit toolbar (Start, End, Duplicate, Split buttons above SRT)
@@ -248,6 +258,22 @@ class ClipEditor(QMainWindow):
         right_layout.addWidget(self.clip_toolbar, stretch=0)
         right_layout.setAlignment(self.clip_toolbar, Qt.AlignmentFlag.AlignRight)
 
+        # Clear All button (under toolbar, above clip list)
+        clear_all_row = QHBoxLayout()
+        clear_all_row.setContentsMargins(4, 4, 4, 4)
+
+        self.clear_all_button = QPushButton()
+        self.clear_all_button.setIcon(IconManager.create_icon('delete', color='white', size=18))
+        self.clear_all_button.setIconSize(QSize(18, 18))
+        self.clear_all_button.setText("Clear All")
+        self.clear_all_button.setToolTip("Remove all clips and clear markers")
+        self.clear_all_button.clicked.connect(self._on_clear_all_clips)
+        StyleManager.apply_colored_icon_button_style(self.clear_all_button, Colors.RED)
+
+        clear_all_row.addWidget(self.clear_all_button)
+        clear_all_row.addStretch()
+        right_layout.addLayout(clear_all_row, stretch=0)
+
         # Clip list widget (fills remaining space)
         self.clip_list_widget = ClipListWidget()
         self.clip_list_widget.srt_viewer = self.srt_viewer  # Link SRT viewer for text extraction
@@ -308,6 +334,27 @@ class ClipEditor(QMainWindow):
         """Log progress messages from transcriber."""
         logger.info(f"[PROGRESS] {message}")
 
+    def _start_progress_animation(self) -> None:
+        """Start animated progress indicator for transcription."""
+        self._progress_dots = 0
+        if self._progress_timer is None:
+            self._progress_timer = QTimer(self)
+            self._progress_timer.timeout.connect(self._update_progress_animation)
+        self._progress_timer.start(500)  # Update every 500ms
+        self._update_progress_animation()
+
+    def _update_progress_animation(self) -> None:
+        """Update the animated dots in status label."""
+        dots = "." * (self._progress_dots % 4)  # 0-3 dots cycling
+        self.status_label.setText(f"Transkription läuft{dots}")
+        self._progress_dots += 1
+
+    def _stop_progress_animation(self) -> None:
+        """Stop the progress animation."""
+        if self._progress_timer is not None:
+            self._progress_timer.stop()
+            self._progress_timer = None
+
     def _create_claude_panel(self) -> QWidget:
         try:
             ClaudePanel = self._load_claude_panel_class()
@@ -360,31 +407,61 @@ class ClipEditor(QMainWindow):
 
         # Update status label with file path
         self.status_label.setText(f"File: {file_path}")
+
+        # Clear all previous data
+        logger.info("[RESET] Clearing clips, SRT, and Claude output for new file...")
         self.clips = []
         self.srt_viewer.clear()
+        self.populate_clips()  # Update UI to show empty clip list
+
+        # Clear Claude terminal if available
+        if hasattr(self, "claude_panel") and hasattr(self.claude_panel, "_clear_terminal"):
+            self.claude_panel._clear_terminal()
+            logger.info("[RESET] ✓ Claude terminal cleared")
+
+        logger.info("[RESET] ✓ All data cleared, ready for new video")
         logger.info("Loading video for preview...")
         self.preview_player.load_media(file_path)
 
         logger.info("Starting transcription worker...")
+        self._start_progress_animation()
         self._run_worker(self._transcribe_and_find_clips, self.on_transcription_ready, self.on_error)
 
     def _on_manual_mode_toggled(self, state: int) -> None:
         """Handle manual mode checkbox toggle."""
         if state:  # Manual checkbox is checked
-            self.auto_scene_detection = False
-            self.checkbox_auto.blockSignals(True)
-            self.checkbox_auto.setChecked(False)
-            self.checkbox_auto.blockSignals(False)
-            logger.info("Scene detection mode: MANUAL (create full transcript + default full-video scene)")
+            self.scene_detection_mode = "manual"
+            self.checkbox_clipsai.blockSignals(True)
+            self.checkbox_fallback.blockSignals(True)
+            self.checkbox_clipsai.setChecked(False)
+            self.checkbox_fallback.setChecked(False)
+            self.checkbox_clipsai.blockSignals(False)
+            self.checkbox_fallback.blockSignals(False)
+            logger.info("Scene detection mode: MANUAL (create full-video clip, use Claude panel for scene detection)")
 
-    def _on_auto_mode_toggled(self, state: int) -> None:
-        """Handle auto mode checkbox toggle."""
-        if state:  # Auto checkbox is checked
-            self.auto_scene_detection = True
+    def _on_clipsai_mode_toggled(self, state: int) -> None:
+        """Handle ClipsAI mode checkbox toggle."""
+        if state:  # ClipsAI checkbox is checked
+            self.scene_detection_mode = "clipsai"
             self.checkbox_manual.blockSignals(True)
+            self.checkbox_fallback.blockSignals(True)
             self.checkbox_manual.setChecked(False)
+            self.checkbox_fallback.setChecked(False)
             self.checkbox_manual.blockSignals(False)
-            logger.info("Scene detection mode: AUTO (ClipsAI auto-detect clips)")
+            self.checkbox_fallback.blockSignals(False)
+            logger.info("Scene detection mode: CLIPSAI (use ClipsAI library for automatic scene detection)")
+
+    def _on_fallback_mode_toggled(self, state: int) -> None:
+        """Handle fallback mode checkbox toggle."""
+        if state:  # Fallback checkbox is checked
+            self.scene_detection_mode = "fallback"
+            self.checkbox_manual.blockSignals(True)
+            self.checkbox_clipsai.blockSignals(True)
+            self.checkbox_manual.setChecked(False)
+            self.checkbox_clipsai.setChecked(False)
+            self.checkbox_manual.blockSignals(False)
+            self.checkbox_clipsai.blockSignals(False)
+            logger.info("Scene detection mode: FALLBACK (use built-in algorithm for automatic scene detection)")
 
     def _setup_output_dir(self) -> None:
         """Set up output directory based on source video location with timestamp."""
@@ -416,11 +493,19 @@ class ClipEditor(QMainWindow):
         logger.info("=" * 60)
         logger.info(f"✓ Transcription complete: {len(result.segments)} segments")
 
-        if self.auto_scene_detection:
-            logger.info("Finding clips using ClipsAI (AUTO mode)...")
-            clips = self._get_clip_wrapper().find_clips(result.segments, max_clips=6)
-            logger.info(f"Found {len(clips)} clips")
-        else:
+        if self.scene_detection_mode == "clipsai":
+            logger.info("Finding clips using ClipsAI...")
+            wrapper = self._get_clip_wrapper()
+            wrapper._use_clipsai = True  # Force ClipsAI usage
+            clips = wrapper.find_clips(result.segments, max_clips=6)
+            logger.info(f"Found {len(clips)} clips using ClipsAI")
+        elif self.scene_detection_mode == "fallback":
+            logger.info("Finding clips using Fallback algorithm...")
+            wrapper = self._get_clip_wrapper()
+            wrapper._use_clipsai = False  # Force fallback usage
+            clips = wrapper.find_clips(result.segments, max_clips=6)
+            logger.info(f"Found {len(clips)} clips using Fallback algorithm")
+        else:  # manual mode
             logger.info("Creating default full-video clip (MANUAL mode)...")
             if result.segments:
                 # Create a single clip spanning the entire video
@@ -448,7 +533,28 @@ class ClipEditor(QMainWindow):
         return self.clip_wrapper
 
     def _load_embedded_transcription(self, source_path: Path) -> TranscriptionResult | None:
-        """Load embedded subtitles if present and return a transcription result."""
+        """Load subtitles from external SRT file or embedded subtitles if present.
+
+        Priority:
+        1. External SRT file with same name as video (e.g., video.mp4 -> video.srt)
+        2. Embedded subtitles in video container
+
+        Returns TranscriptionResult if found, None otherwise.
+        """
+        # First, check for external SRT file with same name
+        srt_path = self._find_external_srt(source_path)
+        if srt_path:
+            logger.info(f"[SUBTITLES] Found external SRT file: {srt_path}")
+            try:
+                segments = parse_srt(str(srt_path))
+                if segments:
+                    text = " ".join(seg.text for seg in segments).strip()
+                    logger.info(f"[SUBTITLES] ✓ Loaded {len(segments)} segments from external SRT")
+                    return TranscriptionResult(srt_path=srt_path, segments=segments, text=text)
+            except Exception as exc:
+                logger.error(f"[SUBTITLES] Failed to parse external SRT: {exc}")
+
+        # Fall back to embedded subtitles
         srt_path = self._extract_embedded_srt(source_path)
         if not srt_path:
             return None
@@ -460,7 +566,33 @@ class ClipEditor(QMainWindow):
         text = " ".join(seg.text for seg in segments).strip()
         if not segments:
             return None
+        logger.info(f"[SUBTITLES] ✓ Loaded {len(segments)} segments from embedded subtitles")
         return TranscriptionResult(srt_path=srt_path, segments=segments, text=text)
+
+    def _find_external_srt(self, source_path: Path) -> Path | None:
+        """Find external SRT file with same name as video file.
+
+        Checks for:
+        - video.mp4 -> video.srt
+        - video.mp4 -> video.de.srt (language-specific)
+
+        Returns path to SRT file if found, None otherwise.
+        """
+        # Check for basic SRT file (same name, different extension)
+        srt_path = source_path.with_suffix('.srt')
+        if srt_path.exists() and srt_path.is_file():
+            logger.info(f"[SUBTITLES] Found external SRT: {srt_path.name}")
+            return srt_path
+
+        # Check for language-specific SRT files (e.g., video.de.srt)
+        for lang in ['de', 'en', 'ger', 'deu']:
+            lang_srt = source_path.with_suffix(f'.{lang}.srt')
+            if lang_srt.exists() and lang_srt.is_file():
+                logger.info(f"[SUBTITLES] Found language-specific SRT: {lang_srt.name}")
+                return lang_srt
+
+        logger.debug(f"[SUBTITLES] No external SRT file found for: {source_path.name}")
+        return None
 
     def _probe_subtitle_streams(self, source_path: Path) -> list[dict]:
         cmd = [
@@ -594,6 +726,9 @@ class ClipEditor(QMainWindow):
         logger.info("Processing transcription results...")
         logger.info(f"[CALLBACK] on_transcription_ready called with payload type: {type(payload)}")
 
+        # Stop progress animation
+        self._stop_progress_animation()
+
         try:
             result, clips = payload
             logger.info(f"[CALLBACK] Unpacked payload: result={type(result)}, clips={type(clips)}")
@@ -679,31 +814,63 @@ class ClipEditor(QMainWindow):
         logger.info(f"[CLIP_EDIT] User clicked segment {segment_index + 1}")
 
     def _on_set_start(self) -> None:
-        """Set the start boundary of current clip to last clicked segment."""
+        """Set the start boundary of current clip to last clicked SRT position."""
         current_clip = self.clip_list_widget.get_current_clip()
-        if not current_clip or not hasattr(self, 'last_clicked_segment_index'):
-            logger.warning("[CLIP_EDIT] No clip selected or no segment clicked")
+        if not current_clip:
+            logger.warning("[CLIP_EDIT] No clip selected")
             return
-        if self.last_clicked_segment_index >= len(self.transcription.segments):
+
+        # Use pending SRT start time from last SRT click
+        if not hasattr(self, '_pending_srt_start'):
+            logger.warning("[CLIP_EDIT] No SRT segment clicked yet")
             return
-        seg = self.transcription.segments[self.last_clicked_segment_index]
-        current_clip.start_time = seg.start
-        current_clip.segment_start_index = self.last_clicked_segment_index
-        logger.info(f"[CLIP_EDIT] Set clip start to segment {self.last_clicked_segment_index + 1} at {seg.start}s")
+
+        start_time = self._pending_srt_start
+
+        # Find the segment index that contains this start time
+        segment_index = 0
+        for i, seg in enumerate(self.transcription.segments):
+            if seg.start <= start_time <= seg.end:
+                segment_index = i
+                break
+            elif seg.start > start_time:
+                # Use previous segment if we've passed the time
+                segment_index = max(0, i - 1)
+                break
+
+        current_clip.start_time = start_time
+        current_clip.segment_start_index = segment_index
+        logger.info(f"[CLIP_EDIT] Set clip start to segment {segment_index + 1} at {start_time}s")
         self._on_clip_selected(self.clip_list_widget.current_clip_index)
 
     def _on_set_end(self) -> None:
-        """Set the end boundary of current clip to last clicked segment."""
+        """Set the end boundary of current clip to last clicked SRT position."""
         current_clip = self.clip_list_widget.get_current_clip()
-        if not current_clip or not hasattr(self, 'last_clicked_segment_index'):
-            logger.warning("[CLIP_EDIT] No clip selected or no segment clicked")
+        if not current_clip:
+            logger.warning("[CLIP_EDIT] No clip selected")
             return
-        if self.last_clicked_segment_index >= len(self.transcription.segments):
+
+        # Use pending SRT end time from last SRT click
+        if not hasattr(self, '_pending_srt_end'):
+            logger.warning("[CLIP_EDIT] No SRT segment clicked yet")
             return
-        seg = self.transcription.segments[self.last_clicked_segment_index]
-        current_clip.end_time = seg.end
-        current_clip.segment_end_index = self.last_clicked_segment_index
-        logger.info(f"[CLIP_EDIT] Set clip end to segment {self.last_clicked_segment_index + 1} at {seg.end}s")
+
+        end_time = self._pending_srt_end
+
+        # Find the segment index that contains this end time
+        segment_index = len(self.transcription.segments) - 1
+        for i, seg in enumerate(self.transcription.segments):
+            if seg.start <= end_time <= seg.end:
+                segment_index = i
+                break
+            elif seg.start > end_time:
+                # Use previous segment if we've passed the time
+                segment_index = max(0, i - 1)
+                break
+
+        current_clip.end_time = end_time
+        current_clip.segment_end_index = segment_index
+        logger.info(f"[CLIP_EDIT] Set clip end to segment {segment_index + 1} at {end_time}s")
         self._on_clip_selected(self.clip_list_widget.current_clip_index)
 
     def _on_duplicate_clip(self) -> None:
@@ -759,6 +926,13 @@ class ClipEditor(QMainWindow):
             del self.clips[clip_index]
             self.populate_clips()
             logger.info(f"[CLIP_EDIT] Deleted clip {clip_index + 1}")
+
+    def _on_clear_all_clips(self) -> None:
+        """Clear all clips (SRT highlights will disappear automatically)."""
+        logger.info("[CLIP_EDIT] Clearing all clips")
+        self.clips = []
+        self.populate_clips()
+        logger.info("[CLIP_EDIT] ✓ All clips cleared")
 
     def _parse_timestamp(self, ts_str: str) -> float:
         """Convert HH:MM:SS.mmm timestamp string to seconds.
@@ -1281,15 +1455,20 @@ class ClipEditor(QMainWindow):
 
     def _on_preview_markers_changed(self, start_seconds: float, end_seconds: float) -> None:
         """Sync clip + SRT highlight when user moves start/end sliders."""
+        logger.info(f"[MARKER_SYNC] _on_preview_markers_changed called: start={start_seconds:.2f}s, end={end_seconds:.2f}s")
+
         if not self.transcription or not self.transcription.segments:
+            logger.warning("[MARKER_SYNC] No transcription available")
             return
         current_clip = self.clip_list_widget.get_current_clip()
         if not current_clip:
+            logger.warning("[MARKER_SYNC] No current clip selected")
             return
 
         start_idx = self._find_segment_index_for_time(start_seconds, prefer_start=True)
         end_idx = self._find_segment_index_for_time(end_seconds, prefer_start=False)
         if start_idx is None or end_idx is None:
+            logger.warning(f"[MARKER_SYNC] Could not find segment indices: start_idx={start_idx}, end_idx={end_idx}")
             return
         if start_idx > end_idx:
             start_idx, end_idx = end_idx, start_idx
@@ -1299,10 +1478,20 @@ class ClipEditor(QMainWindow):
         current_clip.segment_start_index = start_idx
         current_clip.segment_end_index = end_idx
 
+        logger.info(f"[MARKER_SYNC] Updating SRT highlight to segments {start_idx}-{end_idx}")
         self.srt_viewer.highlight_segment_range(start_idx, end_idx, auto_scroll=False)
+        logger.info(f"[MARKER_SYNC] ✓ SRT highlight updated")
 
     def on_marker_changed(self, start_seconds: float, end_seconds: float) -> None:
-        self.preview_player.set_markers(start_seconds, end_seconds)
+        """When SRT segment is clicked, only seek to position (no marker update).
+
+        Markers will only be updated when Start/End buttons are explicitly clicked.
+        """
+        # Store the clicked times for later use by Start/End buttons
+        self._pending_srt_start = start_seconds
+        self._pending_srt_end = end_seconds
+
+        # Only seek to position to show yellow highlight, don't update clip markers
         self.preview_player.seek_seconds(start_seconds)
 
     def srt_viewer_highlight(self, seconds: float) -> None:
@@ -1310,6 +1499,8 @@ class ClipEditor(QMainWindow):
 
     def on_error(self, message: str) -> None:
         logger.error(f"Error occurred: {message}")
+        # Stop progress animation on error
+        self._stop_progress_animation()
         self.status_label.setText("Status: error")
         QMessageBox.critical(self, "Error", message)
 

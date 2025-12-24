@@ -106,17 +106,21 @@ class ClipsAIWrapper:
         cmd = [
             "ffmpeg",
             "-y",
-            "-i",
-            str(source_path),
             "-ss",
             str(start_time),
+            "-i",
+            str(source_path),
             "-to",
-            str(end_time),
+            str(end_time - start_time),  # Duration instead of absolute end time
             "-c",
             "copy",
+            "-avoid_negative_ts",
+            "make_zero",
             str(output_path),
         ]
-        subprocess.run(cmd, check=True)
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise RuntimeError(f"FFmpeg failed: {result.stderr}")
 
     @staticmethod
     def _segments_to_payload(segments: List[SrtSegment]) -> dict:

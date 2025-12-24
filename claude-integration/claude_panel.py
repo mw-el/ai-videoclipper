@@ -265,13 +265,24 @@ class ClaudePanel(QWidget):
         self._prompt_button.setEnabled(False)
 
         self._start_button = QPushButton("Start Claude")
+        self._start_button.setToolTip("Start Claude in headless mode")
         self._start_button.clicked.connect(self.start_claude)
         StyleManager.apply_button_style(self._start_button)
 
         self._stop_button = QPushButton("Stop")
+        self._stop_button.setToolTip("Stop Claude process")
         self._stop_button.clicked.connect(self.stop_claude)
         StyleManager.apply_button_style(self._stop_button)
         self._stop_button.setEnabled(False)
+
+        # Clear button to clear terminal output
+        self._clear_button = QPushButton()
+        self._clear_button.setIcon(IconManager.create_icon('close', color='white', size=18))
+        self._clear_button.setIconSize(QSize(18, 18))
+        self._clear_button.setToolTip("Clear terminal output")
+        self._clear_button.clicked.connect(self._clear_terminal)
+        from design.style_manager import Colors
+        StyleManager.apply_colored_icon_button_style(self._clear_button, Colors.DARK_GRAY)
 
         # Copy button to copy terminal output
         self._copy_button = QPushButton()
@@ -279,7 +290,6 @@ class ClaudePanel(QWidget):
         self._copy_button.setIconSize(QSize(18, 18))
         self._copy_button.setToolTip("Copy results to clipboard")
         self._copy_button.clicked.connect(self._copy_results)
-        from design.style_manager import Colors
         StyleManager.apply_colored_icon_button_style(self._copy_button, Colors.DARK_GRAY)
 
         # Load from Claude button - extracts JSON config from terminal output
@@ -301,6 +311,7 @@ class ClaudePanel(QWidget):
         header_row.addStretch()
         header_row.addWidget(self._load_claude_button)
         header_row.addWidget(self._copy_button)
+        header_row.addWidget(self._clear_button)
         header_row.addWidget(self._prompt_button)
         header_row.addWidget(self._start_button)
         header_row.addWidget(self._stop_button)
@@ -651,6 +662,12 @@ class ClaudePanel(QWidget):
             logger.error(f"[CLAUDE] Failed JSON text: {json_text[:200]}...")
             QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
             QMessageBox.critical(self, "JSON Parse Error", f"Failed to parse JSON:\n{str(e)}\n\nCheck the Claude output for syntax errors.")
+
+    def _clear_terminal(self) -> None:
+        """Clear the terminal output."""
+        self._terminal._output.clear()
+        self._status_label.setText("✓ Terminal cleared")
+        QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
 
     def _send_custom_prompt(self) -> None:
         """Send custom prompt in headless mode."""

@@ -1,7 +1,7 @@
 """Clip list widget for displaying and selecting clips."""
 
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QListWidget, QListWidgetItem, QMenu
+    QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QMenu, QPushButton
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize, QPoint
 from PyQt6.QtGui import QFont
@@ -9,6 +9,8 @@ from PyQt6.QtGui import QFont
 from clip_model import Clip
 from time_utils import format_timestamp
 from srt_viewer import SRTViewer
+from design.icon_manager import IconManager
+from design.style_manager import StyleManager, Colors
 
 
 class ClipListWidget(QWidget):
@@ -72,42 +74,50 @@ class ClipListWidget(QWidget):
         import logging
         logger = logging.getLogger("ai_videoclipper")
 
-        # Format: "Clip 1\n00:15 - 00:42\nSegments 5-12\n[start text]\n...\n[end text]"
+        # Calculate duration in seconds
+        duration_seconds = clip.end_time - clip.start_time
+
+        # Format: "Clip 1 (45s)\n00:15 - 00:42\nSegments 5-12"
         start_time = format_timestamp(clip.start_time)
         end_time = format_timestamp(clip.end_time)
         segment_range = f"Segments {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
-        # Get start and end segment texts
-        start_text = ""
-        end_text = ""
-        if self.srt_viewer:
-            start_seg = self.srt_viewer.get_segment_at_index(clip.segment_start_index)
-            end_seg = self.srt_viewer.get_segment_at_index(clip.segment_end_index)
-            if start_seg:
-                start_text = start_seg.text[:50]  # Limit to 50 chars
-            if end_seg:
-                end_text = end_seg.text[-50:]  # Last 50 chars, right-aligned
+        text = f"Clip {index + 1} ({duration_seconds:.0f}s)\n{start_time} – {end_time}\n{segment_range}"
 
-        text = f"Clip {index + 1}\n{start_time} – {end_time}\n{segment_range}"
-        if start_text:
-            text += f"\n{start_text}"
-        if end_text:
-            text += f"\n...\n{end_text}"
+        # Add clip description/name if available (from Claude or manual input)
+        if clip.text and clip.text.strip() and clip.text != "Full Video":
+            text += f"\n\n{clip.text}"
+        else:
+            # Fallback: show start and end segment texts
+            start_text = ""
+            end_text = ""
+            if self.srt_viewer:
+                start_seg = self.srt_viewer.get_segment_at_index(clip.segment_start_index)
+                end_seg = self.srt_viewer.get_segment_at_index(clip.segment_end_index)
+                if start_seg:
+                    start_text = start_seg.text[:50]  # Limit to 50 chars
+                if end_seg:
+                    end_text = end_seg.text[-50:]  # Last 50 chars, right-aligned
+
+            if start_text:
+                text += f"\n{start_text}"
+            if end_text:
+                text += f"\n...\n{end_text}"
 
         item = QListWidgetItem(text)
         item.setData(Qt.ItemDataRole.UserRole, index)  # Store clip index
 
-        # Set variable height for each row (5-6 lines)
+        # Set variable height for each row (adjust based on content)
         height = self.get_item_height()
         item.setSizeHint(QSize(200, height))
 
         self.clip_list.addItem(item)
-        logger.debug(f"[CLIP_LIST] Added clip {index + 1} with start/end texts")
+        logger.debug(f"[CLIP_LIST] Added clip {index + 1} with description")
 
     def get_item_height(self) -> int:
         """Get height of a single clip row."""
-        # Approximate: font height * 5-6 lines + padding (for extended clip info)
-        return 110
+        # Approximate: font height * 7-8 lines + padding (for clip description)
+        return 140
 
     def _on_clip_selected(self):
         """Handle clip selection."""

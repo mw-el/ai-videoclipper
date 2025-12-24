@@ -42,19 +42,14 @@ Manually specify clip boundaries using absolute timestamps (in seconds):
   "selection_type": "time",
   "clips": [
     {
-      "name": "Kitchen lighting discussion",
+      "name": "Optimale Küchenbeleuchtung für Food-Videos\n\nDieser Clip zeigt die praktische Demonstration der Drei-Punkt-Beleuchtung in einer echten Küche. Besonders wertvoll ist die Vorher-Nachher-Gegenüberstellung, die den dramatischen Unterschied sofort sichtbar macht. Perfekt als Snippet, weil Zuschauer direkt umsetzbare Tipps bekommen.",
       "start_time": 23.199,
       "end_time": 205.12
     },
     {
-      "name": "Camera positioning tips",
+      "name": "Kamerawinkel die Professionalität vermitteln\n\nHier werden drei verschiedene Kameraperspektiven verglichen. Der Sprecher erklärt, welcher Winkel für welchen Content-Typ am besten funktioniert. Ideal als Snippet, da es ein häufiges Problem löst und sofort anwendbare Lösungen bietet.",
       "start_time": 412.5,
       "end_time": 658.2
-    },
-    {
-      "name": "Final setup review",
-      "start_time": 720.0,
-      "end_time": 900.5
     }
   ]
 }
@@ -64,7 +59,9 @@ Manually specify clip boundaries using absolute timestamps (in seconds):
 - `mode` (string, required): Set to `"manual"`
 - `selection_type` (string, required): Set to `"time"`
 - `clips` (array, required): List of clip definitions
-  - `name` (string, optional): Descriptive name for the clip
+  - `name` (string, required): **Detailed description with two parts:**
+    1. **First line**: Short, catchy title summarizing the essence of the clip
+    2. **Following lines**: Explanation of what happens in the clip and WHY it makes a great snippet (what value it provides, what problem it solves, what makes it interesting/engaging)
   - `start_time` (number, required): Start time in seconds (float)
   - `end_time` (number, required): End time in seconds (float)
 
@@ -80,19 +77,14 @@ Manually specify clip boundaries using segment indices (1-indexed):
   "selection_type": "segments",
   "clips": [
     {
-      "name": "Kitchen lighting discussion",
+      "name": "Optimale Küchenbeleuchtung für Food-Videos\n\nDieser Clip zeigt die praktische Demonstration der Drei-Punkt-Beleuchtung in einer echten Küche. Besonders wertvoll ist die Vorher-Nachher-Gegenüberstellung, die den dramatischen Unterschied sofort sichtbar macht. Perfekt als Snippet, weil Zuschauer direkt umsetzbare Tipps bekommen.",
       "start_segment": 8,
       "end_segment": 36
     },
     {
-      "name": "Camera positioning tips",
+      "name": "Kamerawinkel die Professionalität vermitteln\n\nHier werden drei verschiedene Kameraperspektiven verglichen. Der Sprecher erklärt, welcher Winkel für welchen Content-Typ am besten funktioniert. Ideal als Snippet, da es ein häufiges Problem löst und sofort anwendbare Lösungen bietet.",
       "start_segment": 37,
       "end_segment": 60
-    },
-    {
-      "name": "Final setup review",
-      "start_segment": 61,
-      "end_segment": 65
     }
   ]
 }
@@ -102,7 +94,9 @@ Manually specify clip boundaries using segment indices (1-indexed):
 - `mode` (string, required): Set to `"manual"`
 - `selection_type` (string, required): Set to `"segments"`
 - `clips` (array, required): List of clip definitions
-  - `name` (string, optional): Descriptive name for the clip
+  - `name` (string, required): **Detailed description with two parts:**
+    1. **First line**: Short, catchy title summarizing the essence of the clip
+    2. **Following lines**: Explanation of what happens in the clip and WHY it makes a great snippet (what value it provides, what problem it solves, what makes it interesting/engaging)
   - `start_segment` (integer, required): Starting segment number (1-indexed)
   - `end_segment` (integer, required): Ending segment number (1-indexed, inclusive)
 

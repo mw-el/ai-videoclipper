@@ -160,6 +160,11 @@ class PreviewPlayer(QWidget):
         if self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
             self.player.pause()
         else:
+            # Before playing, check if we're within the clip range
+            current_pos = self.player.position()
+            if current_pos < self._start_ms or current_pos >= self._end_ms:
+                # Jump to start marker if we're outside the clip range
+                self.player.setPosition(self._start_ms)
             self.player.play()
 
     def seek_seconds(self, seconds: float) -> None:

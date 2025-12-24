@@ -112,7 +112,11 @@ class SRTViewer(QTextEdit):
 
         selection = QTextEdit.ExtraSelection()
         selection.cursor = cursor
-        selection.format.setBackground(QColor("#fff3bf"))
+        # Set format explicitly to override any default selection colors
+        fmt = QTextCharFormat()
+        fmt.setBackground(QColor("#fff3bf"))  # Yellow highlight for current position
+        fmt.setForeground(QColor("#000000"))  # Black text on yellow background
+        selection.format = fmt
         self.setExtraSelections([selection])
         self._current_segment_index = segment_index
 
@@ -182,7 +186,11 @@ class SRTViewer(QTextEdit):
 
             selection = QTextEdit.ExtraSelection()
             selection.cursor = cursor
-            selection.format.setBackground(QColor("#c3f0ca"))  # Green highlight for active clip
+            # Set format explicitly to override any default selection colors
+            fmt = QTextCharFormat()
+            fmt.setBackground(QColor("#c3f0ca"))  # Green highlight for active clip
+            fmt.setForeground(QColor("#000000"))  # Black text on green background
+            selection.format = fmt
             self.setExtraSelections([selection])
             logger.info(f"[SRT_VIEWER] Highlight applied successfully")
 
