@@ -903,10 +903,52 @@ class ClipEditor(QMainWindow):
 
 
 def main() -> None:
-    app = QApplication(sys.argv)
-    window = ClipEditor()
-    window.show()
-    sys.exit(app.exec())
+    try:
+        print("\n" + "="*80, file=sys.stderr, flush=True)
+        print("[MAIN] Starting AI VideoClipper...", file=sys.stderr, flush=True)
+        print("="*80, file=sys.stderr, flush=True)
+
+        try:
+            print("[MAIN] Creating QApplication...", file=sys.stderr, flush=True)
+            app = QApplication(sys.argv)
+            print("[MAIN] ✓ QApplication created", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"[MAIN] FATAL: Failed to create QApplication: {e}", file=sys.stderr, flush=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(1)
+
+        try:
+            print("[MAIN] Creating ClipEditor window...", file=sys.stderr, flush=True)
+            window = ClipEditor()
+            print("[MAIN] ✓ ClipEditor window created successfully", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"[MAIN] FATAL: Failed to create ClipEditor: {e}", file=sys.stderr, flush=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(1)
+
+        try:
+            print("[MAIN] Showing window...", file=sys.stderr, flush=True)
+            window.show()
+            print("[MAIN] ✓ Window shown", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"[MAIN] ERROR showing window: {e}", file=sys.stderr, flush=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(1)
+
+        print("[MAIN] Starting event loop...", file=sys.stderr, flush=True)
+        print("="*80 + "\n", file=sys.stderr, flush=True)
+        exit_code = app.exec()
+        print(f"\n[MAIN] Event loop exited with code {exit_code}", file=sys.stderr, flush=True)
+        sys.exit(exit_code)
+
+    except Exception as e:
+        print(f"\n[MAIN] FATAL UNCAUGHT EXCEPTION: {e}", file=sys.stderr, flush=True)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

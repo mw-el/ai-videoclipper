@@ -123,41 +123,80 @@ class SRTViewer(QTextEdit):
             end_index: Last segment index (inclusive)
             auto_scroll: If True, scroll so start_index appears at top
         """
-        self._highlighted_range_start = start_index
-        self._highlighted_range_end = end_index
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
 
-        # Collect all blocks in range
-        all_blocks = []
-        for seg_idx in range(start_index, end_index + 1):
-            blocks = self._segment_to_blocks.get(seg_idx, [])
-            all_blocks.extend(blocks)
+        try:
+            logger.info(f"[SRT_VIEWER] highlight_segment_range() called: start_index={start_index}, end_index={end_index}, auto_scroll={auto_scroll}")
+            logger.info(f"[SRT_VIEWER] Total segments available: {len(self._segments)}")
 
-        if not all_blocks:
-            self.setExtraSelections([])
-            return
+            # Validate indices
+            if start_index < 0 or end_index < 0:
+                logger.error(f"[SRT_VIEWER] Invalid indices: start_index={start_index}, end_index={end_index}")
+                self.setExtraSelections([])
+                return
 
-        doc = self.document()
-        first_block = doc.findBlockByNumber(all_blocks[0])
-        last_block = doc.findBlockByNumber(all_blocks[-1])
+            if start_index >= len(self._segments) or end_index >= len(self._segments):
+                logger.error(f"[SRT_VIEWER] Indices out of range: start_index={start_index}, end_index={end_index}, total_segments={len(self._segments)}")
+                self.setExtraSelections([])
+                return
 
-        if not first_block.isValid() or not last_block.isValid():
-            self.setExtraSelections([])
-            return
+            if start_index > end_index:
+                logger.error(f"[SRT_VIEWER] start_index > end_index: {start_index} > {end_index}")
+                self.setExtraSelections([])
+                return
 
-        # Create selection for range
-        cursor = QTextCursor(first_block)
-        cursor.setPosition(last_block.position() + last_block.length() - 1, QTextCursor.MoveMode.KeepAnchor)
+            self._highlighted_range_start = start_index
+            self._highlighted_range_end = end_index
+            logger.info(f"[SRT_VIEWER] Range validated, collecting blocks...")
 
-        selection = QTextEdit.ExtraSelection()
-        selection.cursor = cursor
-        selection.format.setBackground(QColor("#c3f0ca"))  # Green highlight for active clip
-        self.setExtraSelections([selection])
+            # Collect all blocks in range
+            all_blocks = []
+            for seg_idx in range(start_index, end_index + 1):
+                blocks = self._segment_to_blocks.get(seg_idx, [])
+                logger.debug(f"[SRT_VIEWER] Segment {seg_idx}: {len(blocks)} blocks")
+                all_blocks.extend(blocks)
 
-        # Auto-scroll to show start segment at top
-        if auto_scroll:
-            self.verticalScrollBar().setValue(0)  # Reset scroll
-            self.setTextCursor(cursor)
-            self.ensureCursorVisible()
+            logger.info(f"[SRT_VIEWER] Collected {len(all_blocks)} total blocks for range")
+
+            if not all_blocks:
+                logger.warning(f"[SRT_VIEWER] No blocks found for range {start_index}-{end_index}")
+                self.setExtraSelections([])
+                return
+
+            doc = self.document()
+            first_block = doc.findBlockByNumber(all_blocks[0])
+            last_block = doc.findBlockByNumber(all_blocks[-1])
+
+            logger.info(f"[SRT_VIEWER] first_block valid={first_block.isValid()}, last_block valid={last_block.isValid()}")
+
+            if not first_block.isValid() or not last_block.isValid():
+                logger.error(f"[SRT_VIEWER] Invalid blocks after lookup")
+                self.setExtraSelections([])
+                return
+
+            # Create selection for range
+            cursor = QTextCursor(first_block)
+            cursor.setPosition(last_block.position() + last_block.length() - 1, QTextCursor.MoveMode.KeepAnchor)
+
+            selection = QTextEdit.ExtraSelection()
+            selection.cursor = cursor
+            selection.format.setBackground(QColor("#c3f0ca"))  # Green highlight for active clip
+            self.setExtraSelections([selection])
+            logger.info(f"[SRT_VIEWER] Highlight applied successfully")
+
+            # Auto-scroll to show start segment at top
+            if auto_scroll:
+                logger.debug(f"[SRT_VIEWER] Auto-scrolling...")
+                self.verticalScrollBar().setValue(0)  # Reset scroll
+                self.setTextCursor(cursor)
+                self.ensureCursorVisible()
+                logger.info(f"[SRT_VIEWER] Auto-scroll complete")
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger("ai_videoclipper")
+            logger.exception(f"[SRT_VIEWER] EXCEPTION in highlight_segment_range(): {e}")
 
     def mousePressEvent(self, event) -> None:
         cursor = self.cursorForPosition(event.pos())

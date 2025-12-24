@@ -22,42 +22,52 @@ class ClipToolbar(QWidget):
     def _init_ui(self):
         """Initialize toolbar UI."""
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(4, 4, 4, 4)
-        layout.setSpacing(4)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(2)
 
-        # Create buttons
-        btn_set_start = QPushButton("📍 Set Start")
+        # Create buttons (left side) - all same height
+        btn_set_start = QPushButton("Start")
         btn_set_start.clicked.connect(self.set_start_clicked.emit)
+        btn_set_start.setMaximumWidth(50)
+        btn_set_start.setMinimumHeight(32)
         layout.addWidget(btn_set_start)
 
-        btn_set_end = QPushButton("📍 Set End")
+        btn_set_end = QPushButton("End")
         btn_set_end.clicked.connect(self.set_end_clicked.emit)
+        btn_set_end.setMaximumWidth(50)
+        btn_set_end.setMinimumHeight(32)
         layout.addWidget(btn_set_end)
 
-        layout.addSpacing(10)
-
-        btn_duplicate = QPushButton("⧉ Duplicate")
+        btn_duplicate = QPushButton("⧉")
         btn_duplicate.clicked.connect(self.duplicate_clicked.emit)
+        btn_duplicate.setMaximumWidth(32)
+        btn_duplicate.setMinimumHeight(32)
         layout.addWidget(btn_duplicate)
 
-        btn_split = QPushButton("➗ Split")
+        btn_split = QPushButton("➗")
         btn_split.clicked.connect(self.split_clicked.emit)
+        btn_split.setMaximumWidth(32)
+        btn_split.setMinimumHeight(32)
         layout.addWidget(btn_split)
 
-        layout.addSpacing(10)
-
-        btn_export_all = QPushButton("💾 Export All")
-        btn_export_all.clicked.connect(self.export_all_clicked.emit)
-        layout.addWidget(btn_export_all)
-
-        layout.addSpacing(10)
-
-        btn_load_config = QPushButton("📂 Load Config")
-        btn_load_config.clicked.connect(self.load_config_clicked.emit)
-        layout.addWidget(btn_load_config)
-
-        btn_save_config = QPushButton("💾 Save Config")
-        btn_save_config.clicked.connect(self.save_config_clicked.emit)
-        layout.addWidget(btn_save_config)
-
+        # Stretch to push load/save to the right side
         layout.addStretch()
+
+        btn_load_scenes = QPushButton("Load Clips")
+        btn_load_scenes.clicked.connect(self.load_config_clicked.emit)
+        btn_load_scenes.setMaximumWidth(70)
+        btn_load_scenes.setMinimumHeight(32)
+        layout.addWidget(btn_load_scenes)
+
+        btn_save_scenes = QPushButton("Save Clips")
+        btn_save_scenes.clicked.connect(self.save_config_clicked.emit)
+        btn_save_scenes.setMaximumWidth(70)
+        btn_save_scenes.setMinimumHeight(32)
+        layout.addWidget(btn_save_scenes)
+
+        btn_run = QPushButton("▶ Run")
+        btn_run.clicked.connect(self.export_all_clicked.emit)
+        btn_run.setMaximumWidth(60)
+        btn_run.setMinimumHeight(32)
+        btn_run.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
+        layout.addWidget(btn_run)

@@ -1,10 +1,9 @@
 """Clip list widget for displaying and selecting clips."""
 
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QListWidget, QListWidgetItem, QPushButton,
-    QHBoxLayout, QLabel
+    QWidget, QVBoxLayout, QListWidget, QListWidgetItem, QMenu
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
+from PyQt6.QtCore import Qt, pyqtSignal, QSize, QPoint
 from PyQt6.QtGui import QFont
 
 from clip_model import Clip
@@ -29,28 +28,13 @@ class ClipListWidget(QWidget):
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # Clip list
+        # Clip list with context menu
         self.clip_list = QListWidget()
         self.clip_list.itemSelectionChanged.connect(self._on_clip_selected)
+        self.clip_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.clip_list.customContextMenuRequested.connect(self._on_context_menu)
         layout.addWidget(self.clip_list)
 
-        # Bottom button bar
-        button_layout = QHBoxLayout()
-        button_layout.setContentsMargins(4, 4, 4, 4)
-        button_layout.setSpacing(4)
-
-        self.new_clip_btn = QPushButton("➕ New")
-        self.new_clip_btn.setMaximumHeight(28)
-        self.new_clip_btn.clicked.connect(self.new_clip_requested.emit)
-        button_layout.addWidget(self.new_clip_btn)
-
-        self.delete_clip_btn = QPushButton("🗑️ Delete")
-        self.delete_clip_btn.setMaximumHeight(28)
-        self.delete_clip_btn.clicked.connect(self._on_delete_clicked)
-        self.delete_clip_btn.setEnabled(False)
-        button_layout.addWidget(self.delete_clip_btn)
-
-        layout.addLayout(button_layout)
         self.setLayout(layout)
 
     def set_clips(self, clips: list[Clip]):
@@ -113,22 +97,36 @@ class ClipListWidget(QWidget):
         if current_item is None:
             logger.info("[CLIP_LIST] No item selected")
             self.current_clip_index = -1
-            self.delete_clip_btn.setEnabled(False)
             return
 
         try:
             self.current_clip_index = current_item.data(Qt.ItemDataRole.UserRole)
             logger.info(f"[CLIP_LIST] Clip selected at index {self.current_clip_index}")
-            self.delete_clip_btn.setEnabled(True)
             self.clip_selected.emit(self.current_clip_index)
         except Exception as e:
             logger.error(f"[CLIP_LIST] Error in _on_clip_selected: {e}", exc_info=True)
             raise
 
-    def _on_delete_clicked(self):
-        """Handle delete button click."""
-        if self.current_clip_index >= 0:
-            self.delete_clip_requested.emit(self.current_clip_index)
+    def _on_context_menu(self, position: QPoint):
+        """Show context menu for clip operations."""
+        current_item = self.clip_list.itemAt(position)
+
+        menu = QMenu()
+
+        # Always allow "New Clip"
+        new_action = menu.addAction("New Clip")
+        new_action.triggered.connect(self.new_clip_requested.emit)
+
+        # Only allow "Delete Clip" if a clip is selected
+        if current_item is not None and self.current_clip_index >= 0:
+            menu.addSeparator()
+            delete_action = menu.addAction("Delete Clip")
+            delete_action.triggered.connect(
+                lambda: self.delete_clip_requested.emit(self.current_clip_index)
+            )
+
+        # Show menu at cursor position
+        menu.exec(self.clip_list.mapToGlobal(position))
 
     def get_current_clip(self) -> Clip | None:
         """Get currently selected clip."""

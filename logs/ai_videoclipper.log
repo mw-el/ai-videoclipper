@@ -1,163 +1,1353 @@
-18:28:47 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-18:29:04 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/Layout und Struktur – Das Geheimnis besserer Kommunikation Extended_soft_no_obs_20251220-174212-cleaned-20251221231032.mp4
-18:29:04 - ai_videoclipper - INFO - Loading video for preview...
-18:29:04 - ai_videoclipper - INFO - Starting transcription worker...
-18:36:17 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-18:36:28 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/Layout und Struktur – Das Geheimnis besserer Kommunikation Extended_soft_no_obs_20251220-174212-cleaned-20251221231032.mp4
-18:36:28 - ai_videoclipper - INFO - Loading video for preview...
-18:36:28 - ai_videoclipper - INFO - Starting transcription worker...
-19:00:06 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:00:24 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/Layout und Struktur – Das Geheimnis besserer Kommunikation Extended_soft_no_obs_20251220-174212-cleaned-20251221231032.mp4
-19:00:24 - ai_videoclipper - INFO - Loading video for preview...
-19:00:24 - ai_videoclipper - INFO - Starting transcription worker...
-19:02:49 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:03:05 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/Layout und Struktur – Das Geheimnis besserer Kommunikation Extended_soft_no_obs_20251220-174212-cleaned-20251221231032.mp4
-19:03:05 - ai_videoclipper - INFO - Loading video for preview...
-19:03:05 - ai_videoclipper - INFO - Starting transcription worker...
-19:07:27 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:07:41 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/Layout und Struktur – Das Geheimnis besserer Kommunikation Extended_soft_no_obs_20251220-174212-cleaned-20251221231032.mp4
-19:07:41 - ai_videoclipper - INFO - Loading video for preview...
-19:07:41 - ai_videoclipper - INFO - Starting transcription worker...
-19:12:03 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:12:27 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:12:37 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/Layout und Struktur – Das Geheimnis besserer Kommunikation Extended_soft_no_obs_20251220-174212-cleaned-20251221231032.mp4
-19:12:37 - ai_videoclipper - INFO - Loading video for preview...
-19:12:37 - ai_videoclipper - INFO - Starting transcription worker...
-19:13:59 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:14:10 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-19:14:10 - ai_videoclipper - INFO - Loading video for preview...
-19:14:10 - ai_videoclipper - INFO - Starting transcription worker...
-19:18:33 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:18:45 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-19:18:45 - ai_videoclipper - INFO - Loading video for preview...
-19:18:45 - ai_videoclipper - INFO - Starting transcription worker...
-19:26:55 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-19:27:28 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-19:27:28 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-19:27:28 - ai_videoclipper - INFO - Loading video for preview...
-19:27:28 - ai_videoclipper - INFO - Starting transcription worker...
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Starting worker thread for _transcribe_and_find_clips
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] on_finished=on_transcription_ready
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] on_error=on_error
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Connected thread.started -> worker.run
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Connected worker.finished -> on_finished
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Connected worker.error -> on_error
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Starting thread...
-19:27:28 - ai_videoclipper - INFO - [RUN_WORKER] Thread started (total threads: 1)
-19:27:28 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 19:27:28
-19:27:28 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-19:27:28 - ai_videoclipper - INFO - ============================================================
-19:27:28 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-19:27:28 - ai_videoclipper - INFO - Transcribing with language: de
-19:27:28 - ai_videoclipper - INFO - Task: transcribe
-19:27:28 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766514448.srt
-19:27:28 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
-19:27:28 - ai_videoclipper - INFO - Using environment: fasterwhisper
-19:27:28 - ai_videoclipper - INFO - [PROGRESS] Loading model...
-19:27:28 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
-19:27:28 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
-19:28:03 - ai_videoclipper - INFO - [PROGRESS] Process completed
-19:28:03 - ai_videoclipper - INFO - faster-whisper process completed
-19:28:03 - ai_videoclipper - INFO - Transcription completed in 35.5 seconds (return code: 0)
-19:28:03 - ai_videoclipper - INFO - Output stderr length: 0 chars
-19:28:03 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
-19:28:03 - ai_videoclipper - INFO - SRT file size: 4387 bytes
-19:28:03 - ai_videoclipper - INFO - Parsing SRT file...
-19:28:03 - ai_videoclipper - INFO - Parsed 40 segments
-19:28:03 - ai_videoclipper - INFO - Total text length: 3006 characters
-19:28:03 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 40 segments
-19:28:03 - ai_videoclipper - INFO - ============================================================
-19:28:03 - ai_videoclipper - INFO - ✓ Transcription complete: 40 segments
-19:28:03 - ai_videoclipper - INFO - Finding clips using ClipsAI...
-19:28:03 - ai_videoclipper - INFO - Found 6 clips
-19:28:03 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 19:28:03
-19:28:03 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
-19:28:03 - ai_videoclipper - INFO - [WORKER] Result length: 2
-19:28:03 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
-19:28:03 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
-19:28:03 - ai_videoclipper - INFO - Processing transcription results...
-19:28:03 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
-19:28:03 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
-19:28:03 - ai_videoclipper - INFO - [CALLBACK] Result has 40 segments, 6 clips found
-19:28:03 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
-19:28:03 - ai_videoclipper - INFO - Setting up viewer with 40 segments and 6 clips
-19:28:03 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
-19:28:03 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 40 segments
-19:28:03 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 40 segments and 160 display lines
-19:28:03 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
-19:28:03 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 40 segments
-19:28:03 - ai_videoclipper - INFO - ✓ Transcript displayed: 40 segments visible
-19:28:03 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
-19:28:03 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 6 clips in list widget
-19:28:03 - ai_videoclipper - INFO - ✓ Ready to export 6 clips
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Starting worker thread for _export_all_clips
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] on_finished=on_export_done
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] on_error=on_error
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Connected thread.started -> worker.run
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Connected worker.finished -> on_finished
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Connected worker.error -> on_error
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Starting thread...
-19:32:12 - ai_videoclipper - INFO - [RUN_WORKER] Thread started (total threads: 1)
-19:32:12 - ai_videoclipper - INFO - [WORKER] START: _export_all_clips at 19:32:12
-19:32:12 - ai_videoclipper - INFO - Exporting all 6 clips to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-19:32:12 - ai_videoclipper - INFO - Exporting clip 1/6...
-19:32:12 - ai_videoclipper - INFO - Exporting clip 1 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Mich_betrifft_das_hat_das_noch/clip_01.mp4
-19:32:12 - ai_videoclipper - INFO - Saving clip 1 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Mich_betrifft_das_hat_das_noch/clip_01.srt
-19:32:12 - ai_videoclipper - INFO - ✓ Exported clip 1 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Mich_betrifft_das_hat_das_noch
-19:32:12 - ai_videoclipper - INFO - Exporting clip 2/6...
-19:32:12 - ai_videoclipper - INFO - Exporting clip 2 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/weil_bei_Bewerbung_muss_man_sich/clip_02.mp4
-19:32:12 - ai_videoclipper - INFO - Saving clip 2 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/weil_bei_Bewerbung_muss_man_sich/clip_02.srt
-19:32:12 - ai_videoclipper - INFO - ✓ Exported clip 2 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/weil_bei_Bewerbung_muss_man_sich
-19:32:12 - ai_videoclipper - INFO - Exporting clip 3/6...
-19:32:12 - ai_videoclipper - INFO - Exporting clip 3 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Und_dann_fängt_man_einfach_mit/clip_03.mp4
-19:32:13 - ai_videoclipper - INFO - Saving clip 3 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Und_dann_fängt_man_einfach_mit/clip_03.srt
-19:32:13 - ai_videoclipper - INFO - ✓ Exported clip 3 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Und_dann_fängt_man_einfach_mit
-19:32:13 - ai_videoclipper - INFO - Exporting clip 4/6...
-19:32:13 - ai_videoclipper - INFO - Exporting clip 4 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/dann_kann_man_eckige_Klammer_auf/clip_04.mp4
-19:32:13 - ai_videoclipper - INFO - Saving clip 4 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/dann_kann_man_eckige_Klammer_auf/clip_04.srt
-19:32:13 - ai_videoclipper - INFO - ✓ Exported clip 4 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/dann_kann_man_eckige_Klammer_auf
-19:32:13 - ai_videoclipper - INFO - Exporting clip 5/6...
-19:32:13 - ai_videoclipper - INFO - Exporting clip 5 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Aber_ich_habe_ein_Jahr_lang/clip_05.mp4
-19:32:13 - ai_videoclipper - INFO - Saving clip 5 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Aber_ich_habe_ein_Jahr_lang/clip_05.srt
-19:32:13 - ai_videoclipper - INFO - ✓ Exported clip 5 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Aber_ich_habe_ein_Jahr_lang
-19:32:13 - ai_videoclipper - INFO - Exporting clip 6/6...
-19:32:13 - ai_videoclipper - INFO - Exporting clip 6 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Und_manchmal_wird_man_nur_auf/clip_06.mp4
-19:32:13 - ai_videoclipper - INFO - Saving clip 6 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Und_manchmal_wird_man_nur_auf/clip_06.srt
-19:32:13 - ai_videoclipper - INFO - ✓ Exported clip 6 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Und_manchmal_wird_man_nur_auf
-19:32:13 - ai_videoclipper - INFO - ✓ All 6 clips exported to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-19:32:13 - ai_videoclipper - INFO - [WORKER] COMPLETE: _export_all_clips at 19:32:13
-19:32:13 - ai_videoclipper - INFO - [WORKER] Result type: <class 'pathlib.PosixPath'>
-19:32:13 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
-19:32:13 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
-20:01:09 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:06:18 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:07:13 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-20:07:13 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-20:24:39 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:24:51 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-20:24:51 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-20:25:43 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:25:57 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-20:25:57 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-20:27:40 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:28:56 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:29:06 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
-20:29:06 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
-20:29:06 - ai_videoclipper - INFO - Loading video for preview...
-20:29:50 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:29:50 - ai_videoclipper - INFO - Initializing AI VideoClipper
-20:29:50 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
-20:29:50 - ai_videoclipper - INFO - Using faster-whisper via subprocess
-20:29:50 - ai_videoclipper - INFO - ✓ Transcriber initialized
-20:30:02 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:30:02 - ai_videoclipper - INFO - Initializing AI VideoClipper
-20:30:02 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
-20:30:02 - ai_videoclipper - INFO - Using faster-whisper via subprocess
-20:30:02 - ai_videoclipper - INFO - ✓ Transcriber initialized
-20:30:52 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
-20:30:52 - ai_videoclipper - INFO - Initializing AI VideoClipper
-20:30:52 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
-20:30:52 - ai_videoclipper - INFO - Using faster-whisper via subprocess
-20:30:52 - ai_videoclipper - INFO - ✓ Transcriber initialized
+21:43:07 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+21:43:07 - ai_videoclipper - INFO - Initializing AI VideoClipper
+21:43:07 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+21:43:07 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+21:43:07 - ai_videoclipper - INFO - ✓ Transcriber initialized
+21:45:50 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+21:45:50 - ai_videoclipper - INFO - Initializing AI VideoClipper
+21:45:50 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+21:45:50 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+21:45:50 - ai_videoclipper - INFO - ✓ Transcriber initialized
+21:46:06 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+21:46:06 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+21:46:06 - ai_videoclipper - INFO - Loading video for preview...
+21:46:06 - ai_videoclipper - INFO - Starting transcription worker...
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x7ef765032d50>
+21:46:06 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x7ef765032df0>
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+21:46:06 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+21:46:06 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 21:46:06
+21:46:06 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+21:46:06 - ai_videoclipper - INFO - ============================================================
+21:46:06 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+21:46:06 - ai_videoclipper - INFO - Transcribing with language: de
+21:46:06 - ai_videoclipper - INFO - Task: transcribe
+21:46:06 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766522766.srt
+21:46:06 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+21:46:06 - ai_videoclipper - INFO - Using environment: fasterwhisper
+21:46:06 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+21:46:06 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+21:46:06 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+21:46:39 - ai_videoclipper - INFO - [PROGRESS] Process completed
+21:46:39 - ai_videoclipper - INFO - faster-whisper process completed
+21:46:39 - ai_videoclipper - INFO - Transcription completed in 33.2 seconds (return code: 0)
+21:46:39 - ai_videoclipper - INFO - Output stderr length: 0 chars
+21:46:39 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+21:46:39 - ai_videoclipper - INFO - SRT file size: 5339 bytes
+21:46:39 - ai_videoclipper - INFO - Parsing SRT file...
+21:46:39 - ai_videoclipper - INFO - Parsed 65 segments
+21:46:39 - ai_videoclipper - INFO - Total text length: 3108 characters
+21:46:39 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 65 segments
+21:46:39 - ai_videoclipper - INFO - ============================================================
+21:46:39 - ai_videoclipper - INFO - ✓ Transcription complete: 65 segments
+21:46:39 - ai_videoclipper - INFO - Finding clips using ClipsAI...
+21:46:39 - ai_videoclipper - INFO - Found 6 clips
+21:46:39 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 21:46:39
+21:46:39 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+21:46:39 - ai_videoclipper - INFO - [WORKER] Result length: 2
+21:46:39 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+21:46:39 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+21:46:39 - ai_videoclipper - INFO - Processing transcription results...
+21:46:39 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+21:46:39 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+21:46:39 - ai_videoclipper - INFO - [CALLBACK] Result has 65 segments, 6 clips found
+21:46:39 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
+21:46:39 - ai_videoclipper - INFO - Setting up viewer with 65 segments and 6 clips
+21:46:39 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+21:46:39 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 65 segments
+21:46:39 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 65 segments and 260 display lines
+21:46:39 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+21:46:39 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 65 segments
+21:46:39 - ai_videoclipper - INFO - ✓ Transcript displayed: 65 segments visible
+21:46:39 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 6 clips
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/6
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 2/6
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 3/6
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 4/6
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 5/6
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 6/6
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:46:39 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:46:39 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 6 clips in list widget
+21:46:39 - ai_videoclipper - INFO - ✓ Ready to export 6 clips
+21:46:50 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:47:26 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 7
+21:47:28 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 8
+21:47:30 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip start to segment 8 at 23.199s
+21:47:56 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+21:47:58 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 36 at 205.12s
+21:47:59 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 32
+21:48:20 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:48:26 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 8
+21:48:30 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 8
+21:48:33 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip start to segment 8 at 23.199s
+21:48:34 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 9
+21:48:42 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+21:48:44 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+21:48:48 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 36 at 205.12s
+21:48:59 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+21:49:04 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 5 clips
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/5
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 2/5
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 3/5
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 4/5
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 5/5
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:49:07 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:49:07 - ai_videoclipper - INFO - [CLIP_EDIT] Deleted clip 2
+21:49:10 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 4 clips
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/4
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 2/4
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 3/4
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 4/4
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:49:12 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:49:12 - ai_videoclipper - INFO - [CLIP_EDIT] Deleted clip 2
+21:49:14 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 3 clips
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/3
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 2/3
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 3/3
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:49:15 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:49:15 - ai_videoclipper - INFO - [CLIP_EDIT] Deleted clip 2
+21:49:17 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 2 clips
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/2
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 2/2
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:49:18 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:49:18 - ai_videoclipper - INFO - [CLIP_EDIT] Deleted clip 2
+21:49:20 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:21 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+21:49:21 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 1
+21:49:21 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+21:49:21 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:49:21 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:49:21 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:49:21 - ai_videoclipper - INFO - [CLIP_EDIT] Deleted clip 2
+21:49:22 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 0 clips
+21:49:22 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:49:22 - ai_videoclipper - INFO - [CLIP_EDIT] Deleted clip 1
+21:52:00 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+21:52:00 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+21:52:00 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+21:52:00 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+21:52:00 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+21:52:00 - ai_videoclipper - INFO - [CLIP_EDIT] Created new clip from segments 1-6
+21:52:10 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 8
+21:52:12 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip start to segment 8 at 23.199s
+21:52:19 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+21:52:21 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 36 at 205.12s
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] Function: _export_all_clips
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_export_done
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x7ef765032d50>
+21:52:30 - ai_videoclipper - INFO - [WORKER] Worker created for _export_all_clips with args=(), kwargs={}
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x7ef765033f70>
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+21:52:30 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+21:52:30 - ai_videoclipper - INFO - [WORKER] START: _export_all_clips at 21:52:30
+21:52:30 - ai_videoclipper - INFO - Exporting all 1 clips to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+21:52:30 - ai_videoclipper - INFO - Exporting clip 1/1...
+21:52:30 - ai_videoclipper - INFO - Exporting clip 1 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/So_ist_es_ganz_gut_vom/clip_01.mp4
+21:52:31 - ai_videoclipper - INFO - Saving clip 1 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/So_ist_es_ganz_gut_vom/clip_01.srt
+21:52:31 - ai_videoclipper - INFO - ✓ Exported clip 1 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/So_ist_es_ganz_gut_vom
+21:52:31 - ai_videoclipper - INFO - ✓ All 1 clips exported to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+21:52:31 - ai_videoclipper - INFO - [WORKER] COMPLETE: _export_all_clips at 21:52:31
+21:52:31 - ai_videoclipper - INFO - [WORKER] Result type: <class 'pathlib.PosixPath'>
+21:52:31 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+21:52:31 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:08:25 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:08:25 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:08:25 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:08:25 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:08:25 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:08:43 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:08:43 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+22:08:43 - ai_videoclipper - INFO - Loading video for preview...
+22:08:43 - ai_videoclipper - INFO - Starting transcription worker...
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x7dfd3307ad50>
+22:08:43 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x7dfd3307adf0>
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:08:43 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:08:43 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 22:08:43
+22:08:43 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:08:43 - ai_videoclipper - INFO - ============================================================
+22:08:43 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:08:43 - ai_videoclipper - INFO - Transcribing with language: de
+22:08:43 - ai_videoclipper - INFO - Task: transcribe
+22:08:43 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766524123.srt
+22:08:43 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+22:08:43 - ai_videoclipper - INFO - Using environment: fasterwhisper
+22:08:43 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+22:08:43 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+22:08:43 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+22:09:16 - ai_videoclipper - INFO - [PROGRESS] Process completed
+22:09:16 - ai_videoclipper - INFO - faster-whisper process completed
+22:09:16 - ai_videoclipper - INFO - Transcription completed in 32.9 seconds (return code: 0)
+22:09:16 - ai_videoclipper - INFO - Output stderr length: 0 chars
+22:09:16 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+22:09:16 - ai_videoclipper - INFO - SRT file size: 5339 bytes
+22:09:16 - ai_videoclipper - INFO - Parsing SRT file...
+22:09:16 - ai_videoclipper - INFO - Parsed 65 segments
+22:09:16 - ai_videoclipper - INFO - Total text length: 3108 characters
+22:09:16 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 65 segments
+22:09:16 - ai_videoclipper - INFO - ============================================================
+22:09:16 - ai_videoclipper - INFO - ✓ Transcription complete: 65 segments
+22:09:16 - ai_videoclipper - INFO - Finding clips using ClipsAI...
+22:09:16 - ai_videoclipper - INFO - Found 6 clips
+22:09:16 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 22:09:16
+22:09:16 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+22:09:16 - ai_videoclipper - INFO - [WORKER] Result length: 2
+22:09:16 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:09:16 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:09:16 - ai_videoclipper - INFO - Processing transcription results...
+22:09:16 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+22:09:16 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+22:09:16 - ai_videoclipper - INFO - [CALLBACK] Result has 65 segments, 6 clips found
+22:09:16 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
+22:09:16 - ai_videoclipper - INFO - Setting up viewer with 65 segments and 6 clips
+22:09:16 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+22:09:16 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 65 segments
+22:09:16 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 65 segments and 260 display lines
+22:09:16 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+22:09:16 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 65 segments
+22:09:16 - ai_videoclipper - INFO - ✓ Transcript displayed: 65 segments visible
+22:09:16 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 6 clips
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/6
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 2/6
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 3/6
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 4/6
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 5/6
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 6/6
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+22:09:16 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+22:09:16 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 6 clips in list widget
+22:09:16 - ai_videoclipper - INFO - ✓ Ready to export 6 clips
+22:24:31 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:24:31 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:24:31 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:24:31 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:24:31 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:27:57 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:27:57 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:27:57 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:27:57 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:27:57 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:28:14 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:28:14 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:28:14 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:28:14 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:28:14 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:28:40 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 09-01-59.mp4
+22:28:40 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 09-01-59_clips
+22:28:40 - ai_videoclipper - INFO - Loading video for preview...
+22:28:40 - ai_videoclipper - INFO - Starting transcription worker...
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x769b0b4c39d0>
+22:28:40 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x769b0b4c3a70>
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:28:40 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:28:40 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 22:28:40
+22:28:40 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 09-01-59.mp4
+22:28:40 - ai_videoclipper - INFO - ============================================================
+22:28:40 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 09-01-59.mp4
+22:28:40 - ai_videoclipper - INFO - Transcribing with language: de
+22:28:40 - ai_videoclipper - INFO - Task: transcribe
+22:28:40 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766525320.srt
+22:28:40 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+22:28:40 - ai_videoclipper - INFO - Using environment: fasterwhisper
+22:28:40 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+22:28:40 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+22:28:40 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+22:28:48 - ai_videoclipper - INFO - [PROGRESS] Process completed
+22:28:48 - ai_videoclipper - INFO - faster-whisper process completed
+22:28:48 - ai_videoclipper - INFO - Transcription completed in 8.2 seconds (return code: 0)
+22:28:48 - ai_videoclipper - INFO - Output stderr length: 0 chars
+22:28:48 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+22:28:48 - ai_videoclipper - INFO - SRT file size: 170 bytes
+22:28:48 - ai_videoclipper - INFO - Parsing SRT file...
+22:28:48 - ai_videoclipper - INFO - Parsed 2 segments
+22:28:48 - ai_videoclipper - INFO - Total text length: 103 characters
+22:28:48 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 2 segments
+22:28:48 - ai_videoclipper - INFO - ============================================================
+22:28:48 - ai_videoclipper - INFO - ✓ Transcription complete: 2 segments
+22:28:48 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+22:28:48 - ai_videoclipper - INFO - Created 1 default full-video clip
+22:28:48 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 22:28:48
+22:28:48 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+22:28:48 - ai_videoclipper - INFO - [WORKER] Result length: 2
+22:28:48 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:28:48 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:28:48 - ai_videoclipper - INFO - Processing transcription results...
+22:28:48 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+22:28:48 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+22:28:48 - ai_videoclipper - INFO - [CALLBACK] Result has 2 segments, 1 clips found
+22:28:48 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=7.0, text='Sag mal Matthias, wie ist das eigentlich mit diesem weissen Blattpapier?')
+22:28:48 - ai_videoclipper - INFO - Setting up viewer with 2 segments and 1 clips
+22:28:48 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+22:28:48 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 2 segments
+22:28:48 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 2 segments and 8 display lines
+22:28:48 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+22:28:48 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 2 segments
+22:28:48 - ai_videoclipper - INFO - ✓ Transcript displayed: 2 segments visible
+22:28:48 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+22:28:48 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+22:28:48 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+22:28:48 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+22:28:48 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+22:28:48 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+22:28:48 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+22:28:48 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+22:29:02 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:29:02 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+22:29:02 - ai_videoclipper - INFO - Loading video for preview...
+22:29:02 - ai_videoclipper - INFO - Starting transcription worker...
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x769b0b4c3bb0>
+22:29:02 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x769b0b4c39d0>
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:29:02 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:29:02 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 22:29:02
+22:29:02 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:29:02 - ai_videoclipper - INFO - ============================================================
+22:29:02 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:29:02 - ai_videoclipper - INFO - Transcribing with language: de
+22:29:02 - ai_videoclipper - INFO - Task: transcribe
+22:29:02 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766525342.srt
+22:29:02 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+22:29:02 - ai_videoclipper - INFO - Using environment: fasterwhisper
+22:29:02 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+22:29:02 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+22:29:02 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+22:29:27 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:29:27 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+22:29:27 - ai_videoclipper - INFO - Loading video for preview...
+22:29:27 - ai_videoclipper - INFO - Starting transcription worker...
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x769b0b524550>
+22:29:27 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x769b0b524370>
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 2)
+22:29:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 2)
+22:29:27 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 22:29:27
+22:29:27 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:29:27 - ai_videoclipper - INFO - ============================================================
+22:29:27 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+22:29:27 - ai_videoclipper - INFO - Transcribing with language: de
+22:29:27 - ai_videoclipper - INFO - Task: transcribe
+22:29:27 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766525367.srt
+22:29:27 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+22:29:27 - ai_videoclipper - INFO - Using environment: fasterwhisper
+22:29:27 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+22:29:27 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+22:29:27 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+22:29:32 - ai_videoclipper - INFO - [PROGRESS] Process completed
+22:29:32 - ai_videoclipper - INFO - faster-whisper process completed
+22:29:32 - ai_videoclipper - INFO - Transcription completed in 5.5 seconds (return code: 1)
+22:29:32 - ai_videoclipper - INFO - Output stderr length: 350 chars
+22:29:32 - ai_videoclipper - ERROR - Transcription failed with code 1
+22:29:32 - ai_videoclipper - ERROR - stderr (first 1000 chars): Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+22:29:32 - ai_videoclipper - ERROR - [WORKER] ERROR in _transcribe_and_find_clips: Transcription failed: Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+Traceback (most recent call last):
+  File "/home/matthias/_AA_AI-VideoClipper/clips_editor.py", line 57, in run
+    result = self.func(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/matthias/_AA_AI-VideoClipper/clips_editor.py", line 276, in _transcribe_and_find_clips
+    result = self.transcriber.transcribe(str(self.video_path))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/matthias/_AA_AI-VideoClipper/faster_whisper_transcriber.py", line 150, in transcribe
+    raise TranscriptionError(f"Transcription failed: {stderr}")
+faster_whisper_transcriber.TranscriptionError: Transcription failed: Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+22:29:32 - ai_videoclipper - ERROR - Error occurred: Transcription failed: Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+22:29:35 - ai_videoclipper - INFO - [PROGRESS] Process completed
+22:29:35 - ai_videoclipper - INFO - faster-whisper process completed
+22:29:35 - ai_videoclipper - INFO - Transcription completed in 33.3 seconds (return code: 0)
+22:29:35 - ai_videoclipper - INFO - Output stderr length: 0 chars
+22:29:35 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+22:29:35 - ai_videoclipper - INFO - SRT file size: 5339 bytes
+22:29:35 - ai_videoclipper - INFO - Parsing SRT file...
+22:29:35 - ai_videoclipper - INFO - Parsed 65 segments
+22:29:35 - ai_videoclipper - INFO - Total text length: 3108 characters
+22:29:35 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 65 segments
+22:29:35 - ai_videoclipper - INFO - ============================================================
+22:29:35 - ai_videoclipper - INFO - ✓ Transcription complete: 65 segments
+22:29:35 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+22:29:35 - ai_videoclipper - INFO - Created 1 default full-video clip
+22:29:35 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 22:29:35
+22:29:35 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+22:29:35 - ai_videoclipper - INFO - [WORKER] Result length: 2
+22:29:35 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:29:35 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:29:35 - ai_videoclipper - INFO - Processing transcription results...
+22:29:35 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+22:29:35 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+22:29:35 - ai_videoclipper - INFO - [CALLBACK] Result has 65 segments, 1 clips found
+22:29:35 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
+22:29:35 - ai_videoclipper - INFO - Setting up viewer with 65 segments and 1 clips
+22:29:35 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+22:29:35 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 65 segments
+22:29:35 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 65 segments and 260 display lines
+22:29:35 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+22:29:35 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 65 segments
+22:29:35 - ai_videoclipper - INFO - ✓ Transcript displayed: 65 segments visible
+22:29:35 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+22:29:35 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+22:29:35 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+22:29:35 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+22:29:35 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+22:29:35 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+22:29:35 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+22:29:35 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+22:29:35 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+22:29:57 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 8
+22:29:58 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 8
+22:30:01 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip start to segment 8 at 23.199s
+22:30:06 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+22:30:07 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 36
+22:30:09 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 36 at 205.12s
+22:30:09 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 36 at 205.12s
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] Function: _export_all_clips
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_export_done
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x769b0b4c3ed0>
+22:30:18 - ai_videoclipper - INFO - [WORKER] Worker created for _export_all_clips with args=(), kwargs={}
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x769b0b4c3bb0>
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 2)
+22:30:18 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 2)
+22:30:18 - ai_videoclipper - INFO - [WORKER] START: _export_all_clips at 22:30:18
+22:30:18 - ai_videoclipper - INFO - Exporting all 1 clips to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+22:30:18 - ai_videoclipper - INFO - Exporting clip 1/1...
+22:30:18 - ai_videoclipper - INFO - Exporting clip 1 video to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Full_Video/clip_01.mp4
+22:30:19 - ai_videoclipper - INFO - Saving clip 1 SRT to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Full_Video/clip_01.srt
+22:30:19 - ai_videoclipper - INFO - ✓ Exported clip 1 to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/Full_Video
+22:30:19 - ai_videoclipper - INFO - ✓ All 1 clips exported to: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips
+22:30:19 - ai_videoclipper - INFO - [WORKER] COMPLETE: _export_all_clips at 22:30:19
+22:30:19 - ai_videoclipper - INFO - [WORKER] Result type: <class 'pathlib.PosixPath'>
+22:30:19 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:30:19 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:39:07 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:39:07 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:39:07 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:39:07 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:39:07 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:39:34 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann nicht denken – Die Grenzen von ChatGPT im realen Leben Extended_soft_20251218-184656-cleaned-20251221231552.mkv
+22:39:34 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann nicht denken – Die Grenzen von ChatGPT im realen Leben Extended_soft_20251218-184656-cleaned-20251221231552_clips/20251223_223934
+22:39:34 - ai_videoclipper - INFO - Loading video for preview...
+22:39:34 - ai_videoclipper - INFO - Starting transcription worker...
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x77b26bb67cf0>
+22:39:34 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x77b26bb67d90>
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:39:34 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:39:34 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 22:39:34
+22:39:34 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann nicht denken – Die Grenzen von ChatGPT im realen Leben Extended_soft_20251218-184656-cleaned-20251221231552.mkv
+22:39:34 - ai_videoclipper - INFO - ============================================================
+22:39:34 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann nicht denken – Die Grenzen von ChatGPT im realen Leben Extended_soft_20251218-184656-cleaned-20251221231552.mkv
+22:39:34 - ai_videoclipper - INFO - Transcribing with language: de
+22:39:34 - ai_videoclipper - INFO - Task: transcribe
+22:39:34 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766525974.srt
+22:39:34 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+22:39:34 - ai_videoclipper - INFO - Using environment: fasterwhisper
+22:39:34 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+22:39:34 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+22:39:34 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+22:40:01 - ai_videoclipper - INFO - [PROGRESS] Process completed
+22:40:01 - ai_videoclipper - INFO - faster-whisper process completed
+22:40:01 - ai_videoclipper - INFO - Transcription completed in 26.3 seconds (return code: 0)
+22:40:01 - ai_videoclipper - INFO - Output stderr length: 0 chars
+22:40:01 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+22:40:01 - ai_videoclipper - INFO - SRT file size: 2737 bytes
+22:40:01 - ai_videoclipper - INFO - Parsing SRT file...
+22:40:01 - ai_videoclipper - INFO - Parsed 26 segments
+22:40:01 - ai_videoclipper - INFO - Total text length: 1843 characters
+22:40:01 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 26 segments
+22:40:01 - ai_videoclipper - INFO - ============================================================
+22:40:01 - ai_videoclipper - INFO - ✓ Transcription complete: 26 segments
+22:40:01 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+22:40:01 - ai_videoclipper - INFO - Created 1 default full-video clip
+22:40:01 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 22:40:01
+22:40:01 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+22:40:01 - ai_videoclipper - INFO - [WORKER] Result length: 2
+22:40:01 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:40:01 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:40:01 - ai_videoclipper - INFO - Processing transcription results...
+22:40:01 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+22:40:01 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+22:40:01 - ai_videoclipper - INFO - [CALLBACK] Result has 26 segments, 1 clips found
+22:40:01 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=7.06, text='Regeln befolgt so eine Tätigkeit, die sehr von der inneren Haltung lebt.')
+22:40:01 - ai_videoclipper - INFO - Setting up viewer with 26 segments and 1 clips
+22:40:01 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+22:40:01 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 26 segments
+22:40:01 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 26 segments and 104 display lines
+22:40:01 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+22:40:01 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 26 segments
+22:40:01 - ai_videoclipper - INFO - ✓ Transcript displayed: 26 segments visible
+22:40:01 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+22:40:01 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+22:40:01 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+22:40:01 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+22:40:01 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+22:40:01 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+22:40:01 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+22:40:01 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+22:40:57 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 2
+22:40:59 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip start to segment 2 at 7.459s
+22:41:14 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 24
+22:41:16 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 24 at 117.159s
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] Function: _export_all_clips
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_export_done
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x77b26bb67ed0>
+22:41:25 - ai_videoclipper - INFO - [WORKER] Worker created for _export_all_clips with args=(), kwargs={}
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x77b26bb67cf0>
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:41:25 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:42:06 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:42:06 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:42:06 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:42:06 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:42:06 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:42:27 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135.mp4
+22:42:27 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135_clips/20251223_224227
+22:42:27 - ai_videoclipper - INFO - Loading video for preview...
+22:42:27 - ai_videoclipper - INFO - Starting transcription worker...
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x79694ef63e30>
+22:42:27 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x79694ef63ed0>
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:42:27 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:42:27 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 22:42:27
+22:42:27 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135.mp4
+22:42:27 - ai_videoclipper - INFO - ============================================================
+22:42:27 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135.mp4
+22:42:27 - ai_videoclipper - INFO - Transcribing with language: de
+22:42:27 - ai_videoclipper - INFO - Task: transcribe
+22:42:27 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766526147.srt
+22:42:27 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+22:42:27 - ai_videoclipper - INFO - Using environment: fasterwhisper
+22:42:27 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+22:42:27 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+22:42:27 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+22:42:43 - ai_videoclipper - INFO - [PROGRESS] Process completed
+22:42:43 - ai_videoclipper - INFO - faster-whisper process completed
+22:42:43 - ai_videoclipper - INFO - Transcription completed in 16.2 seconds (return code: 0)
+22:42:43 - ai_videoclipper - INFO - Output stderr length: 0 chars
+22:42:43 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+22:42:43 - ai_videoclipper - INFO - SRT file size: 2143 bytes
+22:42:43 - ai_videoclipper - INFO - Parsing SRT file...
+22:42:43 - ai_videoclipper - INFO - Parsed 23 segments
+22:42:43 - ai_videoclipper - INFO - Total text length: 1353 characters
+22:42:43 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 23 segments
+22:42:43 - ai_videoclipper - INFO - ============================================================
+22:42:43 - ai_videoclipper - INFO - ✓ Transcription complete: 23 segments
+22:42:43 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+22:42:43 - ai_videoclipper - INFO - Created 1 default full-video clip
+22:42:43 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 22:42:43
+22:42:43 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+22:42:43 - ai_videoclipper - INFO - [WORKER] Result length: 2
+22:42:43 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:42:43 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:42:43 - ai_videoclipper - INFO - Processing transcription results...
+22:42:43 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+22:42:43 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+22:42:43 - ai_videoclipper - INFO - [CALLBACK] Result has 23 segments, 1 clips found
+22:42:43 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=2.64, text='Und dann sagen die Leute, ja, gute Idee, ich erkläre das natürlich ein bisschen.')
+22:42:43 - ai_videoclipper - INFO - Setting up viewer with 23 segments and 1 clips
+22:42:43 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+22:42:43 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 23 segments
+22:42:43 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 23 segments and 92 display lines
+22:42:43 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+22:42:43 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 23 segments
+22:42:43 - ai_videoclipper - INFO - ✓ Transcript displayed: 23 segments visible
+22:42:43 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+22:42:43 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+22:42:43 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+22:42:43 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+22:42:43 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+22:42:43 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+22:42:43 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+22:42:43 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+22:43:12 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 18
+22:43:30 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 9
+22:43:32 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip start to segment 9 at 23.12s
+22:43:52 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 22
+22:43:53 - ai_videoclipper - INFO - [CLIP_EDIT] User clicked segment 22
+22:43:55 - ai_videoclipper - INFO - [CLIP_EDIT] Set clip end to segment 22 at 84.72s
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] Function: _export_all_clips
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_export_done
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x79694ef63f70>
+22:44:59 - ai_videoclipper - INFO - [WORKER] Worker created for _export_all_clips with args=(), kwargs={}
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x79694ef63e30>
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+22:44:59 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+22:44:59 - ai_videoclipper - INFO - [WORKER] START: _export_all_clips at 22:44:59
+22:44:59 - ai_videoclipper - INFO - Exporting all 1 clips to: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135_clips/20251223_224227
+22:44:59 - ai_videoclipper - INFO - Exporting clip 1/1...
+22:44:59 - ai_videoclipper - INFO - Exporting clip 1 video to: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135_clips/20251223_224227/es_ist_wenn_man/es_ist_wenn_man.mp4
+22:44:59 - ai_videoclipper - INFO - Saving clip SRT with 15 segments to: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135_clips/20251223_224227/es_ist_wenn_man/es_ist_wenn_man.srt
+22:44:59 - ai_videoclipper - INFO - ✓ SRT exported: 15 segments, adjusted timing from clip start
+22:44:59 - ai_videoclipper - INFO - ✓ Exported clip 1 to: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135_clips/20251223_224227/es_ist_wenn_man
+22:44:59 - ai_videoclipper - INFO - ✓ All 1 clips exported to: /home/matthias/Videos/ROHVIDEOS PIXEL/KI kann Syntaktik, aber nicht Taktik Extended_soft_no_obs_20251220-173535-cleaned-20251221231135_clips/20251223_224227
+22:44:59 - ai_videoclipper - INFO - [WORKER] COMPLETE: _export_all_clips at 22:44:59
+22:44:59 - ai_videoclipper - INFO - [WORKER] Result type: <class 'pathlib.PosixPath'>
+22:44:59 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+22:44:59 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+22:48:34 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:48:34 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:48:34 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:48:34 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:48:34 - ai_videoclipper - INFO - ✓ Transcriber initialized
+22:49:57 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+22:49:57 - ai_videoclipper - INFO - Initializing AI VideoClipper
+22:49:57 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+22:49:57 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+22:49:57 - ai_videoclipper - INFO - ✓ Transcriber initialized
+06:42:17 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+06:42:17 - ai_videoclipper - INFO - Initializing AI VideoClipper
+06:42:17 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+06:42:17 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+06:42:17 - ai_videoclipper - INFO - ✓ Transcriber initialized
+06:43:12 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+06:43:12 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/20251224_064312
+06:43:12 - ai_videoclipper - INFO - Loading video for preview...
+06:43:12 - ai_videoclipper - INFO - Starting transcription worker...
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x76b87306c4b0>
+06:43:12 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x76b87306c550>
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+06:43:12 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+06:43:12 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 06:43:12
+06:43:12 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+06:43:12 - ai_videoclipper - INFO - ============================================================
+06:43:12 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+06:43:12 - ai_videoclipper - INFO - Transcribing with language: de
+06:43:12 - ai_videoclipper - INFO - Task: transcribe
+06:43:12 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766554992.srt
+06:43:12 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+06:43:12 - ai_videoclipper - INFO - Using environment: fasterwhisper
+06:43:12 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+06:43:12 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+06:43:12 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+06:43:19 - ai_videoclipper - INFO - [PROGRESS] Process completed
+06:43:19 - ai_videoclipper - INFO - faster-whisper process completed
+06:43:19 - ai_videoclipper - INFO - Transcription completed in 7.6 seconds (return code: 1)
+06:43:19 - ai_videoclipper - INFO - Output stderr length: 350 chars
+06:43:19 - ai_videoclipper - ERROR - Transcription failed with code 1
+06:43:19 - ai_videoclipper - ERROR - stderr (first 1000 chars): Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+06:43:19 - ai_videoclipper - ERROR - [WORKER] ERROR in _transcribe_and_find_clips: Transcription failed: Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+Traceback (most recent call last):
+  File "/home/matthias/_AA_AI-VideoClipper/clips_editor.py", line 58, in run
+    result = self.func(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/matthias/_AA_AI-VideoClipper/clips_editor.py", line 292, in _transcribe_and_find_clips
+    result = self.transcriber.transcribe(str(self.video_path))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/matthias/_AA_AI-VideoClipper/faster_whisper_transcriber.py", line 150, in transcribe
+    raise TranscriptionError(f"Transcription failed: {stderr}")
+faster_whisper_transcriber.TranscriptionError: Transcription failed: Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+06:43:19 - ai_videoclipper - ERROR - Error occurred: Transcription failed: Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/matthias/miniconda3/envs/fasterwhisper/lib/python3.11/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA failed with error out of memory
+06:46:26 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+06:46:26 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/20251224_064626
+06:46:26 - ai_videoclipper - INFO - Loading video for preview...
+06:46:26 - ai_videoclipper - INFO - Starting transcription worker...
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x76b87306c870>
+06:46:26 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x76b87306c910>
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 2)
+06:46:26 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 2)
+06:46:26 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 06:46:26
+06:46:26 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+06:46:26 - ai_videoclipper - INFO - ============================================================
+06:46:26 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+06:46:26 - ai_videoclipper - INFO - Transcribing with language: de
+06:46:26 - ai_videoclipper - INFO - Task: transcribe
+06:46:26 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766555186.srt
+06:46:26 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+06:46:26 - ai_videoclipper - INFO - Using environment: fasterwhisper
+06:46:26 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+06:46:26 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+06:46:26 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+06:46:46 - ai_videoclipper - INFO - [PROGRESS] Process completed
+06:46:46 - ai_videoclipper - INFO - faster-whisper process completed
+06:46:46 - ai_videoclipper - INFO - Transcription completed in 20.0 seconds (return code: 0)
+06:46:46 - ai_videoclipper - INFO - Output stderr length: 0 chars
+06:46:46 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+06:46:46 - ai_videoclipper - INFO - SRT file size: 4356 bytes
+06:46:46 - ai_videoclipper - INFO - Parsing SRT file...
+06:46:46 - ai_videoclipper - INFO - Parsed 39 segments
+06:46:46 - ai_videoclipper - INFO - Total text length: 3009 characters
+06:46:46 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 39 segments
+06:46:46 - ai_videoclipper - INFO - ============================================================
+06:46:46 - ai_videoclipper - INFO - ✓ Transcription complete: 39 segments
+06:46:46 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+06:46:46 - ai_videoclipper - INFO - Created 1 default full-video clip
+06:46:46 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 06:46:46
+06:46:46 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+06:46:46 - ai_videoclipper - INFO - [WORKER] Result length: 2
+06:46:46 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+06:46:46 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+06:46:46 - ai_videoclipper - INFO - Processing transcription results...
+06:46:46 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+06:46:46 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+06:46:46 - ai_videoclipper - INFO - [CALLBACK] Result has 39 segments, 1 clips found
+06:46:46 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
+06:46:46 - ai_videoclipper - INFO - Setting up viewer with 39 segments and 1 clips
+06:46:46 - ai_videoclipper - INFO - [PREVIEW] Setting segments for keyboard navigation...
+06:46:46 - ai_videoclipper - INFO - [PREVIEW] ✓ Segments set for slider keyboard navigation
+06:46:46 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+06:46:46 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 39 segments
+06:46:46 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 39 segments and 156 display lines
+06:46:46 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+06:46:46 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 39 segments
+06:46:46 - ai_videoclipper - INFO - ✓ Transcript displayed: 39 segments visible
+06:46:46 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+06:46:46 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+06:46:46 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+06:46:46 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+06:46:46 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+06:46:46 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+06:46:46 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+06:46:46 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+06:57:06 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+06:57:06 - ai_videoclipper - INFO - Initializing AI VideoClipper
+06:57:06 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+06:57:06 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+06:57:06 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:01:05 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:01:05 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:01:05 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:01:05 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:01:05 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:03:32 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:03:53 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:03:53 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:03:53 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:03:53 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:03:53 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:04:23 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:06:38 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:06:38 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:06:38 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:06:38 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:06:38 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:07:50 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:07:50 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:07:50 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:07:50 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:07:50 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:10:04 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:10:04 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:10:04 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:10:04 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:10:04 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:11:33 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:11:33 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:11:33 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:11:33 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:11:33 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:12:33 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:13:42 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:13:42 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:13:42 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:13:42 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:13:42 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:14:06 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:18:34 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:18:34 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:18:34 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:18:34 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:18:34 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:18:51 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:18:51 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/20251224_071851
+07:37:22 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:37:22 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:37:22 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:37:22 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:37:22 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:37:46 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:37:46 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/20251224_073746
+07:37:46 - ai_videoclipper - INFO - Loading video for preview...
+07:37:46 - ai_videoclipper - INFO - Starting transcription worker...
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x736844df8730>
+07:37:46 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x736844df87d0>
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+07:37:46 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+07:37:46 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 07:37:46
+07:37:46 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:37:46 - ai_videoclipper - INFO - ============================================================
+07:37:46 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:37:46 - ai_videoclipper - INFO - Transcribing with language: de
+07:37:46 - ai_videoclipper - INFO - Task: transcribe
+07:37:46 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766558266.srt
+07:37:46 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+07:37:46 - ai_videoclipper - INFO - Using environment: fasterwhisper
+07:37:46 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+07:37:46 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+07:37:46 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+07:38:07 - ai_videoclipper - INFO - [PROGRESS] Process completed
+07:38:07 - ai_videoclipper - INFO - faster-whisper process completed
+07:38:07 - ai_videoclipper - INFO - Transcription completed in 21.3 seconds (return code: 0)
+07:38:07 - ai_videoclipper - INFO - Output stderr length: 0 chars
+07:38:07 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+07:38:07 - ai_videoclipper - INFO - SRT file size: 5339 bytes
+07:38:07 - ai_videoclipper - INFO - Parsing SRT file...
+07:38:07 - ai_videoclipper - INFO - Parsed 65 segments
+07:38:07 - ai_videoclipper - INFO - Total text length: 3108 characters
+07:38:07 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 65 segments
+07:38:07 - ai_videoclipper - INFO - ============================================================
+07:38:07 - ai_videoclipper - INFO - ✓ Transcription complete: 65 segments
+07:38:07 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+07:38:07 - ai_videoclipper - INFO - Created 1 default full-video clip
+07:38:07 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 07:38:07
+07:38:07 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+07:38:07 - ai_videoclipper - INFO - [WORKER] Result length: 2
+07:38:07 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+07:38:07 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+07:38:07 - ai_videoclipper - INFO - Processing transcription results...
+07:38:07 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+07:38:07 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+07:38:07 - ai_videoclipper - INFO - [CALLBACK] Result has 65 segments, 1 clips found
+07:38:07 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
+07:38:07 - ai_videoclipper - INFO - Setting up viewer with 65 segments and 1 clips
+07:38:07 - ai_videoclipper - INFO - [PREVIEW] Setting segments for keyboard navigation...
+07:38:07 - ai_videoclipper - INFO - [PREVIEW] ✓ Segments set for slider keyboard navigation
+07:38:07 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 65 segments
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 65 segments and 260 display lines
+07:38:07 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+07:38:07 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 65 segments
+07:38:07 - ai_videoclipper - INFO - ✓ Transcript displayed: 65 segments visible
+07:38:07 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+07:38:07 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+07:38:07 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+07:38:07 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+07:38:07 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] highlight_segment_range() called: start_index=0, end_index=64, auto_scroll=True
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Total segments available: 65
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Range validated, collecting blocks...
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 0: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 1: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 2: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 3: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 4: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 5: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 6: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 7: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 8: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 9: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 10: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 11: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 12: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 13: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 14: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 15: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 16: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 17: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 18: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 19: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 20: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 21: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 22: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 23: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 24: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 25: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 26: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 27: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 28: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 29: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 30: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 31: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 32: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 33: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 34: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 35: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 36: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 37: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 38: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 39: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 40: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 41: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 42: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 43: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 44: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 45: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 46: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 47: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 48: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 49: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 50: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 51: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 52: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 53: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 54: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 55: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 56: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 57: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 58: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 59: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 60: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 61: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 62: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 63: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 64: 3 blocks
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Collected 195 total blocks for range
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] first_block valid=True, last_block valid=True
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Highlight applied successfully
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Auto-scrolling...
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Auto-scroll complete
+07:38:07 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] highlight_segment_range() called: start_index=0, end_index=64, auto_scroll=True
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Total segments available: 65
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Range validated, collecting blocks...
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 0: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 1: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 2: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 3: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 4: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 5: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 6: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 7: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 8: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 9: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 10: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 11: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 12: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 13: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 14: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 15: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 16: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 17: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 18: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 19: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 20: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 21: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 22: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 23: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 24: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 25: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 26: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 27: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 28: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 29: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 30: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 31: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 32: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 33: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 34: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 35: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 36: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 37: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 38: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 39: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 40: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 41: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 42: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 43: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 44: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 45: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 46: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 47: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 48: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 49: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 50: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 51: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 52: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 53: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 54: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 55: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 56: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 57: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 58: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 59: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 60: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 61: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 62: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 63: 3 blocks
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 64: 3 blocks
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Collected 195 total blocks for range
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] first_block valid=True, last_block valid=True
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Highlight applied successfully
+07:38:07 - ai_videoclipper - DEBUG - [SRT_VIEWER] Auto-scrolling...
+07:38:07 - ai_videoclipper - INFO - [SRT_VIEWER] Auto-scroll complete
+07:38:07 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+07:38:07 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+07:40:47 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+07:40:47 - ai_videoclipper - INFO - Initializing AI VideoClipper
+07:40:47 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+07:40:47 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+07:40:47 - ai_videoclipper - INFO - ✓ Transcriber initialized
+07:41:48 - ai_videoclipper - INFO - Selected video file: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:41:48 - ai_videoclipper - INFO - Output directory will be: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41_clips/20251224_074148
+07:41:48 - ai_videoclipper - INFO - Loading video for preview...
+07:41:48 - ai_videoclipper - INFO - Starting transcription worker...
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] ============ STARTING WORKER THREAD ============
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] Function: _transcribe_and_find_clips
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] on_finished: on_transcription_ready
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] on_error: on_error
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] Created QThread: <PyQt6.QtCore.QThread object at 0x7b9282310730>
+07:41:48 - ai_videoclipper - INFO - [WORKER] Worker created for _transcribe_and_find_clips with args=(), kwargs={}
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] Created Worker: <__main__.Worker object at 0x7b92823107d0>
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] Worker moved to thread
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected thread.started -> worker.run
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.finished -> on_finished
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] ✓ Connected worker.error -> on_error
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] About to start thread (total threads before: 1)
+07:41:48 - ai_videoclipper - INFO - [RUN_WORKER] ✓✓✓ THREAD STARTED! ✓✓✓ (total threads: 1)
+07:41:48 - ai_videoclipper - INFO - [WORKER] START: _transcribe_and_find_clips at 07:41:48
+07:41:48 - ai_videoclipper - INFO - Transcribing: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:41:48 - ai_videoclipper - INFO - ============================================================
+07:41:48 - ai_videoclipper - INFO - Starting transcription of: /home/matthias/Videos/kueche-angst-weisses.blatt/2025-12-12 08-54-41.mp4
+07:41:48 - ai_videoclipper - INFO - Transcribing with language: de
+07:41:48 - ai_videoclipper - INFO - Task: transcribe
+07:41:48 - ai_videoclipper - INFO - Temp SRT will be saved to: /tmp/faster_whisper_tmp/transcription_1766558508.srt
+07:41:48 - ai_videoclipper - INFO - Executing faster-whisper subprocess...
+07:41:48 - ai_videoclipper - INFO - Using environment: fasterwhisper
+07:41:48 - ai_videoclipper - INFO - [PROGRESS] Loading model...
+07:41:48 - ai_videoclipper - INFO - Calling faster-whisper process (this will take 30-60 seconds)...
+07:41:48 - ai_videoclipper - INFO - [PROGRESS] Model loaded. Starting transcription...
+07:42:06 - ai_videoclipper - INFO - [PROGRESS] Process completed
+07:42:06 - ai_videoclipper - INFO - faster-whisper process completed
+07:42:06 - ai_videoclipper - INFO - Transcription completed in 18.9 seconds (return code: 0)
+07:42:06 - ai_videoclipper - INFO - Output stderr length: 0 chars
+07:42:06 - ai_videoclipper - INFO - Transcription successful, parsing SRT...
+07:42:06 - ai_videoclipper - INFO - SRT file size: 5339 bytes
+07:42:06 - ai_videoclipper - INFO - Parsing SRT file...
+07:42:06 - ai_videoclipper - INFO - Parsed 65 segments
+07:42:06 - ai_videoclipper - INFO - Total text length: 3108 characters
+07:42:06 - ai_videoclipper - INFO - [PROGRESS] ✓ Transcription complete: 65 segments
+07:42:06 - ai_videoclipper - INFO - ============================================================
+07:42:06 - ai_videoclipper - INFO - ✓ Transcription complete: 65 segments
+07:42:06 - ai_videoclipper - INFO - Creating default full-video clip (MANUAL mode)...
+07:42:06 - ai_videoclipper - INFO - Created 1 default full-video clip
+07:42:06 - ai_videoclipper - INFO - [WORKER] COMPLETE: _transcribe_and_find_clips at 07:42:06
+07:42:06 - ai_videoclipper - INFO - [WORKER] Result type: <class 'tuple'>
+07:42:06 - ai_videoclipper - INFO - [WORKER] Result length: 2
+07:42:06 - ai_videoclipper - INFO - [WORKER] Emitting finished signal with result...
+07:42:06 - ai_videoclipper - INFO - [WORKER] Finished signal emitted
+07:42:06 - ai_videoclipper - INFO - Processing transcription results...
+07:42:06 - ai_videoclipper - INFO - [CALLBACK] on_transcription_ready called with payload type: <class 'tuple'>
+07:42:06 - ai_videoclipper - INFO - [CALLBACK] Unpacked payload: result=<class 'faster_whisper_transcriber.TranscriptionResult'>, clips=<class 'list'>
+07:42:06 - ai_videoclipper - INFO - [CALLBACK] Result has 65 segments, 1 clips found
+07:42:06 - ai_videoclipper - INFO - [CALLBACK] First segment: SrtSegment(index=1, start=0.0, end=9.7, text='So ist es ganz gut vom Licht, ne?')
+07:42:06 - ai_videoclipper - INFO - Setting up viewer with 65 segments and 1 clips
+07:42:06 - ai_videoclipper - INFO - [PREVIEW] Setting segments for keyboard navigation...
+07:42:06 - ai_videoclipper - INFO - [PREVIEW] ✓ Segments set for slider keyboard navigation
+07:42:06 - ai_videoclipper - INFO - [DISPLAY] Calling srt_viewer.set_segments()...
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] set_segments() called with 65 segments
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Display updated with 65 segments and 260 display lines
+07:42:06 - ai_videoclipper - INFO - [DISPLAY] ✓ set_segments() completed
+07:42:06 - ai_videoclipper - INFO - [DISPLAY] SRT viewer now has 65 segments
+07:42:06 - ai_videoclipper - INFO - ✓ Transcript displayed: 65 segments visible
+07:42:06 - ai_videoclipper - INFO - [CLIPS] Populating clips list...
+07:42:06 - ai_videoclipper - INFO - [CLIP_LIST] set_clips() called with 1 clips
+07:42:06 - ai_videoclipper - INFO - [CLIP_LIST] Added clip row 1/1
+07:42:06 - ai_videoclipper - INFO - [CLIP_LIST] Setting current row to 0...
+07:42:06 - ai_videoclipper - INFO - [CLIP_LIST] Clip selected at index 0
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] highlight_segment_range() called: start_index=0, end_index=64, auto_scroll=True
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Total segments available: 65
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Range validated, collecting blocks...
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 0: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 1: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 2: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 3: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 4: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 5: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 6: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 7: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 8: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 9: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 10: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 11: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 12: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 13: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 14: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 15: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 16: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 17: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 18: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 19: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 20: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 21: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 22: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 23: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 24: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 25: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 26: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 27: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 28: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 29: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 30: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 31: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 32: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 33: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 34: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 35: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 36: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 37: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 38: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 39: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 40: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 41: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 42: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 43: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 44: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 45: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 46: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 47: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 48: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 49: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 50: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 51: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 52: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 53: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 54: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 55: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 56: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 57: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 58: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 59: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 60: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 61: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 62: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 63: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 64: 3 blocks
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Collected 195 total blocks for range
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] first_block valid=True, last_block valid=True
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Highlight applied successfully
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Auto-scrolling...
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Auto-scroll complete
+07:42:06 - ai_videoclipper - INFO - [CLIP_LIST] ✓ Current row set
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] highlight_segment_range() called: start_index=0, end_index=64, auto_scroll=True
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Total segments available: 65
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Range validated, collecting blocks...
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 0: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 1: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 2: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 3: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 4: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 5: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 6: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 7: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 8: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 9: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 10: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 11: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 12: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 13: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 14: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 15: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 16: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 17: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 18: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 19: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 20: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 21: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 22: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 23: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 24: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 25: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 26: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 27: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 28: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 29: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 30: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 31: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 32: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 33: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 34: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 35: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 36: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 37: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 38: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 39: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 40: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 41: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 42: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 43: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 44: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 45: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 46: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 47: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 48: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 49: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 50: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 51: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 52: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 53: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 54: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 55: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 56: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 57: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 58: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 59: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 60: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 61: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 62: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 63: 3 blocks
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Segment 64: 3 blocks
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Collected 195 total blocks for range
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] first_block valid=True, last_block valid=True
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Highlight applied successfully
+07:42:06 - ai_videoclipper - DEBUG - [SRT_VIEWER] Auto-scrolling...
+07:42:06 - ai_videoclipper - INFO - [SRT_VIEWER] Auto-scroll complete
+07:42:06 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
+07:42:06 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
