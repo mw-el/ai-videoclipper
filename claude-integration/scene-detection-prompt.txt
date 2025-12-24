@@ -3,15 +3,19 @@ Analysiere die SRT-Datei und identifiziere interessante Szenen für Social Media
 
 **Kriterien:**
 * **Länge:** Mindestens 30 Sekunden, maximal 90 Sekunden
-* **Inhalt:** Suche nach:
-  - Klaren Aussagen oder pointierten Meinungen
-  - Originellen Formulierungen oder Beispielen
-  - Emotionalen oder überraschenden Momenten
+* **Inhalt:** Suche nach **vollständigen Gedankengängen**, die einen Gedanken entwickeln:
+  - Ein Argument mit Begründung oder Beispiel
+  - Eine These mit Entfaltung oder Kontext
+  - Eine Geschichte mit Anfang und Schluss
+  - Ein Konzept mit Erklärung
   - Dialog-Szenen mit mehreren Sprechern (besonders lebendig!)
-  - Frage-Antwort-Sequenzen
-* **Qualität:** Vollständige Aussagen, keine abgebrochenen Sätze
+  - Frage-Antwort-Sequenzen mit Ausführung
+* **Qualität:**
+  - Vollständige Gedankengänge, nicht nur einzelne Aussagen
+  - Der Gedanke muss sich entwickeln und abschließen
+  - Keine abgebrochenen Sätze oder Fragmente
 
-**Wichtig:** Finde 8-12 Szenen. Bevorzuge Szenen mit Dialog (mehrere Sprecher).
+**Wichtig:** Finde 8-12 Szenen. Bevorzuge Szenen mit Dialog oder ausgeführten Gedankengängen.
 
 **Ausgabeformat:**
 
