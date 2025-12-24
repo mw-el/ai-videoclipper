@@ -6,6 +6,7 @@ from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtMultimediaWidgets import QVideoWidget
 
 from time_utils import format_timestamp
+from design.style_manager import StyleManager
 
 
 class SegmentAwareSlider(QSlider):
@@ -60,6 +61,8 @@ class PreviewPlayer(QWidget):
 
         self.play_button = QPushButton("Play")
         self.play_button.clicked.connect(self.toggle_play)
+        self.play_button.setToolTip("Play/Pause video")
+        StyleManager.apply_button_style(self.play_button)
 
         self.position_slider = QSlider(Qt.Orientation.Horizontal)
         self.position_slider.setRange(0, 0)

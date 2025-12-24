@@ -55,9 +55,9 @@ class ClipToolbar(QWidget):
         self.btn_save_clips.setMinimumHeight(36)
         layout.addWidget(self.btn_save_clips)
 
-        # Run button with play_arrow icon
+        # Run button with movie icon (film strip)
         self.btn_run = QPushButton()
-        self.btn_run.setIcon(IconManager.create_icon('play_arrow', color='white', size=18))
+        self.btn_run.setIcon(IconManager.create_icon('movie', color='white', size=18))
         self.btn_run.setIconSize(QSize(18, 18))
         self.btn_run.setToolTip("Export all clips")
         self.btn_run.clicked.connect(self.export_all_clicked.emit)

@@ -53,6 +53,7 @@ class IconManager:
         'keyboard_arrow_right': MaterialIcon('e315', 'keyboard_arrow_right'),  # End marker
         'skip_previous': MaterialIcon('e045', 'skip_previous'),
         'skip_next': MaterialIcon('e044', 'skip_next'),
+        'movie': MaterialIcon('e02c', 'movie'),  # Film strip/reel icon
     }
 
     _font: QFont | None = None
