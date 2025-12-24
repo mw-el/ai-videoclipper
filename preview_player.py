@@ -7,7 +7,7 @@ from PyQt6.QtMultimediaWidgets import QVideoWidget
 
 from time_utils import format_timestamp
 from design.icon_manager import IconManager
-from design.style_manager import StyleManager
+from design.style_manager import StyleManager, Colors
 
 
 class SegmentAwareSlider(QSlider):
@@ -61,11 +61,11 @@ class PreviewPlayer(QWidget):
         self.video_widget.setMinimumWidth(480)
 
         self.play_button = QPushButton()
-        self.play_button.setIcon(IconManager.create_icon('play_arrow', color='#666666', size=20))
+        self.play_button.setIcon(IconManager.create_icon('play_arrow', color='white', size=20))
         self.play_button.setIconSize(QSize(20, 20))
         self.play_button.clicked.connect(self.toggle_play)
         self.play_button.setToolTip("Play/Pause video")
-        StyleManager.apply_icon_button_style(self.play_button)
+        StyleManager.apply_colored_icon_button_style(self.play_button, Colors.BRIGHT_GREEN)
 
         self.position_slider = QSlider(Qt.Orientation.Horizontal)
         self.position_slider.setRange(0, 0)

@@ -164,6 +164,43 @@ class StyleManager:
         button.setStyleSheet(cls.PRIMARY_BUTTON_STYLE)
 
     @classmethod
+    def apply_colored_icon_button_style(cls, button: QPushButton, bg_color: str, icon_color: str = "white") -> None:
+        """Apply colored icon button style with no border, just background color.
+
+        Args:
+            button: The button to style
+            bg_color: Background color (hex string)
+            icon_color: Icon color (hex string, default white)
+        """
+        style = f"""
+        QPushButton {{
+            background-color: {bg_color};
+            border: none;
+            border-radius: 4px;
+            padding: 4px;
+            min-height: 36px;
+            min-width: 36px;
+        }}
+        QPushButton:hover {{
+            opacity: 0.8;
+            background-color: {bg_color};
+        }}
+        QPushButton:pressed {{
+            opacity: 0.6;
+            background-color: {bg_color};
+        }}
+        QPushButton:focus {{
+            outline: none;
+            border: 2px solid {Colors.BRIGHT_GREEN};
+        }}
+        """
+        button.setStyleSheet(style)
+        button.setMinimumWidth(36)
+        button.setMinimumHeight(36)
+        button.setMaximumWidth(36)
+        button.setMaximumHeight(36)
+
+    @classmethod
     def apply_global_style(cls, app: QApplication) -> None:
         """Apply global stylesheet to the application with color variables."""
         app.setStyleSheet(cls.GLOBAL_STYLE)
