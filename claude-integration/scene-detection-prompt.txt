@@ -2,7 +2,7 @@
 Analysiere die SRT-Datei und identifiziere interessante Szenen für Social Media Clips (Podcast-Teaser, Reels, Shorts).
 
 **Kriterien:**
-* **Länge:** Mindestens 40 Sekunden, maximal 90 Sekunden
+* **Länge:** Mindestens 30 Sekunden, maximal 90 Sekunden
 * **Inhalt:** Suche nach:
   - Klaren Aussagen oder pointierten Meinungen
   - Originellen Formulierungen oder Beispielen
@@ -34,5 +34,5 @@ Gib ZUERST eine kurze Analyse im Chat aus (was du gefunden hast), und dann **am 
 **Wichtig:**
 - Zeiten in **Sekunden** (float), nicht HH:MM:SS
 - `start_time` und `end_time` müssen exakte Werte aus der SRT-Datei sein
-- Jeder Clip sollte 40-90 Sekunden lang sein
+- Jeder Clip sollte 30-90 Sekunden lang sein
 - Der JSON-Block muss am Ende deiner Antwort stehen
