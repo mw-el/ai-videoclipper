@@ -186,9 +186,9 @@ class ClipEditor(QMainWindow):
         StyleManager.apply_icon_button_style(self.btn_duplicate)
         edit_toolbar.addWidget(self.btn_duplicate)
 
-        # Split button with Material Design icon (cut = scissors)
+        # Split button with Material Design icon (unfold_more = expand/split)
         self.btn_split = QPushButton()
-        self.btn_split.setIcon(IconManager.create_icon('cut', color='#666666', size=20))
+        self.btn_split.setIcon(IconManager.create_icon('unfold_more', color='#666666', size=20))
         self.btn_split.setIconSize(QSize(20, 20))
         self.btn_split.setToolTip("Split clip at current position")
         self.btn_split.clicked.connect(self._on_split_clip)
@@ -225,9 +225,8 @@ class ClipEditor(QMainWindow):
         self.clip_toolbar.export_all_clicked.connect(self.export_all)
         self.clip_toolbar.load_config_clicked.connect(self.load_clips_config)
         self.clip_toolbar.save_config_clicked.connect(self.save_clips_config)
-        self.clip_toolbar.setContentsMargins(8, 4, 8, 4)  # Padding left/right
-        self.clip_toolbar.setMinimumHeight(40)
-        self.clip_toolbar.setMaximumHeight(40)
+        self.clip_toolbar.setContentsMargins(4, 4, 4, 4)  # Padding
+        self.clip_toolbar.setMinimumHeight(54)  # More height for buttons
         right_layout.addWidget(self.clip_toolbar, stretch=0)
 
         # Clip list widget (fills remaining space)
@@ -241,6 +240,7 @@ class ClipEditor(QMainWindow):
             lambda start, end: self.clip_list_widget.update_clip_display(self.clip_list_widget.current_clip_index)
             if self.clip_list_widget.current_clip_index >= 0 else None
         )
+        self.clip_list_widget.setMinimumHeight(200)  # Reduce space for clip list
         right_layout.addWidget(self.clip_list_widget, stretch=1)
 
         body_layout.addWidget(right_panel, stretch=0)
