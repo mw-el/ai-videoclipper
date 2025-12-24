@@ -421,11 +421,20 @@ class ClaudePanel(QWidget):
 
         if matches:
             try:
-                scene_data = json.loads(matches[0])
-                print(f"[CLAUDE] ✓ Extracted {len(scene_data.get('cut_points', []))} scene cut points")
+                config = json.loads(matches[0])
 
-                # Emit signal for parent widget to handle
-                self.scene_data_received.emit(scene_data)
+                # Check if it's a clips config (new format)
+                if 'clips' in config and 'mode' in config:
+                    num_clips = len(config.get('clips', []))
+                    print(f"[CLAUDE] ✓ Extracted clips config with {num_clips} clips")
+                    # Emit as clips config, not scene data
+                    self.load_clips_config.emit(config)
+                # Legacy format: cut_points (old scene detection)
+                elif 'cut_points' in config:
+                    print(f"[CLAUDE] ✓ Extracted {len(config.get('cut_points', []))} scene cut points")
+                    self.scene_data_received.emit(config)
+                else:
+                    print(f"[CLAUDE] ⚠ Unknown JSON format: {list(config.keys())}")
 
             except json.JSONDecodeError as e:
                 print(f"[CLAUDE] ⚠ Failed to parse JSON: {e}")

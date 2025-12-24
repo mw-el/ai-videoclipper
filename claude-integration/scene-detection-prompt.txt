@@ -1,24 +1,38 @@
 **Aufgabe:**
-Analysiere dieses Transkript und finde bis zu 10 prägnante, selbsterklärende Abschnitte, die sich als für Podcast-Teaser, Reels oder Social Media Shorts eignen. Halte dich dabei ganz präzise an die Worte des Transkripts und gib die Inhalte wortgetreu wieder, ohne sie zu verändern. 
-Wenn das transcript mehrere Sprecher unterscheidet, suche danach suche weitere 3 bis 5 Szenen, die Besonders interessant sind Szenen, die mehrere Sprecher enthalten. Z.B. eine Bestätigung der Zuhörer auf eine Ausage enthalten oder bei denen ein Kommentar oder eine Frage vorausgeht, auf die dann geantwortet wird. Suche besonders intensiv nach solchen Szenen, die mehrere Sprecher enthalten, selbst wenn das Zeitlimit dadurch überschritten wird. Solche Szenen sind am lebhaftesten.  Sorge dafür, dass bei solchen Szenen die Länge mindestens 50 Sekunden lang ist und der kntext des Dialogs deutlich wird. 
-**Kriterien für Soundbites:**
-* **Länge:** Mindestens 40 Sekunden, Länge unbegrenzt
-* **Sprache:** Wörtlich, wie im Transkript – keine Kürzungen, keine Paraphrasen
-* **Form:** Nur vollständige Aussagen, keine abgebrochenen Sätze
-* **Einstieg:** Darf direkt ins Thema springen, ohne Einleitung
-* **Charakteristik:** Der Abschnitt soll für sich stehen, also verständlich und wirkungsvoll ohne Kontext sein
-* **Inhalt:** Suche bevorzugt nach:
-  * klaren Haltungen oder pointierten Aussagen
-  * originellen Formulierungen, Denkbewegungen oder Beispielen
-  * emotionalen, persönlichen oder überraschenden Momenten
-  * Zuspitzungen, Aha-Erlebnissen oder humorvollen Kommentaren
+Analysiere die SRT-Datei und identifiziere interessante Szenen für Social Media Clips (Podcast-Teaser, Reels, Shorts).
+
+**Kriterien:**
+* **Länge:** Mindestens 40 Sekunden, maximal 90 Sekunden
+* **Inhalt:** Suche nach:
+  - Klaren Aussagen oder pointierten Meinungen
+  - Originellen Formulierungen oder Beispielen
+  - Emotionalen oder überraschenden Momenten
+  - Dialog-Szenen mit mehreren Sprechern (besonders lebendig!)
+  - Frage-Antwort-Sequenzen
+* **Qualität:** Vollständige Aussagen, keine abgebrochenen Sätze
+
+**Wichtig:** Finde 8-12 Szenen. Bevorzuge Szenen mit Dialog (mehrere Sprecher).
+
 **Ausgabeformat:**
-Für jede Fundstelle genau wie folgt:
-Gib das Ergebnis gerendert im Chatverlauf aus (nicht im Code-Fenster)
-## Titel (Ein zum Sounbyte passender viraler Hook)
-Begründung: (Kurze Zusammenfasung des Inhalts und Begrünung, warum als Soundbyte geeignet)
-### Soundbite {laufende Nummer}
-Timestamp: (start) - (end) (Dauer: sek.)
-**Speaker:** `Name(n)`
-**Text:**
-[Wörtliche Wiedergabe des vollständigen Abschnitts, keine abgekürzten Sätze]
+
+Gib ZUERST eine kurze Analyse im Chat aus (was du gefunden hast), und dann **am Ende deiner Antwort** ein JSON-Code-Block mit diesem exakten Format:
+
+```json
+{
+  "mode": "manual",
+  "selection_type": "time",
+  "clips": [
+    {
+      "name": "Kurzer beschreibender Titel der Szene",
+      "start_time": 23.5,
+      "end_time": 78.2
+    }
+  ]
+}
+```
+
+**Wichtig:**
+- Zeiten in **Sekunden** (float), nicht HH:MM:SS
+- `start_time` und `end_time` müssen exakte Werte aus der SRT-Datei sein
+- Jeder Clip sollte 40-90 Sekunden lang sein
+- Der JSON-Block muss am Ende deiner Antwort stehen

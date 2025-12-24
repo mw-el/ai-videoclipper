@@ -36,5 +36,12 @@ Default output directory: `output/clips/`
 Add screenshots here if needed.
 
 ## Notes
+
 - Transcription uses the external aTrainCore CLI from `_AA_aTrainCore`.
 - If `aTrain_core` is missing, the app will show an error.
+
+## CI/CD Status
+
+- **GitHub Actions CI is currently disabled** (`.github/workflows/ci.yml.disabled`)
+- Tests need to be fixed before re-enabling CI
+- To re-enable: rename `ci.yml.disabled` back to `ci.yml`
