@@ -37,7 +37,10 @@ class IconManager:
         'check': MaterialIcon('e5ca', 'check'),
         'close': MaterialIcon('e5cd', 'close'),
         'settings': MaterialIcon('e8b8', 'settings'),
-        'save': MaterialIcon('e161', 'save'),
+        'save': MaterialIcon('e161', 'save'),  # Save/disk icon
+        'folder_open': MaterialIcon('e2c8', 'folder_open'),  # Open/load file
+        'upload': MaterialIcon('e2c6', 'upload'),  # Upload
+        'download': MaterialIcon('e2be', 'download'),  # Download
         'folder': MaterialIcon('e2c7', 'folder'),
         'file': MaterialIcon('e226', 'file'),
         'search': MaterialIcon('e8b6', 'search'),
