@@ -30,6 +30,7 @@ class SRTSyntaxHighlighter(QSyntaxHighlighter):
 class SRTViewer(QTextEdit):
     marker_changed = pyqtSignal(float, float)
     segment_clicked = pyqtSignal(int)  # Emitted when user clicks on a segment
+    highlight_range_changed = pyqtSignal(int, int)  # Emitted when highlight range changes (start_idx, end_idx)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -185,6 +186,9 @@ class SRTViewer(QTextEdit):
             self.setExtraSelections([selection])
             logger.info(f"[SRT_VIEWER] Highlight applied successfully")
 
+            # Emit signal to notify about range change
+            self.highlight_range_changed.emit(start_index, end_index)
+
             # Auto-scroll to show start segment at top
             if auto_scroll:
                 logger.debug(f"[SRT_VIEWER] Auto-scrolling...")
@@ -214,4 +218,10 @@ class SRTViewer(QTextEdit):
         """Get segment by index."""
         if 0 <= index < len(self._segments):
             return self._segments[index]
+        return None
+
+    def get_current_highlight_range(self) -> tuple[int, int] | None:
+        """Get current highlight range (start_index, end_index) or None."""
+        if self._highlighted_range_start is not None and self._highlighted_range_end is not None:
+            return (self._highlighted_range_start, self._highlighted_range_end)
         return None

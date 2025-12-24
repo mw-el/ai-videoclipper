@@ -1956,3 +1956,8 @@ RuntimeError: CUDA failed with error out of memory
 07:54:21 - ai_videoclipper - INFO - [SRT_VIEWER] Auto-scroll complete
 07:54:21 - ai_videoclipper - INFO - [CLIPS] ✓ Populated 1 clips in list widget
 07:54:21 - ai_videoclipper - INFO - ✓ Ready to export 1 clips
+08:06:13 - ai_videoclipper - INFO - Logging to: /home/matthias/_AA_AI-VideoClipper/logs/ai_videoclipper.log
+08:06:13 - ai_videoclipper - INFO - Initializing AI VideoClipper
+08:06:13 - ai_videoclipper - INFO - Setting up faster-whisper transcriber...
+08:06:13 - ai_videoclipper - INFO - Using faster-whisper via subprocess
+08:06:13 - ai_videoclipper - INFO - ✓ Transcriber initialized

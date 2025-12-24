@@ -182,9 +182,15 @@ class ClipEditor(QMainWindow):
 
         # Clip list widget (fills remaining space)
         self.clip_list_widget = ClipListWidget()
+        self.clip_list_widget.srt_viewer = self.srt_viewer  # Link SRT viewer for text extraction
         self.clip_list_widget.clip_selected.connect(self._on_clip_selected)
         self.clip_list_widget.new_clip_requested.connect(self._on_new_clip)
         self.clip_list_widget.delete_clip_requested.connect(self._on_delete_clip)
+        # When highlight range changes in SRT viewer, update currently selected clip display
+        self.srt_viewer.highlight_range_changed.connect(
+            lambda start, end: self.clip_list_widget.update_clip_display(self.clip_list_widget.current_clip_index)
+            if self.clip_list_widget.current_clip_index >= 0 else None
+        )
         right_layout.addWidget(self.clip_list_widget, stretch=1)
 
         body_layout.addWidget(right_panel, stretch=0)

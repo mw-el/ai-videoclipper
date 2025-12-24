@@ -8,6 +8,7 @@ from PyQt6.QtGui import QFont
 
 from clip_model import Clip
 from time_utils import format_timestamp
+from srt_viewer import SRTViewer
 
 
 class ClipListWidget(QWidget):
@@ -21,6 +22,7 @@ class ClipListWidget(QWidget):
         super().__init__(parent)
         self.clips: list[Clip] = []
         self.current_clip_index: int = -1
+        self.srt_viewer: SRTViewer | None = None  # Will be set by parent
         self._init_ui()
 
     def _init_ui(self):
@@ -67,26 +69,45 @@ class ClipListWidget(QWidget):
 
     def _add_clip_row(self, index: int, clip: Clip):
         """Add a clip row to the list."""
-        # Format: "Clip 1\n00:15 - 00:42\nSegments 5-12"
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+
+        # Format: "Clip 1\n00:15 - 00:42\nSegments 5-12\n[start text]\n...\n[end text]"
         start_time = format_timestamp(clip.start_time)
         end_time = format_timestamp(clip.end_time)
         segment_range = f"Segments {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
+        # Get start and end segment texts
+        start_text = ""
+        end_text = ""
+        if self.srt_viewer:
+            start_seg = self.srt_viewer.get_segment_at_index(clip.segment_start_index)
+            end_seg = self.srt_viewer.get_segment_at_index(clip.segment_end_index)
+            if start_seg:
+                start_text = start_seg.text[:50]  # Limit to 50 chars
+            if end_seg:
+                end_text = end_seg.text[-50:]  # Last 50 chars, right-aligned
+
         text = f"Clip {index + 1}\n{start_time} – {end_time}\n{segment_range}"
+        if start_text:
+            text += f"\n{start_text}"
+        if end_text:
+            text += f"\n...\n{end_text}"
 
         item = QListWidgetItem(text)
         item.setData(Qt.ItemDataRole.UserRole, index)  # Store clip index
 
-        # Set fixed height for each row (3 lines)
+        # Set variable height for each row (5-6 lines)
         height = self.get_item_height()
         item.setSizeHint(QSize(200, height))
 
         self.clip_list.addItem(item)
+        logger.debug(f"[CLIP_LIST] Added clip {index + 1} with start/end texts")
 
     def get_item_height(self) -> int:
         """Get height of a single clip row."""
-        # Approximate: font height * 3 lines + padding
-        return 70
+        # Approximate: font height * 5-6 lines + padding (for extended clip info)
+        return 110
 
     def _on_clip_selected(self):
         """Handle clip selection."""
@@ -138,3 +159,43 @@ class ClipListWidget(QWidget):
         """Select a clip by index."""
         if 0 <= index < self.clip_list.count():
             self.clip_list.setCurrentRow(index)
+
+    def update_clip_display(self, clip_index: int):
+        """Update display of a specific clip (when segment texts change)."""
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+
+        if not (0 <= clip_index < len(self.clips)):
+            logger.warning(f"[CLIP_LIST] Invalid clip index for update: {clip_index}")
+            return
+
+        try:
+            clip = self.clips[clip_index]
+            start_time = format_timestamp(clip.start_time)
+            end_time = format_timestamp(clip.end_time)
+            segment_range = f"Segments {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
+
+            # Get start and end segment texts
+            start_text = ""
+            end_text = ""
+            if self.srt_viewer:
+                start_seg = self.srt_viewer.get_segment_at_index(clip.segment_start_index)
+                end_seg = self.srt_viewer.get_segment_at_index(clip.segment_end_index)
+                if start_seg:
+                    start_text = start_seg.text[:50]
+                if end_seg:
+                    end_text = end_seg.text[-50:]
+
+            text = f"Clip {clip_index + 1}\n{start_time} – {end_time}\n{segment_range}"
+            if start_text:
+                text += f"\n{start_text}"
+            if end_text:
+                text += f"\n...\n{end_text}"
+
+            # Update the item
+            item = self.clip_list.item(clip_index)
+            if item:
+                item.setText(text)
+                logger.debug(f"[CLIP_LIST] Updated clip {clip_index + 1} display")
+        except Exception as e:
+            logger.error(f"[CLIP_LIST] Error updating clip display {clip_index}: {e}", exc_info=True)
