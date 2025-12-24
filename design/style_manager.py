@@ -45,6 +45,8 @@ class Colors:
 class StyleManager:
     """Manages consistent styling for UI elements."""
 
+    BUTTON_MIN_SIZE = 32
+
     # Global CSS stylesheet with color variables
     GLOBAL_STYLE = f"""
     /* Root style with color variables */
@@ -74,23 +76,24 @@ class StyleManager:
     QPushButton {{
         background-color: {Colors.LIGHT_GRAY};
         color: {Colors.DARK_GRAY};
-        border: 1px solid {Colors.BORDER_GRAY};
+        border: none;
         border-radius: 4px;
-        padding: 4px 8px;
+        padding: 3px 8px;
         font-size: 12px;
-        min-height: 36px;
+        min-height: {BUTTON_MIN_SIZE}px;
     }}
     QPushButton:hover {{
         background-color: {Colors.MEDIUM_GRAY};
-        border: 1px solid {Colors.DARK_BORDER_GRAY};
     }}
     QPushButton:pressed {{
         background-color: {Colors.DARK_BORDER_GRAY};
-        border: 1px solid {Colors.DARK_GRAY};
     }}
     QPushButton:focus {{
         outline: none;
-        border: 1px solid {Colors.BRIGHT_GREEN};
+    }}
+    QPushButton:disabled {{
+        background-color: #595959;
+        color: white;
     }}
     """
 
@@ -98,23 +101,23 @@ class StyleManager:
     ICON_BUTTON_STYLE = f"""
     QPushButton {{
         background-color: {Colors.LIGHT_GRAY};
-        border: 1px solid {Colors.BORDER_GRAY};
+        border: none;
         border-radius: 4px;
-        padding: 4px;
-        min-height: 36px;
-        min-width: 36px;
+        padding: 3px;
+        min-height: {BUTTON_MIN_SIZE}px;
+        min-width: {BUTTON_MIN_SIZE}px;
     }}
     QPushButton:hover {{
         background-color: {Colors.MEDIUM_GRAY};
-        border: 1px solid {Colors.DARK_BORDER_GRAY};
     }}
     QPushButton:pressed {{
         background-color: {Colors.DARK_BORDER_GRAY};
-        border: 1px solid {Colors.DARK_GRAY};
     }}
     QPushButton:focus {{
         outline: none;
-        border: 2px solid {Colors.BRIGHT_GREEN};
+    }}
+    QPushButton:disabled {{
+        background-color: #595959;
     }}
     """
 
@@ -123,24 +126,25 @@ class StyleManager:
     QPushButton {{
         background-color: {Colors.BRIGHT_GREEN};
         color: white;
-        border: 1px solid {Colors.GREEN};
+        border: none;
         border-radius: 4px;
-        padding: 4px 12px;
+        padding: 3px 10px;
         font-size: 12px;
         font-weight: bold;
-        min-height: 36px;
+        min-height: {BUTTON_MIN_SIZE}px;
     }}
     QPushButton:hover {{
         background-color: {Colors.GREEN};
-        border: 1px solid {Colors.GREEN};
     }}
     QPushButton:pressed {{
         background-color: {Colors.DARK_SIENA_600};
-        border: 1px solid {Colors.DARK_SIENA};
     }}
     QPushButton:focus {{
         outline: none;
-        border: 2px solid {Colors.BLUE};
+    }}
+    QPushButton:disabled {{
+        background-color: #595959;
+        color: white;
     }}
     """
 
@@ -170,10 +174,10 @@ class StyleManager:
     def apply_icon_button_style(cls, button: QPushButton) -> None:
         """Apply icon-only button style (square, equal dimensions)."""
         button.setStyleSheet(cls.ICON_BUTTON_STYLE)
-        button.setMinimumWidth(36)
-        button.setMinimumHeight(36)
-        button.setMaximumWidth(36)
-        button.setMaximumHeight(36)
+        button.setMinimumWidth(cls.BUTTON_MIN_SIZE)
+        button.setMinimumHeight(cls.BUTTON_MIN_SIZE)
+        button.setMaximumWidth(cls.BUTTON_MIN_SIZE)
+        button.setMaximumHeight(cls.BUTTON_MIN_SIZE)
 
     @classmethod
     def apply_primary_button_style(cls, button: QPushButton) -> None:
@@ -195,15 +199,15 @@ class StyleManager:
             background-color: {bg_color};
             border: none;
             border-radius: 4px;
-            padding: 4px;
-            min-height: 36px;
-            min-width: 36px;
+            padding: 3px;
+            min-height: {cls.BUTTON_MIN_SIZE}px;
+            min-width: {cls.BUTTON_MIN_SIZE}px;
         }}
         QPushButton:hover {{
             background-color: {hover_color};
-            padding: 3px;
-            min-height: 37px;
-            min-width: 37px;
+            padding: 2px;
+            min-height: {cls.BUTTON_MIN_SIZE + 1}px;
+            min-width: {cls.BUTTON_MIN_SIZE + 1}px;
         }}
         QPushButton:pressed {{
             opacity: 0.7;
@@ -212,10 +216,13 @@ class StyleManager:
         QPushButton:focus {{
             outline: none;
         }}
+        QPushButton:disabled {{
+            background-color: #595959;
+        }}
         """
         button.setStyleSheet(style)
-        button.setMinimumWidth(36)
-        button.setMinimumHeight(36)
+        button.setMinimumWidth(cls.BUTTON_MIN_SIZE)
+        button.setMinimumHeight(cls.BUTTON_MIN_SIZE)
         button.setMaximumWidth(36)
         button.setMaximumHeight(36)
 

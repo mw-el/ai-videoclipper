@@ -22,20 +22,29 @@ class ClipsAIWrapper:
     def __init__(self, use_clipsai: bool = True) -> None:
         self._clip_finder_cls = None
         self._media_editor_cls = None
-        if use_clipsai:
-            try:
-                from clipsai import ClipFinder, MediaEditor
+        self._use_clipsai = use_clipsai
+        self._clipsai_loaded = False
 
-                self._clip_finder_cls = ClipFinder
-                self._media_editor_cls = MediaEditor
-            except Exception:
-                self._clip_finder_cls = None
-                self._media_editor_cls = None
+    def _ensure_clipsai(self) -> None:
+        if not self._use_clipsai or self._clipsai_loaded:
+            return
+        try:
+            from clipsai import ClipFinder, MediaEditor
+        except Exception:
+            self._clip_finder_cls = None
+            self._media_editor_cls = None
+            self._use_clipsai = False
+            self._clipsai_loaded = True
+            return
+        self._clip_finder_cls = ClipFinder
+        self._media_editor_cls = MediaEditor
+        self._clipsai_loaded = True
 
     def find_clips(self, segments: Iterable[SrtSegment], max_clips: int = 6) -> List[Clip]:
         segments = list(segments)
         if not segments:
             return []
+        self._ensure_clipsai()
         if self._clip_finder_cls:
             payload = self._segments_to_payload(segments)
             clip_finder = self._clip_finder_cls()
@@ -67,6 +76,7 @@ class ClipsAIWrapper:
             self.trim_clip(source_path, clip.start_time, clip.end_time, output_path)
 
     def _get_media_editor(self, source_path: Path):
+        self._ensure_clipsai()
         if not self._media_editor_cls:
             return None
         try:

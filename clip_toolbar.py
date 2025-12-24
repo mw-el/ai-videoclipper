@@ -3,7 +3,7 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton
 from PyQt6.QtCore import pyqtSignal, QSize
 from design.icon_manager import IconManager
-from design.style_manager import StyleManager
+from design.style_manager import StyleManager, Colors
 
 
 class ClipToolbar(QWidget):
@@ -25,7 +25,7 @@ class ClipToolbar(QWidget):
         """Initialize toolbar UI."""
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(6)
+        layout.setSpacing(10)
 
         # Note: Start, End, Duplicate, Split buttons are now in the left edit toolbar
         # This toolbar now only contains Load, Save, and Run buttons
@@ -35,24 +35,24 @@ class ClipToolbar(QWidget):
 
         # Load Clips button with folder_open icon
         self.btn_load_clips = QPushButton()
-        self.btn_load_clips.setIcon(IconManager.create_icon('folder_open', color='#666666', size=18))
+        self.btn_load_clips.setIcon(IconManager.create_icon('folder_open', color='white', size=18))
         self.btn_load_clips.setIconSize(QSize(18, 18))
         self.btn_load_clips.setToolTip("Load clips configuration from file")
         self.btn_load_clips.clicked.connect(self.load_config_clicked.emit)
-        StyleManager.apply_button_style(self.btn_load_clips)
-        self.btn_load_clips.setMinimumWidth(36)
-        self.btn_load_clips.setMinimumHeight(36)
+        StyleManager.apply_colored_icon_button_style(self.btn_load_clips, Colors.BRIGHT_BLUE)
+        self.btn_load_clips.setMinimumWidth(StyleManager.BUTTON_MIN_SIZE)
+        self.btn_load_clips.setMinimumHeight(StyleManager.BUTTON_MIN_SIZE)
         layout.addWidget(self.btn_load_clips)
 
         # Save Clips button with save icon
         self.btn_save_clips = QPushButton()
-        self.btn_save_clips.setIcon(IconManager.create_icon('save', color='#666666', size=18))
+        self.btn_save_clips.setIcon(IconManager.create_icon('save', color='white', size=18))
         self.btn_save_clips.setIconSize(QSize(18, 18))
         self.btn_save_clips.setToolTip("Save clips configuration to file")
         self.btn_save_clips.clicked.connect(self.save_config_clicked.emit)
-        StyleManager.apply_button_style(self.btn_save_clips)
-        self.btn_save_clips.setMinimumWidth(36)
-        self.btn_save_clips.setMinimumHeight(36)
+        StyleManager.apply_colored_icon_button_style(self.btn_save_clips, Colors.GREEN)
+        self.btn_save_clips.setMinimumWidth(StyleManager.BUTTON_MIN_SIZE)
+        self.btn_save_clips.setMinimumHeight(StyleManager.BUTTON_MIN_SIZE)
         layout.addWidget(self.btn_save_clips)
 
         # Run button with movie icon (film strip)
@@ -61,7 +61,7 @@ class ClipToolbar(QWidget):
         self.btn_run.setIconSize(QSize(18, 18))
         self.btn_run.setToolTip("Export all clips")
         self.btn_run.clicked.connect(self.export_all_clicked.emit)
-        StyleManager.apply_primary_button_style(self.btn_run)
-        self.btn_run.setMinimumWidth(40)
-        self.btn_run.setMinimumHeight(36)
+        StyleManager.apply_colored_icon_button_style(self.btn_run, Colors.BRIGHT_GREEN)
+        self.btn_run.setMinimumWidth(StyleManager.BUTTON_MIN_SIZE)
+        self.btn_run.setMinimumHeight(StyleManager.BUTTON_MIN_SIZE)
         layout.addWidget(self.btn_run)

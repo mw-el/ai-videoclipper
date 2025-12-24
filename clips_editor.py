@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from PyQt6.QtCore import QObject, QThread, Qt, pyqtSignal, QSize
+from PyQt6.QtCore import QObject, QThread, Qt, pyqtSignal, QSize, QTimer
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -24,14 +27,16 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QDockWidget,
     QSplitter,
+    QSizePolicy,
 )
 from PyQt6.QtGui import QColor
 
-from faster_whisper_transcriber import FasterWhisperTranscriber
+from faster_whisper_transcriber import FasterWhisperTranscriber, TranscriptionResult
 from clip_model import Clip, ClipsAIWrapper
 from logger import setup_logging
 from preview_player import PreviewPlayer
 from srt_viewer import SRTViewer
+from srt_utils import parse_srt
 from time_utils import format_timestamp
 from clip_list_widget import ClipListWidget
 from clip_toolbar import ClipToolbar
@@ -96,7 +101,7 @@ class ClipEditor(QMainWindow):
         self.transcriber = FasterWhisperTranscriber(progress_callback=self._log_progress)
         logger.info("✓ Transcriber initialized")
 
-        self.clip_wrapper = ClipsAIWrapper()
+        self.clip_wrapper: ClipsAIWrapper | None = None
 
         self.video_path: Path | None = None
         self.transcription = None
@@ -104,10 +109,12 @@ class ClipEditor(QMainWindow):
         self.output_dir: Path | None = None  # Will be set based on source video location
         self.last_clicked_segment_index: int = -1  # For Set Start/End operations
         self.auto_scene_detection: bool = False  # Scene detection mode (False=Manual, True=Auto)
-
         self._threads: list[QThread] = []
 
         self._build_ui()
+
+        # Delay media player init until after the GUI is shown
+        QTimer.singleShot(0, self.preview_player.ensure_player)
 
     def _build_ui(self) -> None:
         container = QWidget(self)
@@ -124,19 +131,20 @@ class ClipEditor(QMainWindow):
         top_bar.addWidget(self.open_button)
 
         # Scene detection mode checkboxes (mutually exclusive)
-        top_bar.addSpacing(20)
+        top_bar.setSpacing(6)
+        top_bar.addSpacing(6)
         label_mode = QLabel("Scene Detection:")
-        top_bar.addWidget(label_mode)
+        top_bar.addWidget(label_mode, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         self.checkbox_manual = QCheckBox("Manual (default)")
         self.checkbox_manual.setChecked(True)
         self.checkbox_manual.stateChanged.connect(self._on_manual_mode_toggled)
-        top_bar.addWidget(self.checkbox_manual)
+        top_bar.addWidget(self.checkbox_manual, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         self.checkbox_auto = QCheckBox("Auto (ClipsAI)")
         self.checkbox_auto.setChecked(False)
         self.checkbox_auto.stateChanged.connect(self._on_auto_mode_toggled)
-        top_bar.addWidget(self.checkbox_auto)
+        top_bar.addWidget(self.checkbox_auto, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         top_bar.addStretch()
 
@@ -152,11 +160,12 @@ class ClipEditor(QMainWindow):
 
         # Preview player (contains sliders)
         self.preview_player = PreviewPlayer()
+        self.preview_player.user_marker_changed.connect(self._on_preview_markers_changed)
         left_layout.addWidget(self.preview_player)
 
         # Edit toolbar (Start, End, Duplicate, Split buttons above SRT)
         edit_toolbar = QHBoxLayout()
-        edit_toolbar.setContentsMargins(4, 4, 4, 4)
+        edit_toolbar.setContentsMargins(0, 4, 0, 4)
         edit_toolbar.setSpacing(4)
 
         # Start button with diamond marker icon
@@ -195,7 +204,7 @@ class ClipEditor(QMainWindow):
         StyleManager.apply_colored_icon_button_style(self.btn_split, Colors.ORANGE)
         edit_toolbar.addWidget(self.btn_split)
 
-        edit_toolbar.addStretch()
+        edit_toolbar.addWidget(self.preview_player.marker_widget, stretch=1)
         left_layout.addLayout(edit_toolbar, stretch=0)
 
         # SRT Viewer (fills remaining space)
@@ -227,7 +236,9 @@ class ClipEditor(QMainWindow):
         self.clip_toolbar.save_config_clicked.connect(self.save_clips_config)
         self.clip_toolbar.setContentsMargins(4, 4, 4, 4)  # Padding
         self.clip_toolbar.setMinimumHeight(54)  # More height for buttons
+        self.clip_toolbar.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
         right_layout.addWidget(self.clip_toolbar, stretch=0)
+        right_layout.setAlignment(self.clip_toolbar, Qt.AlignmentFlag.AlignRight)
 
         # Clip list widget (fills remaining space)
         self.clip_list_widget = ClipListWidget()
@@ -348,13 +359,22 @@ class ClipEditor(QMainWindow):
     def _transcribe_and_find_clips(self):
         logger.info(f"Transcribing: {self.video_path}")
         logger.info("=" * 60)
-        result = self.transcriber.transcribe(str(self.video_path))
+        source_path = self.video_path
+        if source_path is None:
+            raise RuntimeError("Video path not set")
+
+        result = self._load_embedded_transcription(source_path)
+        if result:
+            logger.info("Using embedded subtitles from media file")
+        else:
+            result = self.transcriber.transcribe(str(source_path))
+            self._embed_srt_in_video(source_path, result.srt_path)
         logger.info("=" * 60)
         logger.info(f"✓ Transcription complete: {len(result.segments)} segments")
 
         if self.auto_scene_detection:
             logger.info("Finding clips using ClipsAI (AUTO mode)...")
-            clips = self.clip_wrapper.find_clips(result.segments, max_clips=6)
+            clips = self._get_clip_wrapper().find_clips(result.segments, max_clips=6)
             logger.info(f"Found {len(clips)} clips")
         else:
             logger.info("Creating default full-video clip (MANUAL mode)...")
@@ -377,6 +397,154 @@ class ClipEditor(QMainWindow):
                 clips = []
 
         return result, clips
+
+    def _get_clip_wrapper(self) -> ClipsAIWrapper:
+        if self.clip_wrapper is None:
+            self.clip_wrapper = ClipsAIWrapper()
+        return self.clip_wrapper
+
+    def _load_embedded_transcription(self, source_path: Path) -> TranscriptionResult | None:
+        """Load embedded subtitles if present and return a transcription result."""
+        srt_path = self._extract_embedded_srt(source_path)
+        if not srt_path:
+            return None
+        try:
+            segments = parse_srt(str(srt_path))
+        except Exception as exc:
+            logger.error(f"[SUBTITLES] Failed to parse embedded SRT: {exc}")
+            return None
+        text = " ".join(seg.text for seg in segments).strip()
+        if not segments:
+            return None
+        return TranscriptionResult(srt_path=srt_path, segments=segments, text=text)
+
+    def _probe_subtitle_streams(self, source_path: Path) -> list[dict]:
+        cmd = [
+            "ffprobe",
+            "-v",
+            "error",
+            "-select_streams",
+            "s",
+            "-show_entries",
+            "stream=index,codec_name:stream_tags=language",
+            "-of",
+            "json",
+            str(source_path),
+        ]
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        except FileNotFoundError:
+            logger.warning("[SUBTITLES] ffprobe not found; cannot detect embedded subtitles")
+            return []
+        except subprocess.CalledProcessError as exc:
+            logger.warning(f"[SUBTITLES] ffprobe failed: {exc.stderr.strip()}")
+            return []
+        try:
+            payload = json.loads(result.stdout or "{}")
+        except json.JSONDecodeError:
+            return []
+        return payload.get("streams", []) or []
+
+    @staticmethod
+    def _select_subtitle_stream(streams: list[dict]) -> dict | None:
+        if not streams:
+            return None
+        for stream in streams:
+            if stream.get("codec_name") in {"subrip", "srt"}:
+                return stream
+        return streams[0]
+
+    def _extract_embedded_srt(self, source_path: Path) -> Path | None:
+        streams = self._probe_subtitle_streams(source_path)
+        stream = self._select_subtitle_stream(streams)
+        if not stream:
+            return None
+        stream_index = stream.get("index")
+        if stream_index is None:
+            return None
+        temp_dir = Path(tempfile.gettempdir()) / "ai_videoclipper"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        temp_srt = temp_dir / f"{source_path.stem}_embedded.srt"
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(source_path),
+            "-map",
+            f"0:{stream_index}",
+            "-c:s",
+            "srt",
+            str(temp_srt),
+        ]
+        try:
+            subprocess.run(cmd, capture_output=True, text=True, check=True)
+        except FileNotFoundError:
+            logger.warning("[SUBTITLES] ffmpeg not found; cannot extract embedded subtitles")
+            return None
+        except subprocess.CalledProcessError as exc:
+            logger.warning(f"[SUBTITLES] Failed to extract embedded subtitles: {exc.stderr.strip()}")
+            return None
+        if not temp_srt.exists():
+            return None
+        return temp_srt
+
+    @staticmethod
+    def _subtitle_codec_for_container(source_path: Path) -> str | None:
+        ext = source_path.suffix.lower()
+        if ext in {".mp4", ".m4v", ".mov"}:
+            return "mov_text"
+        if ext in {".mkv", ".mka", ".mks"}:
+            return "srt"
+        if ext == ".webm":
+            return "webvtt"
+        return None
+
+    def _embed_srt_in_video(self, source_path: Path, srt_path: Path | None, force: bool = False) -> None:
+        if not srt_path or not srt_path.exists():
+            return
+        if not force and self._probe_subtitle_streams(source_path):
+            logger.info("[SUBTITLES] Skipping embed: subtitles already present")
+            return
+        subtitle_codec = self._subtitle_codec_for_container(source_path)
+        if not subtitle_codec:
+            logger.warning("[SUBTITLES] Skipping embed: unsupported container for subtitles")
+            return
+
+        temp_output = source_path.with_name(f"{source_path.stem}.subbed{source_path.suffix}")
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(source_path),
+            "-i",
+            str(srt_path),
+            "-map",
+            "0",
+            "-map",
+            "1:0",
+            "-c",
+            "copy",
+            "-c:s",
+            subtitle_codec,
+            str(temp_output),
+        ]
+        try:
+            subprocess.run(cmd, capture_output=True, text=True, check=True)
+        except FileNotFoundError:
+            logger.warning("[SUBTITLES] ffmpeg not found; cannot embed subtitles")
+            return
+        except subprocess.CalledProcessError as exc:
+            logger.warning(f"[SUBTITLES] Failed to embed subtitles: {exc.stderr.strip()}")
+            if temp_output.exists():
+                temp_output.unlink(missing_ok=True)
+            return
+
+        try:
+            os.replace(temp_output, source_path)
+        except OSError as exc:
+            logger.warning(f"[SUBTITLES] Failed to replace media file with embedded subtitles: {exc}")
+            if temp_output.exists():
+                temp_output.unlink(missing_ok=True)
 
     def on_transcription_ready(self, payload) -> None:
         logger.info("Processing transcription results...")
@@ -452,7 +620,12 @@ class ClipEditor(QMainWindow):
             clip.segment_end_index,
             auto_scroll=True
         )
+        self._apply_clip_markers_to_preview(clip)
         self.status_label.setText(f"Status: clip {clip_index + 1} selected")
+
+    def _apply_clip_markers_to_preview(self, clip: Clip) -> None:
+        """Sync preview sliders to the clip's current boundaries."""
+        self.preview_player.set_markers(clip.start_time, clip.end_time)
 
     def _on_srt_segment_clicked(self, segment_index: int) -> None:
         """Handle segment click in SRT viewer. Remember for Set Start/End."""
@@ -713,11 +886,13 @@ class ClipEditor(QMainWindow):
         # Export video clip - use slug for video filename
         video_path = clip_folder / f"{clip_slug}.mp4"
         logger.info(f"Exporting clip {index + 1} video to: {video_path}")
-        self.clip_wrapper.trim_clip(self.video_path, clip.start_time, clip.end_time, video_path)
+        self._get_clip_wrapper().trim_clip(self.video_path, clip.start_time, clip.end_time, video_path)
 
         # Export SRT file with all segments within the clip, adjusted timing
         srt_path = clip_folder / f"{clip_slug}.srt"
         self._export_clip_srt(clip, srt_path)
+        if srt_path.exists():
+            self._embed_srt_in_video(video_path, srt_path, force=True)
 
         logger.info(f"✓ Exported clip {index + 1} to: {clip_folder}")
         return clip_folder
@@ -790,8 +965,9 @@ class ClipEditor(QMainWindow):
         logger.info(f"[CONFIG] Auto-mode: finding clips with max_clips={max_clips}")
 
         # Use ClipsAI to find clips
-        clips = self.clip_wrapper.find_clips(self.transcription.segments, max_clips=max_clips)
-        clips = self.clip_wrapper._add_segment_indices(clips, self.transcription.segments)
+        clip_wrapper = self._get_clip_wrapper()
+        clips = clip_wrapper.find_clips(self.transcription.segments, max_clips=max_clips)
+        clips = clip_wrapper._add_segment_indices(clips, self.transcription.segments)
         self.clips = clips
         logger.info(f"[CONFIG] ✓ Auto-mode found {len(clips)} clips")
 
@@ -828,7 +1004,7 @@ class ClipEditor(QMainWindow):
             logger.info(f"[CONFIG]   Clip {i + 1}: {name} ({format_timestamp(start_time)} - {format_timestamp(end_time)})")
 
         # Add segment indices
-        clips = self.clip_wrapper._add_segment_indices(clips, self.transcription.segments)
+        clips = self._get_clip_wrapper()._add_segment_indices(clips, self.transcription.segments)
         self.clips = clips
         logger.info(f"[CONFIG] ✓ Loaded {len(clips)} clips by time")
 
@@ -912,6 +1088,43 @@ class ClipEditor(QMainWindow):
         except Exception as e:
             logger.error(f"[CONFIG] Failed to save clips config: {e}", exc_info=True)
             QMessageBox.critical(self, "Error Saving Config", f"Failed to save clips configuration:\n{str(e)}")
+
+    def _find_segment_index_for_time(self, seconds: float, prefer_start: bool) -> int | None:
+        """Find the segment index that best matches a given time."""
+        if not self.transcription or not self.transcription.segments:
+            return None
+        segments = self.transcription.segments
+        if prefer_start:
+            for i, seg in enumerate(segments):
+                if seg.end >= seconds:
+                    return i
+            return len(segments) - 1
+        for i in range(len(segments) - 1, -1, -1):
+            if segments[i].start <= seconds:
+                return i
+        return 0
+
+    def _on_preview_markers_changed(self, start_seconds: float, end_seconds: float) -> None:
+        """Sync clip + SRT highlight when user moves start/end sliders."""
+        if not self.transcription or not self.transcription.segments:
+            return
+        current_clip = self.clip_list_widget.get_current_clip()
+        if not current_clip:
+            return
+
+        start_idx = self._find_segment_index_for_time(start_seconds, prefer_start=True)
+        end_idx = self._find_segment_index_for_time(end_seconds, prefer_start=False)
+        if start_idx is None or end_idx is None:
+            return
+        if start_idx > end_idx:
+            start_idx, end_idx = end_idx, start_idx
+
+        current_clip.start_time = start_seconds
+        current_clip.end_time = end_seconds
+        current_clip.segment_start_index = start_idx
+        current_clip.segment_end_index = end_idx
+
+        self.srt_viewer.highlight_segment_range(start_idx, end_idx, auto_scroll=False)
 
     def on_marker_changed(self, start_seconds: float, end_seconds: float) -> None:
         self.preview_player.set_markers(start_seconds, end_seconds)
