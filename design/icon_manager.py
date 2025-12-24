@@ -51,6 +51,7 @@ class IconManager:
         'cut': MaterialIcon('e14f', 'cut'),  # Cut/scissors for split
         'unfold_more': MaterialIcon('e5d8', 'unfold_more'),  # Split/expand icon
         'split_screen': MaterialIcon('e188', 'split_screen'),  # Split screen icon
+        'split_scene': MaterialIcon('e2d8', 'split_scene'),  # Split scene icon
         'keyboard_arrow_left': MaterialIcon('e314', 'keyboard_arrow_left'),  # Start marker
         'keyboard_arrow_right': MaterialIcon('e315', 'keyboard_arrow_right'),  # End marker
         'skip_previous': MaterialIcon('e045', 'skip_previous'),

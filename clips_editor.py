@@ -189,9 +189,9 @@ class ClipEditor(QMainWindow):
         StyleManager.apply_icon_button_style(self.btn_duplicate)
         edit_toolbar.addWidget(self.btn_duplicate)
 
-        # Split button with Material Design icon (split_screen)
+        # Split button with Material Design icon (split_scene)
         self.btn_split = QPushButton()
-        self.btn_split.setIcon(IconManager.create_icon('split_screen', color='#666666', size=20))
+        self.btn_split.setIcon(IconManager.create_icon('split_scene', color='#666666', size=20))
         self.btn_split.setIconSize(QSize(20, 20))
         self.btn_split.setToolTip("Split clip at current position")
         self.btn_split.clicked.connect(self._on_split_clip)
