@@ -182,16 +182,17 @@ class StyleManager:
             min-width: 36px;
         }}
         QPushButton:hover {{
-            opacity: 0.8;
             background-color: {bg_color};
+            padding: 3px;
+            min-height: 37px;
+            min-width: 37px;
         }}
         QPushButton:pressed {{
-            opacity: 0.6;
+            opacity: 0.7;
             background-color: {bg_color};
         }}
         QPushButton:focus {{
             outline: none;
-            border: 2px solid {Colors.BRIGHT_GREEN};
         }}
         """
         button.setStyleSheet(style)
