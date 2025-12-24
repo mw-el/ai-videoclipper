@@ -134,10 +134,10 @@ class ClipEditor(QMainWindow):
 
         main_layout.addLayout(top_bar)
 
-        # MAIN BODY: Horizontal layout with sliders/clips on left, video+SRT on right
+        # MAIN BODY: Horizontal layout with sliders/SRT on left, video+clips on right
         body_layout = QHBoxLayout()
 
-        # LEFT PANEL: Sliders and Clip list (much broader, reaches to video)
+        # LEFT PANEL: Sliders and SRT Viewer (much broader, reaches to video)
         left_panel = QWidget()
         left_layout = QVBoxLayout(left_panel)
         left_layout.setContentsMargins(0, 0, 0, 0)
@@ -146,16 +146,15 @@ class ClipEditor(QMainWindow):
         self.preview_player = PreviewPlayer()
         left_layout.addWidget(self.preview_player)
 
-        # Clip list widget (fills remaining space)
-        self.clip_list_widget = ClipListWidget()
-        self.clip_list_widget.clip_selected.connect(self._on_clip_selected)
-        self.clip_list_widget.new_clip_requested.connect(self._on_new_clip)
-        self.clip_list_widget.delete_clip_requested.connect(self._on_delete_clip)
-        left_layout.addWidget(self.clip_list_widget, stretch=1)
+        # SRT Viewer (fills remaining space)
+        self.srt_viewer = SRTViewer()
+        self.srt_viewer.marker_changed.connect(self.on_marker_changed)
+        self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
+        left_layout.addWidget(self.srt_viewer, stretch=1)
 
         body_layout.addWidget(left_panel, stretch=1)
 
-        # RIGHT PANEL: Video preview (top) + Buttons (under video) + SRT Viewer
+        # RIGHT PANEL: Video preview (top) + Buttons (under video) + Clip list
         right_panel = QWidget()
         right_layout = QVBoxLayout(right_panel)
         right_layout.setContentsMargins(0, 0, 0, 0)
@@ -181,11 +180,12 @@ class ClipEditor(QMainWindow):
         self.clip_toolbar.setMaximumHeight(40)
         right_layout.addWidget(self.clip_toolbar, stretch=0)
 
-        # SRT Viewer (fills remaining space)
-        self.srt_viewer = SRTViewer()
-        self.srt_viewer.marker_changed.connect(self.on_marker_changed)
-        self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
-        right_layout.addWidget(self.srt_viewer, stretch=1)
+        # Clip list widget (fills remaining space)
+        self.clip_list_widget = ClipListWidget()
+        self.clip_list_widget.clip_selected.connect(self._on_clip_selected)
+        self.clip_list_widget.new_clip_requested.connect(self._on_new_clip)
+        self.clip_list_widget.delete_clip_requested.connect(self._on_delete_clip)
+        right_layout.addWidget(self.clip_list_widget, stretch=1)
 
         body_layout.addWidget(right_panel, stretch=0)
 
