@@ -139,9 +139,6 @@ class ClipEditor(QMainWindow):
         top_bar.addWidget(self.checkbox_auto)
 
         top_bar.addStretch()
-        self.status_label = QLabel("Status: idle")
-        self.status_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        top_bar.addWidget(self.status_label)
 
         main_layout.addLayout(top_bar)
 
@@ -162,18 +159,18 @@ class ClipEditor(QMainWindow):
         edit_toolbar.setContentsMargins(4, 4, 4, 4)
         edit_toolbar.setSpacing(4)
 
-        # Start button with Material Design icon (skip_previous = go to start)
+        # Start button with diamond marker icon
         self.btn_set_start = QPushButton()
-        self.btn_set_start.setIcon(IconManager.create_icon('skip_previous', color='white', size=20))
+        self.btn_set_start.setIcon(IconManager.create_icon('line_start_diamond', color='white', size=20))
         self.btn_set_start.setIconSize(QSize(20, 20))
         self.btn_set_start.setToolTip("Set clip start point")
         self.btn_set_start.clicked.connect(self._on_set_start)
         StyleManager.apply_colored_icon_button_style(self.btn_set_start, Colors.BLUE)
         edit_toolbar.addWidget(self.btn_set_start)
 
-        # End button with Material Design icon (skip_next = go to end)
+        # End button with diamond marker icon
         self.btn_set_end = QPushButton()
-        self.btn_set_end.setIcon(IconManager.create_icon('skip_next', color='white', size=20))
+        self.btn_set_end.setIcon(IconManager.create_icon('line_end_diamond', color='white', size=20))
         self.btn_set_end.setIconSize(QSize(20, 20))
         self.btn_set_end.setToolTip("Set clip end point")
         self.btn_set_end.clicked.connect(self._on_set_end)
@@ -250,13 +247,29 @@ class ClipEditor(QMainWindow):
 
         main_layout.addLayout(body_layout)
 
-        # Add logging dock widget
-        log_dock = QDockWidget("Logs", self)
+        # Add logging dock widget (without title bar)
+        log_dock = QDockWidget(self)
+        log_dock.setTitleBarWidget(QWidget())  # Hide title bar
+
+        # Create container for status label and log display
+        log_container = QWidget()
+        log_container_layout = QVBoxLayout(log_container)
+        log_container_layout.setContentsMargins(0, 0, 0, 0)
+        log_container_layout.setSpacing(4)
+
+        # Status label (shows file path)
+        self.status_label = QLabel("No file selected")
+        self.status_label.setStyleSheet("padding: 4px; background-color: #f0f0f0; color: #333;")
+        log_container_layout.addWidget(self.status_label)
+
+        # Log display
         self.log_display = QTextEdit()
         self.log_display.setReadOnly(True)
         self.log_display.setMaximumHeight(150)
         self.log_display.setStyleSheet("background-color: #1e1e1e; color: #e0e0e0; font-family: monospace;")
-        log_dock.setWidget(self.log_display)
+        log_container_layout.addWidget(self.log_display)
+
+        log_dock.setWidget(log_container)
         self.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, log_dock)
 
         # Connect logging signal to display
@@ -290,7 +303,8 @@ class ClipEditor(QMainWindow):
         # Determine output directory based on source video location
         self._setup_output_dir()
 
-        self.status_label.setText("Status: transcribing")
+        # Update status label with file path
+        self.status_label.setText(f"File: {file_path}")
         self.clips = []
         self.srt_viewer.clear()
         logger.info("Loading video for preview...")
@@ -418,7 +432,6 @@ class ClipEditor(QMainWindow):
             logger.error(f"[CLIPS] Traceback: {traceback.format_exc()}")
             raise
 
-        self.status_label.setText(f"Status: {len(self.clips)} clips found")
         logger.info(f"✓ Ready to export {len(self.clips)} clips")
 
     def populate_clips(self) -> None:

@@ -27,7 +27,7 @@ class MaterialIcon:
 class IconManager:
     """Manages Material Design Icons and provides icon creation methods."""
 
-    # Material Design Icons - Line/Outlined variants (Unicode codepoints)
+    # Material Symbols Outlined - Unicode codepoints
     ICONS = {
         'play_arrow': MaterialIcon('e037', 'play_arrow'),
         'pause': MaterialIcon('e047', 'pause'),
@@ -53,11 +53,13 @@ class IconManager:
         'split_screen': MaterialIcon('e188', 'split_screen'),  # Split screen icon
         'vertical_split': MaterialIcon('e257', 'vertical_split'),  # Vertical split icon
         'horizontal_split': MaterialIcon('e948', 'horizontal_split'),  # Horizontal split icon
-        'keyboard_arrow_left': MaterialIcon('e314', 'keyboard_arrow_left'),  # Start marker
-        'keyboard_arrow_right': MaterialIcon('e315', 'keyboard_arrow_right'),  # End marker
+        'keyboard_arrow_left': MaterialIcon('e314', 'keyboard_arrow_left'),  # Arrow left
+        'keyboard_arrow_right': MaterialIcon('e315', 'keyboard_arrow_right'),  # Arrow right
         'skip_previous': MaterialIcon('e045', 'skip_previous'),
         'skip_next': MaterialIcon('e044', 'skip_next'),
         'movie': MaterialIcon('e02c', 'movie'),  # Film strip/reel icon
+        'line_start_diamond': MaterialIcon('f815', 'line_start_diamond'),  # Clip start marker
+        'line_end_diamond': MaterialIcon('f81a', 'line_end_diamond'),  # Clip end marker
     }
 
     _font: QFont | None = None
@@ -66,14 +68,14 @@ class IconManager:
     @classmethod
     def initialize(cls, font_path: str | None = None, size: int = 18) -> None:
         """
-        Initialize the icon manager with Material Design font.
+        Initialize the icon manager with Material Symbols Outlined font.
 
         Args:
-            font_path: Path to MaterialIcons-Regular.ttf. If None, uses default.
+            font_path: Path to MaterialSymbolsOutlined.ttf. If None, uses default.
             size: Default font size for icons (default: 18)
         """
         if font_path is None:
-            font_path = str(Path(__file__).parent / 'fonts' / 'MaterialIcons-Regular.ttf')
+            font_path = str(Path(__file__).parent / 'fonts' / 'MaterialSymbolsOutlined.ttf')
 
         cls._font_size = size
         cls._font = QFont()
