@@ -55,13 +55,13 @@ class ClipToolbar(QWidget):
 
         btn_load_scenes = QPushButton("Load Clips")
         btn_load_scenes.clicked.connect(self.load_config_clicked.emit)
-        btn_load_scenes.setMaximumWidth(70)
+        btn_load_scenes.setMinimumWidth(90)
         btn_load_scenes.setMinimumHeight(32)
         layout.addWidget(btn_load_scenes)
 
         btn_save_scenes = QPushButton("Save Clips")
         btn_save_scenes.clicked.connect(self.save_config_clicked.emit)
-        btn_save_scenes.setMaximumWidth(70)
+        btn_save_scenes.setMinimumWidth(90)
         btn_save_scenes.setMinimumHeight(32)
         layout.addWidget(btn_save_scenes)
 

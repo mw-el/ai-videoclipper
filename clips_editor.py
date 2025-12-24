@@ -53,6 +53,7 @@ class Worker(QObject):
     def run(self) -> None:
         try:
             import time
+            print(f"[WORKER THREAD ACTUAL RUN CALLED] {self.func.__name__}", file=__import__('sys').stderr, flush=True)
             logger.info(f"[WORKER] START: {self.func.__name__} at {time.strftime('%H:%M:%S')}")
             print(f"[WORKER THREAD] Starting {self.func.__name__}", file=__import__('sys').stderr, flush=True)
             result = self.func(*self.args, **self.kwargs)
