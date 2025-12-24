@@ -316,6 +316,10 @@ class ClipEditor(QMainWindow):
             if hasattr(panel, 'scene_data_received'):
                 panel.scene_data_received.connect(self._handle_scene_data)
                 logger.info("[CLAUDE] Connected scene_data_received signal")
+            # Connect clips config signal to handler
+            if hasattr(panel, 'load_clips_config'):
+                panel.load_clips_config.connect(self._handle_claude_clips_config)
+                logger.info("[CLAUDE] Connected load_clips_config signal")
             return panel
         except Exception as exc:
             logger.warning(f"[CLAUDE] Failed to load Claude panel: {exc}")
@@ -843,6 +847,37 @@ class ClipEditor(QMainWindow):
         else:
             logger.warning("[CLAUDE] No clips were created from scene data")
             self.status_label.setText("Status: no clips created from scene data")
+
+    def _handle_claude_clips_config(self, config: dict) -> None:
+        """Handle clips configuration from Claude output.
+
+        Args:
+            config: Dictionary with clips configuration (manual mode with time or segments)
+        """
+        if not self.transcription or not self.transcription.segments:
+            logger.warning("[CLAUDE] No transcription available to load clips config")
+            return
+
+        try:
+            mode = config.get("mode", "manual")
+            logger.info(f"[CLAUDE] Loading clips configuration (mode: {mode})")
+
+            if mode == "auto":
+                self._load_auto_clips(config)
+            elif mode == "manual":
+                self._load_manual_clips(config)
+            else:
+                logger.error(f"[CLAUDE] Unknown mode: {mode}")
+                self.status_label.setText(f"Error: unknown mode {mode}")
+                return
+
+            logger.info(f"[CLAUDE] ✓ Successfully loaded {len(self.clips)} clips from config")
+            self.populate_clips()
+            self.status_label.setText(f"Status: loaded {len(self.clips)} clips from Claude")
+
+        except Exception as e:
+            logger.error(f"[CLAUDE] Failed to load clips config: {e}", exc_info=True)
+            self.status_label.setText(f"Error loading config: {str(e)[:30]}")
 
     def _on_new_clip(self) -> None:
         """Create a new clip by selecting segment range."""

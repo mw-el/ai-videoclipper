@@ -203,6 +203,8 @@ class ClaudeTerminalWidget(QWidget):
 class ClaudePanel(QWidget):
     # Signal emitted when scene data is extracted from Claude response
     scene_data_received = pyqtSignal(dict)  # Emits parsed JSON scene data
+    # Signal emitted when clips config should be loaded from Claude output
+    load_clips_config = pyqtSignal(dict)  # Emits clips configuration JSON
 
     @staticmethod
     def _build_scene_detection_icon():
@@ -242,8 +244,24 @@ class ClaudePanel(QWidget):
         self._prompt_button.clicked.connect(self.send_scene_selection_prompt)
         self._prompt_button.setIcon(self._build_scene_detection_icon())
         self._prompt_button.setIconSize(QSize(38, 18))
-        StyleManager.apply_icon_button_style(self._prompt_button)
-        self._prompt_button.setMinimumWidth(StyleManager.BUTTON_MIN_SIZE * 2 + 8)
+        from design.style_manager import Colors
+        # Use custom styling for wider button with dark background
+        self._prompt_button.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {Colors.BLUE};
+                border: none;
+                border-radius: 4px;
+                padding: 3px;
+                min-height: 32px;
+                min-width: 76px;
+            }}
+            QPushButton:hover {{
+                background-color: {Colors.BRIGHT_BLUE};
+            }}
+            QPushButton:disabled {{
+                background-color: #595959;
+            }}
+        """)
         self._prompt_button.setEnabled(False)
 
         self._start_button = QPushButton("Start Claude")
@@ -261,7 +279,16 @@ class ClaudePanel(QWidget):
         self._copy_button.setIconSize(QSize(18, 18))
         self._copy_button.setToolTip("Copy results to clipboard")
         self._copy_button.clicked.connect(self._copy_results)
-        StyleManager.apply_icon_button_style(self._copy_button)
+        from design.style_manager import Colors
+        StyleManager.apply_colored_icon_button_style(self._copy_button, Colors.DARK_GRAY)
+
+        # Load from Claude button - extracts JSON config from terminal output
+        self._load_claude_button = QPushButton()
+        self._load_claude_button.setIcon(IconManager.create_icon('download', color='white', size=18))
+        self._load_claude_button.setIconSize(QSize(18, 18))
+        self._load_claude_button.setToolTip("Load clips config from Claude output")
+        self._load_claude_button.clicked.connect(self._load_config_from_output)
+        StyleManager.apply_colored_icon_button_style(self._load_claude_button, Colors.BRIGHT_GREEN)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -272,6 +299,7 @@ class ClaudePanel(QWidget):
         header.setStyleSheet("padding: 6px 0px; font-weight: bold;")
         header_row.addWidget(header)
         header_row.addStretch()
+        header_row.addWidget(self._load_claude_button)
         header_row.addWidget(self._copy_button)
         header_row.addWidget(self._prompt_button)
         header_row.addWidget(self._start_button)
@@ -293,7 +321,7 @@ class ClaudePanel(QWidget):
         self._send_button.setIconSize(QSize(18, 18))
         self._send_button.setToolTip("Send prompt")
         self._send_button.clicked.connect(self._send_custom_prompt)
-        StyleManager.apply_icon_button_style(self._send_button)
+        StyleManager.apply_colored_icon_button_style(self._send_button, Colors.BLUE)
         prompt_row.addWidget(self._send_button)
 
         layout.addLayout(prompt_row)
@@ -499,6 +527,46 @@ class ClaudePanel(QWidget):
             "- Provide clear reasoning for each suggestion",
             "- Include SRT segment indices when relevant",
             "",
+            "## Clips Configuration Format (for direct import)",
+            "When providing clip suggestions, format your output as JSON in a code block.",
+            "The app can directly load this format via 'Load from Claude' button.",
+            "",
+            "### Format Option 1: By Time (seconds)",
+            "```json",
+            "{",
+            '  "mode": "manual",',
+            '  "selection_type": "time",',
+            '  "clips": [',
+            "    {",
+            '      "name": "Scene title or description",',
+            '      "start_time": 23.5,',
+            '      "end_time": 125.8',
+            "    }",
+            "  ]",
+            "}",
+            "```",
+            "",
+            "### Format Option 2: By Segment Numbers (1-indexed)",
+            "```json",
+            "{",
+            '  "mode": "manual",',
+            '  "selection_type": "segments",',
+            '  "clips": [',
+            "    {",
+            '      "name": "Scene title or description",',
+            '      "start_segment": 8,',
+            '      "end_segment": 36',
+            "    }",
+            "  ]",
+            "}",
+            "```",
+            "",
+            "**Important:**",
+            "- Times are in seconds (float), not HH:MM:SS format",
+            "- Segment numbers are 1-indexed (first segment = 1)",
+            "- Use segments when working from SRT analysis",
+            "- Use time when specifying precise timestamps",
+            "",
             "## Important Notes",
             "- All file paths are absolute and pre-configured",
             "- SRT timing must stay synchronized with video",
@@ -522,6 +590,41 @@ class ClaudePanel(QWidget):
         self._status_label.setText("✓ Results copied to clipboard")
         # Reset status after 2 seconds
         QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+
+    def _load_config_from_output(self) -> None:
+        """Extract clips config JSON from terminal output and load it."""
+        output = self._terminal._output.toPlainText()
+
+        # Look for JSON blocks in output
+        json_pattern = r'```json\s*(.*?)\s*```'
+        matches = re.findall(json_pattern, output, re.DOTALL)
+
+        if not matches:
+            self._status_label.setText("⚠ No JSON found in output")
+            QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+            return
+
+        # Use the LAST JSON block found (most recent)
+        json_text = matches[-1]
+
+        try:
+            config = json.loads(json_text)
+
+            # Validate that it's a clips config (has required fields)
+            if "mode" not in config:
+                self._status_label.setText("⚠ Invalid clips config format")
+                QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+                return
+
+            # Emit signal to parent to load this config
+            print(f"[CLAUDE] ✓ Extracted clips config with {len(config.get('clips', []))} clips")
+            self.load_clips_config.emit(config)
+            self._status_label.setText("✓ Config loaded from Claude")
+            QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+
+        except json.JSONDecodeError as e:
+            self._status_label.setText(f"⚠ JSON parse error: {str(e)[:30]}")
+            QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
 
     def _send_custom_prompt(self) -> None:
         """Send custom prompt in headless mode."""

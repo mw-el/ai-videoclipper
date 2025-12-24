@@ -61,6 +61,7 @@ class IconManager:
         'line_start_diamond': MaterialIcon('f815', 'line_start_diamond'),  # Clip start marker
         'line_end_diamond': MaterialIcon('f81a', 'line_end_diamond'),  # Clip end marker
         'send': MaterialIcon('e163', 'send'),  # Send/submit arrow icon
+        'download': MaterialIcon('f090', 'download'),  # Download/import icon
     }
 
     _font: QFont | None = None
