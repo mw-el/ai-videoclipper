@@ -161,9 +161,7 @@ class ClipEditor(QMainWindow):
         right_layout.setSpacing(0)
 
         # Video preview at top
-        self.preview_player.video_widget.setMinimumHeight(200)
-        self.preview_player.video_widget.setMinimumWidth(int(200 * 16 / 9))
-        self.preview_player.video_widget.setMaximumHeight(200)
+        # Size already set in PreviewPlayer (480×270 for 16:9 aspect ratio)
         right_layout.addWidget(self.preview_player.video_widget, stretch=0)
 
         # Toolbar with editing buttons (under video)
