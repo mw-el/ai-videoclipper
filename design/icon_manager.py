@@ -60,6 +60,7 @@ class IconManager:
         'movie': MaterialIcon('e02c', 'movie'),  # Film strip/reel icon
         'line_start_diamond': MaterialIcon('f815', 'line_start_diamond'),  # Clip start marker
         'line_end_diamond': MaterialIcon('f81a', 'line_end_diamond'),  # Clip end marker
+        'send': MaterialIcon('e163', 'send'),  # Send/submit arrow icon
     }
 
     _font: QFont | None = None

@@ -8,11 +8,12 @@ import re
 import shutil
 import subprocess
 
-from PyQt6.QtCore import Qt, QSize, QSocketNotifier, QTimer
+from PyQt6.QtCore import Qt, QSize, QSocketNotifier, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QFont, QPainter, QPixmap, QTextCursor
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMessageBox,
     QPushButton,
     QPlainTextEdit,
@@ -200,6 +201,9 @@ class ClaudeTerminalWidget(QWidget):
 
 
 class ClaudePanel(QWidget):
+    # Signal emitted when scene data is extracted from Claude response
+    scene_data_received = pyqtSignal(dict)  # Emits parsed JSON scene data
+
     @staticmethod
     def _build_scene_detection_icon():
         """Build combined movie+search icon for scene detection button."""
@@ -251,6 +255,14 @@ class ClaudePanel(QWidget):
         StyleManager.apply_button_style(self._stop_button)
         self._stop_button.setEnabled(False)
 
+        # Copy button to copy terminal output
+        self._copy_button = QPushButton()
+        self._copy_button.setIcon(IconManager.create_icon('content_copy', color='white', size=18))
+        self._copy_button.setIconSize(QSize(18, 18))
+        self._copy_button.setToolTip("Copy results to clipboard")
+        self._copy_button.clicked.connect(self._copy_results)
+        StyleManager.apply_icon_button_style(self._copy_button)
+
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(6)
@@ -260,12 +272,31 @@ class ClaudePanel(QWidget):
         header.setStyleSheet("padding: 6px 0px; font-weight: bold;")
         header_row.addWidget(header)
         header_row.addStretch()
+        header_row.addWidget(self._copy_button)
         header_row.addWidget(self._prompt_button)
         header_row.addWidget(self._start_button)
         header_row.addWidget(self._stop_button)
         layout.addLayout(header_row)
         self._terminal = ClaudeTerminalWidget(self._work_dir)
         layout.addWidget(self._terminal, stretch=1)
+
+        # Prompt input row
+        prompt_row = QHBoxLayout()
+        prompt_row.setSpacing(4)
+        self._prompt_input = QLineEdit()
+        self._prompt_input.setPlaceholderText("Enter follow-up prompt...")
+        self._prompt_input.returnPressed.connect(self._send_custom_prompt)
+        prompt_row.addWidget(self._prompt_input, stretch=1)
+
+        self._send_button = QPushButton()
+        self._send_button.setIcon(IconManager.create_icon('send', color='white', size=18))
+        self._send_button.setIconSize(QSize(18, 18))
+        self._send_button.setToolTip("Send prompt")
+        self._send_button.clicked.connect(self._send_custom_prompt)
+        StyleManager.apply_icon_button_style(self._send_button)
+        prompt_row.addWidget(self._send_button)
+
+        layout.addLayout(prompt_row)
         layout.addWidget(self._status_label)
 
     def _load_prompt(self, filename: str) -> str:
@@ -287,13 +318,16 @@ class ClaudePanel(QWidget):
         self._sync_controls()
 
     def send_scene_selection_prompt(self) -> None:
+        """Run scene detection in headless mode and display results."""
         if not self._srt_path or not self._srt_path.exists():
             QMessageBox.information(self, "Scene Detection", "Bitte warten Sie auf die Erstellung der Untertitel.")
             return
-        if not self._terminal.is_running():
-            self._pending_prompt = True
-            self.start_claude()
-        self._queue_prompt_send()
+
+        # Update status
+        self._status_label.setText("Running scene detection...")
+
+        # Run Claude in headless mode
+        QTimer.singleShot(100, self._run_scene_detection_headless)
 
     def set_context(self, video_path: Path | None, srt_path: Path | None) -> None:
         self._video_path = video_path
@@ -306,7 +340,70 @@ class ClaudePanel(QWidget):
             self._status_label.setText("Waiting for subtitles.")
         self._write_context_files()
 
+    def _run_scene_detection_headless(self) -> None:
+        """Run Claude Code in headless mode for scene detection."""
+        prompt = self._load_prompt("scene-detection-prompt.txt")
+        if not prompt:
+            self._status_label.setText("Error: Prompt file not found")
+            return
+
+        # Ensure context files are written
+        self._write_context_files()
+
+        # Build Claude command with headless mode
+        cmd = [
+            "claude",
+            "-p", prompt,
+            "--allowedTools", "Read,Grep",
+        ]
+
+        try:
+            # Run in context directory
+            result = subprocess.run(
+                cmd,
+                cwd=str(self._context_dir) if self._context_dir else str(self._work_dir),
+                capture_output=True,
+                text=True,
+                timeout=120  # 2 minute timeout
+            )
+
+            # Display result in terminal
+            output = result.stdout if result.returncode == 0 else result.stderr
+            self._terminal._output.appendPlainText("\n=== Scene Detection Results ===\n")
+            self._terminal._output.appendPlainText(output)
+            self._terminal._output.appendPlainText("\n=== End Results ===\n")
+
+            # Try to extract JSON if present
+            self._extract_scene_data(output)
+
+            self._status_label.setText("✓ Scene detection complete")
+
+        except subprocess.TimeoutExpired:
+            self._status_label.setText("Error: Scene detection timeout")
+            self._terminal._output.appendPlainText("\n⚠ Scene detection timed out after 2 minutes\n")
+        except Exception as e:
+            self._status_label.setText(f"Error: {str(e)}")
+            self._terminal._output.appendPlainText(f"\n⚠ Error: {e}\n")
+
+    def _extract_scene_data(self, output: str) -> None:
+        """Extract JSON scene data from Claude output and emit signal."""
+        # Look for JSON blocks in output
+        json_pattern = r'```json\s*(.*?)\s*```'
+        matches = re.findall(json_pattern, output, re.DOTALL)
+
+        if matches:
+            try:
+                scene_data = json.loads(matches[0])
+                print(f"[CLAUDE] ✓ Extracted {len(scene_data.get('cut_points', []))} scene cut points")
+
+                # Emit signal for parent widget to handle
+                self.scene_data_received.emit(scene_data)
+
+            except json.JSONDecodeError as e:
+                print(f"[CLAUDE] ⚠ Failed to parse JSON: {e}")
+
     def _queue_prompt_send(self) -> None:
+        """Legacy method - kept for backwards compatibility."""
         prompt = self._load_prompt("scene-detection-prompt.txt")
         if not prompt:
             return
@@ -415,6 +512,72 @@ class ClaudePanel(QWidget):
         self._start_button.setEnabled(not running)
         self._stop_button.setEnabled(running)
         self._status_label.setText(self._terminal.status_text())
+
+    def _copy_results(self) -> None:
+        """Copy terminal output to clipboard."""
+        from PyQt6.QtWidgets import QApplication
+        text = self._terminal._output.toPlainText()
+        clipboard = QApplication.clipboard()
+        clipboard.setText(text)
+        self._status_label.setText("✓ Results copied to clipboard")
+        # Reset status after 2 seconds
+        QTimer.singleShot(2000, lambda: self._status_label.setText(self._terminal.status_text()))
+
+    def _send_custom_prompt(self) -> None:
+        """Send custom prompt in headless mode."""
+        prompt_text = self._prompt_input.text().strip()
+        if not prompt_text:
+            return
+
+        # Clear input field
+        self._prompt_input.clear()
+
+        # Update status
+        self._status_label.setText("Running custom prompt...")
+
+        # Run Claude in headless mode with custom prompt
+        QTimer.singleShot(100, lambda: self._run_custom_prompt_headless(prompt_text))
+
+    def _run_custom_prompt_headless(self, prompt_text: str) -> None:
+        """Run Claude Code in headless mode with custom prompt."""
+        # Ensure context files are written
+        self._write_context_files()
+
+        # Build Claude command with headless mode
+        cmd = [
+            "claude",
+            "-p", prompt_text,
+            "--allowedTools", "Read,Grep",
+        ]
+
+        try:
+            # Run in context directory
+            result = subprocess.run(
+                cmd,
+                cwd=str(self._context_dir) if self._context_dir else str(self._work_dir),
+                capture_output=True,
+                text=True,
+                timeout=120  # 2 minute timeout
+            )
+
+            # Display result in terminal
+            output = result.stdout if result.returncode == 0 else result.stderr
+            self._terminal._output.appendPlainText(f"\n=== Custom Prompt ===\n{prompt_text}\n")
+            self._terminal._output.appendPlainText("\n=== Response ===\n")
+            self._terminal._output.appendPlainText(output)
+            self._terminal._output.appendPlainText("\n=== End Response ===\n")
+
+            # Try to extract JSON if present
+            self._extract_scene_data(output)
+
+            self._status_label.setText("✓ Prompt complete")
+
+        except subprocess.TimeoutExpired:
+            self._status_label.setText("Error: Prompt timeout")
+            self._terminal._output.appendPlainText("\n⚠ Prompt timed out after 2 minutes\n")
+        except Exception as e:
+            self._status_label.setText(f"Error: {str(e)}")
+            self._terminal._output.appendPlainText(f"\n⚠ Error: {e}\n")
 
 
 _ANSI_RE = re.compile(
