@@ -8,6 +8,35 @@ from PyQt6.QtMultimediaWidgets import QVideoWidget
 from time_utils import format_timestamp
 
 
+class SegmentAwareSlider(QSlider):
+    """Custom slider that handles segment-based keyboard navigation."""
+
+    segment_jump_requested = pyqtSignal(bool)  # True = forward, False = backward
+
+    def __init__(self, orientation, parent=None):
+        super().__init__(orientation, parent)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        # Visual feedback for focused state
+        self.setStyleSheet("""
+            QSlider:focus {
+                border: 2px solid #4CAF50;
+                border-radius: 3px;
+                padding: 2px;
+            }
+        """)
+
+    def keyPressEvent(self, event) -> None:
+        """Handle arrow key presses for segment navigation."""
+        if event.key() == Qt.Key.Key_Left:
+            self.segment_jump_requested.emit(False)  # backward
+            event.accept()
+        elif event.key() == Qt.Key.Key_Right:
+            self.segment_jump_requested.emit(True)  # forward
+            event.accept()
+        else:
+            super().keyPressEvent(event)
+
+
 class PreviewPlayer(QWidget):
     marker_changed = pyqtSignal(float, float)
     position_changed = pyqtSignal(float)
@@ -40,17 +69,17 @@ class PreviewPlayer(QWidget):
 
         self.time_label = QLabel("00:00:00 / 00:00:00")
 
-        self.start_slider = QSlider(Qt.Orientation.Horizontal)
+        self.start_slider = SegmentAwareSlider(Qt.Orientation.Horizontal)
         self.start_slider.setRange(0, 0)
         self.start_slider.valueChanged.connect(self._on_start_changed)
-        self.start_slider.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.start_slider.sliderMoved.connect(self._on_start_slider_moved)
+        self.start_slider.segment_jump_requested.connect(self._on_start_segment_jump)
 
-        self.end_slider = QSlider(Qt.Orientation.Horizontal)
+        self.end_slider = SegmentAwareSlider(Qt.Orientation.Horizontal)
         self.end_slider.setRange(0, 0)
         self.end_slider.valueChanged.connect(self._on_end_changed)
-        self.end_slider.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.end_slider.sliderMoved.connect(self._on_end_slider_moved)
+        self.end_slider.segment_jump_requested.connect(self._on_end_segment_jump)
 
         self._build_layout()
 
@@ -173,29 +202,13 @@ class PreviewPlayer(QWidget):
         """Handle end slider moved by user (not value change)."""
         self.end_slider.setFocus()
 
-    def keyPressEvent(self, event) -> None:
-        """Handle arrow key presses for segment-based navigation."""
-        if not self._segments:
-            super().keyPressEvent(event)
-            return
+    def _on_start_segment_jump(self, forward: bool) -> None:
+        """Handle start slider segment jump request from keyboard."""
+        self._move_start_to_segment(backward=not forward)
 
-        if event.key() == Qt.Key.Key_Left:
-            # Move to previous segment boundary
-            self._move_to_segment_boundary(backward=True)
-            event.accept()
-        elif event.key() == Qt.Key.Key_Right:
-            # Move to next segment boundary
-            self._move_to_segment_boundary(backward=False)
-            event.accept()
-        else:
-            super().keyPressEvent(event)
-
-    def _move_to_segment_boundary(self, backward: bool = False) -> None:
-        """Move slider to previous/next segment boundary."""
-        if self.start_slider.hasFocus():
-            self._move_start_to_segment(backward)
-        elif self.end_slider.hasFocus():
-            self._move_end_to_segment(backward)
+    def _on_end_segment_jump(self, forward: bool) -> None:
+        """Handle end slider segment jump request from keyboard."""
+        self._move_end_to_segment(backward=not forward)
 
     def _move_start_to_segment(self, backward: bool = False) -> None:
         """Move start marker to previous/next segment boundary."""
