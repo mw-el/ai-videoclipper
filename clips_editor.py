@@ -133,34 +133,17 @@ class ClipEditor(QMainWindow):
 
         main_layout.addLayout(top_bar)
 
-        # Video preview player
-        self.preview_player = PreviewPlayer()
-        main_layout.addWidget(self.preview_player)
-
-        # Body: Two-column layout (clips on left, SRT viewer on right)
+        # MAIN BODY: Horizontal layout with sliders/clips on left, video+SRT on right
         body_layout = QHBoxLayout()
 
-        # LEFT PANEL: Clip list (narrow, 200px)
+        # LEFT PANEL: Sliders, Toolbar, and Clip list
         left_panel = QWidget()
         left_layout = QVBoxLayout(left_panel)
         left_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.clip_list_widget = ClipListWidget()
-        self.clip_list_widget.clip_selected.connect(self._on_clip_selected)
-        self.clip_list_widget.new_clip_requested.connect(self._on_new_clip)
-        self.clip_list_widget.delete_clip_requested.connect(self._on_delete_clip)
-
-        left_layout.addWidget(self.clip_list_widget)
-
-        self.output_label = QLabel("Output: (auto-determined from video location)")
-        self.output_label.setWordWrap(True)
-        self.output_label.setMaximumHeight(60)
-        left_layout.addWidget(self.output_label)
-
-        # RIGHT PANEL: Toolbar + SRT Viewer
-        right_panel = QWidget()
-        right_layout = QVBoxLayout(right_panel)
-        right_layout.setContentsMargins(0, 0, 0, 0)
+        # Preview player (contains sliders)
+        self.preview_player = PreviewPlayer()
+        left_layout.addWidget(self.preview_player)
 
         # Toolbar with editing buttons
         self.clip_toolbar = ClipToolbar()
@@ -171,13 +154,41 @@ class ClipEditor(QMainWindow):
         self.clip_toolbar.export_all_clicked.connect(self.export_all)
         self.clip_toolbar.load_config_clicked.connect(self.load_clips_config)
         self.clip_toolbar.save_config_clicked.connect(self.save_clips_config)
-        right_layout.addWidget(self.clip_toolbar)
+        left_layout.addWidget(self.clip_toolbar)
+
+        # Clip list widget
+        self.clip_list_widget = ClipListWidget()
+        self.clip_list_widget.clip_selected.connect(self._on_clip_selected)
+        self.clip_list_widget.new_clip_requested.connect(self._on_new_clip)
+        self.clip_list_widget.delete_clip_requested.connect(self._on_delete_clip)
+        left_layout.addWidget(self.clip_list_widget)
+
+        self.output_label = QLabel("Output: (auto-determined from video location)")
+        self.output_label.setWordWrap(True)
+        self.output_label.setMaximumHeight(60)
+        left_layout.addWidget(self.output_label)
+
+        body_layout.addWidget(left_panel, stretch=1)
+
+        # RIGHT PANEL: Video preview (top-right) + SRT Viewer
+        right_panel = QWidget()
+        right_layout = QVBoxLayout(right_panel)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Video preview container at top-right
+        video_preview_container = QWidget()
+        video_preview_layout = QHBoxLayout(video_preview_container)
+        video_preview_layout.setContentsMargins(0, 0, 0, 0)
+        video_preview_layout.setSpacing(0)
+        video_preview_layout.addStretch()  # Push video to the right
+        video_preview_layout.addWidget(self.preview_player.video_widget)
+        right_layout.addWidget(video_preview_container, stretch=0)
 
         # SRT Viewer
         self.srt_viewer = SRTViewer()
         self.srt_viewer.marker_changed.connect(self.on_marker_changed)
         self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
-        right_layout.addWidget(self.srt_viewer)
+        right_layout.addWidget(self.srt_viewer, stretch=1)
 
         # Current file path display (under SRT viewer)
         self.file_path_label = QLabel("No file selected")
@@ -185,13 +196,6 @@ class ClipEditor(QMainWindow):
         self.file_path_label.setMaximumHeight(40)
         self.file_path_label.setStyleSheet("background-color: #f5f5f5; padding: 4px; border-top: 1px solid #ccc;")
         right_layout.addWidget(self.file_path_label)
-
-        # Add panels to body layout
-        body_layout.addWidget(left_panel, stretch=0)
-        body_layout.setStretchFactor(left_panel, 0)
-        # Set minimum width for left panel
-        left_panel.setMinimumWidth(200)
-        left_panel.setMaximumWidth(250)
 
         body_layout.addWidget(right_panel, stretch=1)
 
@@ -333,6 +337,16 @@ class ClipEditor(QMainWindow):
         logger.info(f"[CALLBACK] First segment: {result.segments[0] if result.segments else 'NO SEGMENTS'}")
 
         logger.info(f"Setting up viewer with {len(result.segments)} segments and {len(clips)} clips")
+
+        # Setup preview player with segments for keyboard navigation
+        logger.info("[PREVIEW] Setting segments for keyboard navigation...")
+        try:
+            self.preview_player.set_segments(result.segments)
+            logger.info(f"[PREVIEW] ✓ Segments set for slider keyboard navigation")
+        except Exception as e:
+            logger.error(f"[PREVIEW] Failed to set segments: {e}")
+            import traceback
+            logger.error(f"[PREVIEW] Traceback: {traceback.format_exc()}")
 
         # Display segments in the SRT viewer
         logger.info("[DISPLAY] Calling srt_viewer.set_segments()...")

@@ -21,9 +21,15 @@ class PreviewPlayer(QWidget):
         self._duration_ms = 0
         self._start_ms = 0
         self._end_ms = 0
+        self._segments = []  # Store segment boundaries for keyboard navigation
 
         self.video_widget = QVideoWidget(self)
         self.player.setVideoOutput(self.video_widget)
+        # Set fixed size for video widget
+        self.video_widget.setMinimumHeight(200)
+        self.video_widget.setMaximumHeight(200)
+        self.video_widget.setMinimumWidth(int(200 * 16 / 9))
+        self.video_widget.setMaximumWidth(int(200 * 16 / 9))
 
         self.play_button = QPushButton("Play")
         self.play_button.clicked.connect(self.toggle_play)
@@ -37,10 +43,14 @@ class PreviewPlayer(QWidget):
         self.start_slider = QSlider(Qt.Orientation.Horizontal)
         self.start_slider.setRange(0, 0)
         self.start_slider.valueChanged.connect(self._on_start_changed)
+        self.start_slider.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.start_slider.sliderMoved.connect(self._on_start_slider_moved)
 
         self.end_slider = QSlider(Qt.Orientation.Horizontal)
         self.end_slider.setRange(0, 0)
         self.end_slider.valueChanged.connect(self._on_end_changed)
+        self.end_slider.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.end_slider.sliderMoved.connect(self._on_end_slider_moved)
 
         self._build_layout()
 
@@ -52,28 +62,14 @@ class PreviewPlayer(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # TOP: Video player with 16:9 aspect ratio, 200px height
-        # Width = 200 * 16/9 = 355.56px
-        self.video_widget.setMinimumHeight(200)
-        self.video_widget.setMaximumHeight(200)
-        self.video_widget.setMinimumWidth(int(200 * 16 / 9))
-        self.video_widget.setMaximumWidth(int(200 * 16 / 9))
-        layout.addWidget(self.video_widget, alignment=Qt.AlignmentFlag.AlignHCenter)
-
-        # MIDDLE/BOTTOM: Horizontal layout with sliders on left
-        main_content = QHBoxLayout()
-
-        # LEFT: Sliders (2/3 width)
-        sliders_widget = QWidget()
-        sliders_layout = QVBoxLayout(sliders_widget)
-        sliders_layout.setContentsMargins(0, 0, 0, 0)
-
+        # Playback controls
         controls = QHBoxLayout()
         controls.addWidget(self.play_button)
         controls.addWidget(self.position_slider, stretch=1)
         controls.addWidget(self.time_label)
-        sliders_layout.addLayout(controls)
+        layout.addLayout(controls)
 
+        # Clip markers sliders
         markers_layout = QVBoxLayout()
         start_row = QHBoxLayout()
         start_row.addWidget(QLabel("Start"))
@@ -83,11 +79,7 @@ class PreviewPlayer(QWidget):
         end_row.addWidget(self.end_slider, stretch=1)
         markers_layout.addLayout(start_row)
         markers_layout.addLayout(end_row)
-        sliders_layout.addLayout(markers_layout)
-
-        main_content.addWidget(sliders_widget, stretch=2)
-
-        layout.addLayout(main_content)
+        layout.addLayout(markers_layout)
 
     def load_media(self, path: str) -> None:
         self.player.setSource(QUrl.fromLocalFile(path))
@@ -168,3 +160,87 @@ class PreviewPlayer(QWidget):
         current = format_timestamp(position / 1000.0)
         total = format_timestamp(self._duration_ms / 1000.0) if self._duration_ms else "00:00:00"
         self.time_label.setText(f"{current} / {total}")
+
+    def set_segments(self, segments) -> None:
+        """Store segment boundaries for keyboard-based navigation."""
+        self._segments = [(seg.start * 1000, seg.end * 1000) for seg in segments]
+
+    def _on_start_slider_moved(self, value: int) -> None:
+        """Handle start slider moved by user (not value change)."""
+        self.start_slider.setFocus()
+
+    def _on_end_slider_moved(self, value: int) -> None:
+        """Handle end slider moved by user (not value change)."""
+        self.end_slider.setFocus()
+
+    def keyPressEvent(self, event) -> None:
+        """Handle arrow key presses for segment-based navigation."""
+        if not self._segments:
+            super().keyPressEvent(event)
+            return
+
+        if event.key() == Qt.Key.Key_Left:
+            # Move to previous segment boundary
+            self._move_to_segment_boundary(backward=True)
+            event.accept()
+        elif event.key() == Qt.Key.Key_Right:
+            # Move to next segment boundary
+            self._move_to_segment_boundary(backward=False)
+            event.accept()
+        else:
+            super().keyPressEvent(event)
+
+    def _move_to_segment_boundary(self, backward: bool = False) -> None:
+        """Move slider to previous/next segment boundary."""
+        if self.start_slider.hasFocus():
+            self._move_start_to_segment(backward)
+        elif self.end_slider.hasFocus():
+            self._move_end_to_segment(backward)
+
+    def _move_start_to_segment(self, backward: bool = False) -> None:
+        """Move start marker to previous/next segment boundary."""
+        current_pos = self._start_ms
+
+        # Find matching segment boundary
+        if backward:
+            # Move to previous segment start
+            for seg_start, seg_end in reversed(self._segments):
+                if seg_start < current_pos:
+                    self.start_slider.blockSignals(True)
+                    self.start_slider.setValue(int(seg_start))
+                    self.start_slider.blockSignals(False)
+                    self._on_start_changed(int(seg_start))
+                    return
+        else:
+            # Move to next segment start
+            for seg_start, seg_end in self._segments:
+                if seg_start > current_pos:
+                    self.start_slider.blockSignals(True)
+                    self.start_slider.setValue(int(seg_start))
+                    self.start_slider.blockSignals(False)
+                    self._on_start_changed(int(seg_start))
+                    return
+
+    def _move_end_to_segment(self, backward: bool = False) -> None:
+        """Move end marker to previous/next segment boundary."""
+        current_pos = self._end_ms
+
+        # Find matching segment boundary
+        if backward:
+            # Move to previous segment end
+            for seg_start, seg_end in reversed(self._segments):
+                if seg_end < current_pos:
+                    self.end_slider.blockSignals(True)
+                    self.end_slider.setValue(int(seg_end))
+                    self.end_slider.blockSignals(False)
+                    self._on_end_changed(int(seg_end))
+                    return
+        else:
+            # Move to next segment end
+            for seg_start, seg_end in self._segments:
+                if seg_end > current_pos:
+                    self.end_slider.blockSignals(True)
+                    self.end_slider.setValue(int(seg_end))
+                    self.end_slider.blockSignals(False)
+                    self._on_end_changed(int(seg_end))
+                    return
