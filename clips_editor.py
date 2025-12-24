@@ -115,9 +115,12 @@ class ClipEditor(QMainWindow):
 
         # Top bar: Select File button, Mode checkboxes, and Status label
         top_bar = QHBoxLayout()
-        self.open_button = QPushButton("Select File")
+        self.open_button = QPushButton()
+        self.open_button.setIcon(IconManager.create_icon('folder_open', color='#666666', size=20))
+        self.open_button.setIconSize(QSize(20, 20))
+        self.open_button.setToolTip("Select video file")
         self.open_button.clicked.connect(self.select_file)
-        StyleManager.apply_button_style(self.open_button)
+        StyleManager.apply_icon_button_style(self.open_button)
         top_bar.addWidget(self.open_button)
 
         # Scene detection mode checkboxes (mutually exclusive)
