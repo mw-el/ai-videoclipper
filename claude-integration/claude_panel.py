@@ -30,7 +30,8 @@ class TerminalOutput(QPlainTextEdit):
         super().__init__(parent)
         self._on_key = on_key
         self.setReadOnly(True)
-        self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        # Enable word wrap so long lines are visible
+        self.setLineWrapMode(QPlainTextEdit.LineWrapMode.WidgetWidth)
 
     def keyPressEvent(self, event) -> None:
         if self._on_key(event):
@@ -75,14 +76,23 @@ class ClaudeTerminalWidget(QWidget):
             'echo "========================================"; '
             'echo ""; '
         )
-        # Auto-answer "yes" to Claude Code startup confirmation
-        cmd = f"{banner} echo 'yes' | claude; exec bash"
+        # Use --headless mode to avoid interactive prompts
+        # The CLAUDE_CONTEXT_DIR environment variable tells Claude where to find context
+        cmd = f"{banner} claude --headless; exec bash"
+
+        env = os.environ.copy()
+        # Set Claude context directory if it exists
+        context_dir = self._work_dir / ".claude-context"
+        if context_dir.exists():
+            env["CLAUDE_CONTEXT_DIR"] = str(context_dir)
+
         self._process = subprocess.Popen(
             ["bash", "-lc", cmd],
             stdin=self._slave_fd,
             stdout=self._slave_fd,
             stderr=self._slave_fd,
             cwd=str(self._work_dir),
+            env=env,
             text=False,
         )
         self._status_label.setText("Running")

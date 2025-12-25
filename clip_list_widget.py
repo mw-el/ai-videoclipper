@@ -1,7 +1,7 @@
 """Clip list widget for displaying and selecting clips."""
 
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QMenu, QPushButton
+    QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QMenu, QPushButton, QLabel
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize, QPoint
 from PyQt6.QtGui import QFont
@@ -37,6 +37,22 @@ class ClipListWidget(QWidget):
         self.clip_list.itemSelectionChanged.connect(self._on_clip_selected)
         self.clip_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.clip_list.customContextMenuRequested.connect(self._on_context_menu)
+
+        # Custom styling: light green background for selected items instead of red
+        self.clip_list.setStyleSheet("""
+            QListWidget::item:selected {
+                background-color: #c3f0ca;
+                color: #000000;
+            }
+            QListWidget::item:hover {
+                background-color: #e8f5e9;
+            }
+            QListWidget {
+                background-color: #ffffff;
+                border: none;
+            }
+        """)
+
         layout.addWidget(self.clip_list)
 
         self.setLayout(layout)
@@ -77,16 +93,46 @@ class ClipListWidget(QWidget):
         # Calculate duration in seconds
         duration_seconds = clip.end_time - clip.start_time
 
-        # Format: "Clip 1 (45s)\n00:15 - 00:42\nSegments 5-12"
+        # Format timestamps and segment info
         start_time = format_timestamp(clip.start_time)
         end_time = format_timestamp(clip.end_time)
-        segment_range = f"Segments {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
-        text = f"Clip {index + 1} ({duration_seconds:.0f}s)\n{start_time} – {end_time}\n{segment_range}"
+        # Combine segment range with time to save space: "Seg 5-12: 00:15 - 00:42"
+        segment_nums = f"Seg {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
+
+        # Build HTML-formatted text for rich formatting
+        html_parts = [
+            f"<b>Clip {index + 1} ({duration_seconds:.0f}s)</b><br>",
+            f"{segment_nums}: {start_time} – {end_time}"
+        ]
 
         # Add clip description/name if available (from Claude or manual input)
         if clip.text and clip.text.strip() and clip.text != "Full Video":
-            text += f"\n\n{clip.text}"
+            # Parse clip.text to format title, summary, and justification
+            lines = clip.text.split('\n')
+
+            if len(lines) >= 1:
+                # First line: Title (bold)
+                title = lines[0].strip()
+                html_parts.append(f"<br><br><b>{title}</b>")
+
+                # Remaining lines: Look for "Zusammenfassung:" and "Begründung:"
+                remaining_text = '\n'.join(lines[1:])
+
+                # Split by paragraphs (double newline)
+                paragraphs = remaining_text.split('\n\n')
+                for para in paragraphs:
+                    para = para.strip()
+                    if not para:
+                        continue
+
+                    # Check if it's a justification (Begründung)
+                    if para.lower().startswith('begründung:') or 'begründung' in para.lower():
+                        # Make justification italic
+                        html_parts.append(f"<br><br><i>{para}</i>")
+                    else:
+                        # Regular text (summary)
+                        html_parts.append(f"<br><br>{para}")
         else:
             # Fallback: show start and end segment texts
             start_text = ""
@@ -100,24 +146,38 @@ class ClipListWidget(QWidget):
                     end_text = end_seg.text[-50:]  # Last 50 chars, right-aligned
 
             if start_text:
-                text += f"\n{start_text}"
+                html_parts.append(f"<br>{start_text}")
             if end_text:
-                text += f"\n...\n{end_text}"
+                html_parts.append(f"<br>...<br>{end_text}")
 
-        item = QListWidgetItem(text)
+        # Create list item with HTML support
+        item = QListWidgetItem()
+        label = QLabel(''.join(html_parts))
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setContentsMargins(8, 8, 8, 8)
+
+        # Set size policy to ensure label expands properly
+        from PyQt6.QtWidgets import QSizePolicy
+        label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
         item.setData(Qt.ItemDataRole.UserRole, index)  # Store clip index
 
-        # Set variable height for each row (adjust based on content)
-        height = self.get_item_height()
-        item.setSizeHint(QSize(200, height))
+        # Calculate variable height based on actual content
+        # Use QLabel's sizeHint to get required height for the content
+        label_width = self.clip_list.width() - 40  # Account for scrollbar and margins
+        label.setMaximumWidth(label_width)
+        content_height = label.sizeHint().height()
+
+        # Set minimum height and add padding
+        min_height = 80
+        height = max(min_height, content_height + 20)  # +20 for padding
+
+        item.setSizeHint(QSize(self.clip_list.width() - 20, height))
 
         self.clip_list.addItem(item)
-        logger.debug(f"[CLIP_LIST] Added clip {index + 1} with description")
-
-    def get_item_height(self) -> int:
-        """Get height of a single clip row."""
-        # Approximate: font height * 7-8 lines + padding (for clip description)
-        return 140
+        self.clip_list.setItemWidget(item, label)  # Use label as custom widget
+        logger.debug(f"[CLIP_LIST] Added clip {index + 1} with HTML-formatted description, height: {height}px")
 
     def _on_clip_selected(self):
         """Handle clip selection."""
@@ -181,31 +241,68 @@ class ClipListWidget(QWidget):
 
         try:
             clip = self.clips[clip_index]
+            duration_seconds = clip.end_time - clip.start_time
             start_time = format_timestamp(clip.start_time)
             end_time = format_timestamp(clip.end_time)
-            segment_range = f"Segments {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
-            # Get start and end segment texts
-            start_text = ""
-            end_text = ""
-            if self.srt_viewer:
-                start_seg = self.srt_viewer.get_segment_at_index(clip.segment_start_index)
-                end_seg = self.srt_viewer.get_segment_at_index(clip.segment_end_index)
-                if start_seg:
-                    start_text = start_seg.text[:50]
-                if end_seg:
-                    end_text = end_seg.text[-50:]
+            # Combine segment range with time (same format as _add_clip_row)
+            segment_nums = f"Seg {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
-            text = f"Clip {clip_index + 1}\n{start_time} – {end_time}\n{segment_range}"
-            if start_text:
-                text += f"\n{start_text}"
-            if end_text:
-                text += f"\n...\n{end_text}"
+            # Build HTML-formatted text (same as in _add_clip_row)
+            html_parts = [
+                f"<b>Clip {clip_index + 1} ({duration_seconds:.0f}s)</b><br>",
+                f"{segment_nums}: {start_time} – {end_time}"
+            ]
 
-            # Update the item
+            # Add clip description if available
+            if clip.text and clip.text.strip() and clip.text != "Full Video":
+                lines = clip.text.split('\n')
+                if len(lines) >= 1:
+                    title = lines[0].strip()
+                    html_parts.append(f"<br><br><b>{title}</b>")
+
+                    remaining_text = '\n'.join(lines[1:])
+                    paragraphs = remaining_text.split('\n\n')
+                    for para in paragraphs:
+                        para = para.strip()
+                        if not para:
+                            continue
+                        if para.lower().startswith('begründung:') or 'begründung' in para.lower():
+                            html_parts.append(f"<br><br><i>{para}</i>")
+                        else:
+                            html_parts.append(f"<br><br>{para}")
+            else:
+                # Fallback: show start and end segment texts
+                start_text = ""
+                end_text = ""
+                if self.srt_viewer:
+                    start_seg = self.srt_viewer.get_segment_at_index(clip.segment_start_index)
+                    end_seg = self.srt_viewer.get_segment_at_index(clip.segment_end_index)
+                    if start_seg:
+                        start_text = start_seg.text[:50]
+                    if end_seg:
+                        end_text = end_seg.text[-50:]
+
+                if start_text:
+                    html_parts.append(f"<br>{start_text}")
+                if end_text:
+                    html_parts.append(f"<br>...<br>{end_text}")
+
+            # Update the label widget (NOT the item text!)
             item = self.clip_list.item(clip_index)
             if item:
-                item.setText(text)
-                logger.debug(f"[CLIP_LIST] Updated clip {clip_index + 1} display")
+                label = self.clip_list.itemWidget(item)
+                if label and isinstance(label, QLabel):
+                    label.setText(''.join(html_parts))
+
+                    # Recalculate height based on new content
+                    label_width = self.clip_list.width() - 40
+                    label.setMaximumWidth(label_width)
+                    content_height = label.sizeHint().height()
+                    min_height = 80
+                    height = max(min_height, content_height + 20)
+                    item.setSizeHint(QSize(self.clip_list.width() - 20, height))
+
+                    logger.debug(f"[CLIP_LIST] Updated clip {clip_index + 1} display (height: {height}px)")
         except Exception as e:
             logger.error(f"[CLIP_LIST] Error updating clip display {clip_index}: {e}", exc_info=True)

@@ -16,6 +16,7 @@ class ClipToolbar(QWidget):
     export_all_clicked = pyqtSignal()
     load_config_clicked = pyqtSignal()
     save_config_clicked = pyqtSignal()
+    clear_all_clicked = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,10 +29,21 @@ class ClipToolbar(QWidget):
         layout.setSpacing(10)
 
         # Note: Start, End, Duplicate, Split buttons are now in the left edit toolbar
-        # This toolbar now only contains Load, Save, and Run buttons
+        # This toolbar now contains Clear All, Load, Save, and Run buttons
 
-        # Stretch to push load/save/run to the right side
+        # Stretch to push buttons to the right side
         layout.addStretch()
+
+        # Clear All button with X icon (only icon, no text)
+        self.btn_clear_all = QPushButton()
+        self.btn_clear_all.setIcon(IconManager.create_icon('close', color='white', size=18))
+        self.btn_clear_all.setIconSize(QSize(18, 18))
+        self.btn_clear_all.setToolTip("Remove all clips and clear markers")
+        self.btn_clear_all.clicked.connect(self.clear_all_clicked.emit)
+        StyleManager.apply_colored_icon_button_style(self.btn_clear_all, Colors.RED)
+        self.btn_clear_all.setMinimumWidth(StyleManager.BUTTON_MIN_SIZE)
+        self.btn_clear_all.setMinimumHeight(StyleManager.BUTTON_MIN_SIZE)
+        layout.addWidget(self.btn_clear_all)
 
         # Load Clips button with folder_open icon
         self.btn_load_clips = QPushButton()

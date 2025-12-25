@@ -109,7 +109,6 @@ class ClipEditor(QMainWindow):
         self.clips: list[Clip] = []
         self.output_dir: Path | None = None  # Will be set based on source video location
         self.last_clicked_segment_index: int = -1  # For Set Start/End operations
-        self.scene_detection_mode: str = "manual"  # "manual", "clipsai", or "fallback"
         self._threads: list[QThread] = []
 
         # Transcription progress animation
@@ -152,25 +151,6 @@ class ClipEditor(QMainWindow):
         open_row = QHBoxLayout()
         open_row.setSpacing(8)
         open_row.addWidget(self.open_button, alignment=Qt.AlignmentFlag.AlignVCenter)
-
-        label_mode = QLabel("Scene Detection:")
-        open_row.addWidget(label_mode, alignment=Qt.AlignmentFlag.AlignVCenter)
-
-        self.checkbox_manual = QCheckBox("Manual")
-        self.checkbox_manual.setChecked(True)
-        self.checkbox_manual.stateChanged.connect(self._on_manual_mode_toggled)
-        open_row.addWidget(self.checkbox_manual, alignment=Qt.AlignmentFlag.AlignVCenter)
-
-        self.checkbox_clipsai = QCheckBox("Auto (ClipsAI)")
-        self.checkbox_clipsai.setChecked(False)
-        self.checkbox_clipsai.stateChanged.connect(self._on_clipsai_mode_toggled)
-        open_row.addWidget(self.checkbox_clipsai, alignment=Qt.AlignmentFlag.AlignVCenter)
-
-        self.checkbox_fallback = QCheckBox("Auto (Fallback)")
-        self.checkbox_fallback.setChecked(False)
-        self.checkbox_fallback.stateChanged.connect(self._on_fallback_mode_toggled)
-        open_row.addWidget(self.checkbox_fallback, alignment=Qt.AlignmentFlag.AlignVCenter)
-
         open_row.addStretch()
         left_layout.addLayout(open_row)
 
@@ -252,27 +232,12 @@ class ClipEditor(QMainWindow):
         self.clip_toolbar.export_all_clicked.connect(self.export_all)
         self.clip_toolbar.load_config_clicked.connect(self.load_clips_config)
         self.clip_toolbar.save_config_clicked.connect(self.save_clips_config)
+        self.clip_toolbar.clear_all_clicked.connect(self._on_clear_all_clips)
         self.clip_toolbar.setContentsMargins(4, 4, 4, 4)  # Padding
         self.clip_toolbar.setMinimumHeight(54)  # More height for buttons
         self.clip_toolbar.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
         right_layout.addWidget(self.clip_toolbar, stretch=0)
         right_layout.setAlignment(self.clip_toolbar, Qt.AlignmentFlag.AlignRight)
-
-        # Clear All button (under toolbar, above clip list)
-        clear_all_row = QHBoxLayout()
-        clear_all_row.setContentsMargins(4, 4, 4, 4)
-
-        self.clear_all_button = QPushButton()
-        self.clear_all_button.setIcon(IconManager.create_icon('delete', color='white', size=18))
-        self.clear_all_button.setIconSize(QSize(18, 18))
-        self.clear_all_button.setText("Clear All")
-        self.clear_all_button.setToolTip("Remove all clips and clear markers")
-        self.clear_all_button.clicked.connect(self._on_clear_all_clips)
-        StyleManager.apply_colored_icon_button_style(self.clear_all_button, Colors.RED)
-
-        clear_all_row.addWidget(self.clear_all_button)
-        clear_all_row.addStretch()
-        right_layout.addLayout(clear_all_row, stretch=0)
 
         # Clip list widget (fills remaining space)
         self.clip_list_widget = ClipListWidget()
@@ -303,9 +268,11 @@ class ClipEditor(QMainWindow):
         log_container_layout.setContentsMargins(0, 0, 0, 0)
         log_container_layout.setSpacing(4)
 
-        # Status label (shows file path)
+        # Status label (shows file path and operation status)
         self.status_label = QLabel("No file selected")
-        self.status_label.setStyleSheet("padding: 4px; background-color: #f0f0f0; color: #333;")
+        self._default_status_style = "padding: 4px; background-color: #f0f0f0; color: #333;"
+        self._active_status_style = "padding: 4px; background-color: #f0f0f0; color: #d32f2f; font-weight: bold;"
+        self.status_label.setStyleSheet(self._default_status_style)
         log_container_layout.addWidget(self.status_label)
 
         # Log display
@@ -346,7 +313,7 @@ class ClipEditor(QMainWindow):
     def _update_progress_animation(self) -> None:
         """Update the animated dots in status label."""
         dots = "." * (self._progress_dots % 4)  # 0-3 dots cycling
-        self.status_label.setText(f"Transkription läuft{dots}")
+        self._set_status(f"Transkription läuft{dots}", is_running=True)
         self._progress_dots += 1
 
     def _stop_progress_animation(self) -> None:
@@ -388,6 +355,19 @@ class ClipEditor(QMainWindow):
         spec.loader.exec_module(module)
         return module.ClaudePanel
 
+    def _set_status(self, text: str, is_running: bool = False) -> None:
+        """Set status label text with appropriate styling.
+
+        Args:
+            text: Status text to display
+            is_running: If True, use red/bold style for active operations
+        """
+        self.status_label.setText(text)
+        if is_running:
+            self.status_label.setStyleSheet(self._active_status_style)
+        else:
+            self.status_label.setStyleSheet(self._default_status_style)
+
     def select_file(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -427,41 +407,6 @@ class ClipEditor(QMainWindow):
         self._start_progress_animation()
         self._run_worker(self._transcribe_and_find_clips, self.on_transcription_ready, self.on_error)
 
-    def _on_manual_mode_toggled(self, state: int) -> None:
-        """Handle manual mode checkbox toggle."""
-        if state:  # Manual checkbox is checked
-            self.scene_detection_mode = "manual"
-            self.checkbox_clipsai.blockSignals(True)
-            self.checkbox_fallback.blockSignals(True)
-            self.checkbox_clipsai.setChecked(False)
-            self.checkbox_fallback.setChecked(False)
-            self.checkbox_clipsai.blockSignals(False)
-            self.checkbox_fallback.blockSignals(False)
-            logger.info("Scene detection mode: MANUAL (create full-video clip, use Claude panel for scene detection)")
-
-    def _on_clipsai_mode_toggled(self, state: int) -> None:
-        """Handle ClipsAI mode checkbox toggle."""
-        if state:  # ClipsAI checkbox is checked
-            self.scene_detection_mode = "clipsai"
-            self.checkbox_manual.blockSignals(True)
-            self.checkbox_fallback.blockSignals(True)
-            self.checkbox_manual.setChecked(False)
-            self.checkbox_fallback.setChecked(False)
-            self.checkbox_manual.blockSignals(False)
-            self.checkbox_fallback.blockSignals(False)
-            logger.info("Scene detection mode: CLIPSAI (use ClipsAI library for automatic scene detection)")
-
-    def _on_fallback_mode_toggled(self, state: int) -> None:
-        """Handle fallback mode checkbox toggle."""
-        if state:  # Fallback checkbox is checked
-            self.scene_detection_mode = "fallback"
-            self.checkbox_manual.blockSignals(True)
-            self.checkbox_clipsai.blockSignals(True)
-            self.checkbox_manual.setChecked(False)
-            self.checkbox_clipsai.setChecked(False)
-            self.checkbox_manual.blockSignals(False)
-            self.checkbox_clipsai.blockSignals(False)
-            logger.info("Scene detection mode: FALLBACK (use built-in algorithm for automatic scene detection)")
 
     def _setup_output_dir(self) -> None:
         """Set up output directory based on source video location with timestamp."""
@@ -493,37 +438,24 @@ class ClipEditor(QMainWindow):
         logger.info("=" * 60)
         logger.info(f"✓ Transcription complete: {len(result.segments)} segments")
 
-        if self.scene_detection_mode == "clipsai":
-            logger.info("Finding clips using ClipsAI...")
-            wrapper = self._get_clip_wrapper()
-            wrapper._use_clipsai = True  # Force ClipsAI usage
-            clips = wrapper.find_clips(result.segments, max_clips=6)
-            logger.info(f"Found {len(clips)} clips using ClipsAI")
-        elif self.scene_detection_mode == "fallback":
-            logger.info("Finding clips using Fallback algorithm...")
-            wrapper = self._get_clip_wrapper()
-            wrapper._use_clipsai = False  # Force fallback usage
-            clips = wrapper.find_clips(result.segments, max_clips=6)
-            logger.info(f"Found {len(clips)} clips using Fallback algorithm")
-        else:  # manual mode
-            logger.info("Creating default full-video clip (MANUAL mode)...")
-            if result.segments:
-                # Create a single clip spanning the entire video
-                first_segment = result.segments[0]
-                last_segment = result.segments[-1]
-                default_clip = Clip(
-                    start_time=first_segment.start,
-                    end_time=last_segment.end,
-                    text="Full Video",
-                    score=None,
-                    segment_start_index=0,
-                    segment_end_index=len(result.segments) - 1
-                )
-                clips = [default_clip]
-                logger.info("Created 1 default full-video clip")
-            else:
-                logger.warning("No segments found in transcription")
-                clips = []
+        # Create default full-video clip
+        logger.info("Creating default full-video clip...")
+        if result.segments:
+            first_segment = result.segments[0]
+            last_segment = result.segments[-1]
+            default_clip = Clip(
+                start_time=first_segment.start,
+                end_time=last_segment.end,
+                text="Full Video",
+                score=None,
+                segment_start_index=0,
+                segment_end_index=len(result.segments) - 1
+            )
+            clips = [default_clip]
+            logger.info("Created 1 default full-video clip")
+        else:
+            logger.warning("No segments found in transcription")
+            clips = []
 
         return result, clips
 
@@ -1036,27 +968,15 @@ class ClipEditor(QMainWindow):
             return
 
         try:
-            mode = config.get("mode", "manual")
             selection_type = config.get("selection_type", "unknown")
             num_clips = len(config.get("clips", []))
-            logger.info(f"[CLAUDE] Loading {num_clips} clips (mode: {mode}, selection_type: {selection_type})")
+            logger.info(f"[CLAUDE] Loading {num_clips} clips (selection_type: {selection_type})")
 
-            if mode == "auto":
-                logger.info("[CLAUDE] Using auto mode")
-                self._load_auto_clips(config)
-            elif mode == "manual":
-                logger.info("[CLAUDE] Using manual mode")
-                self._load_manual_clips(config)
-            else:
-                logger.error(f"[CLAUDE] Unknown mode: {mode}")
-                self.status_label.setText(f"Error: unknown mode {mode}")
-                QMessageBox.critical(self, "Invalid Mode", f"Unknown mode '{mode}'.\n\nExpected 'auto' or 'manual'.")
-                return
+            self._load_manual_clips(config)
 
             logger.info(f"[CLAUDE] ✓ Successfully loaded {len(self.clips)} clips from config")
             self.populate_clips()
-            self.status_label.setText(f"Status: loaded {len(self.clips)} clips from Claude")
-            QMessageBox.information(self, "Success", f"Successfully loaded {len(self.clips)} clips from Claude!")
+            self._set_status(f"Scene Detection Completed: {len(self.clips)} clips loaded", is_running=False)
 
         except Exception as e:
             logger.error(f"[CLAUDE] Failed to load clips config: {e}", exc_info=True)
@@ -1106,7 +1026,7 @@ class ClipEditor(QMainWindow):
         if index < 0 or index >= len(self.clips):
             return
         clip = self.clips[index]
-        self.status_label.setText(f"Status: exporting clip {index + 1}")
+        self._set_status(f"Status: exporting clip {index + 1}", is_running=True)
         self._run_worker(
             lambda: self._export_single_clip(index, clip),
             self.on_export_done,
@@ -1249,7 +1169,7 @@ class ClipEditor(QMainWindow):
     def export_all(self) -> None:
         if not self.video_path or not self.clips:
             return
-        self.status_label.setText("Status: exporting all clips")
+        self._set_status("Status: exporting all clips", is_running=True)
         self._run_worker(self._export_all_clips, self.on_export_done, self.on_error)
 
     def _export_all_clips(self) -> Path:
@@ -1290,15 +1210,8 @@ class ClipEditor(QMainWindow):
             with open(file_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
 
-            mode = config.get("mode", "auto")
-            logger.info(f"[CONFIG] Configuration mode: {mode}")
-
-            if mode == "auto":
-                self._load_auto_clips(config)
-            elif mode == "manual":
-                self._load_manual_clips(config)
-            else:
-                raise ValueError(f"Unknown mode: {mode}")
+            logger.info(f"[CONFIG] Loading manual clips configuration")
+            self._load_manual_clips(config)
 
             logger.info(f"[CONFIG] ✓ Successfully loaded {len(self.clips)} clips")
             self.populate_clips()
@@ -1307,18 +1220,6 @@ class ClipEditor(QMainWindow):
         except Exception as e:
             logger.error(f"[CONFIG] Failed to load clips config: {e}", exc_info=True)
             QMessageBox.critical(self, "Error Loading Config", f"Failed to load clips configuration:\n{str(e)}")
-
-    def _load_auto_clips(self, config: dict) -> None:
-        """Load auto-detected clips configuration."""
-        max_clips = config.get("max_clips", 6)
-        logger.info(f"[CONFIG] Auto-mode: finding clips with max_clips={max_clips}")
-
-        # Use ClipsAI to find clips
-        clip_wrapper = self._get_clip_wrapper()
-        clips = clip_wrapper.find_clips(self.transcription.segments, max_clips=max_clips)
-        clips = clip_wrapper._add_segment_indices(clips, self.transcription.segments)
-        self.clips = clips
-        logger.info(f"[CONFIG] ✓ Auto-mode found {len(clips)} clips")
 
     def _load_manual_clips(self, config: dict) -> None:
         """Load manually defined clips configuration."""

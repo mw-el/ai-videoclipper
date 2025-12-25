@@ -2,37 +2,13 @@
 
 ## Overview
 
-The clips configuration system supports two modes of operation:
-
-1. **Auto-define mode**: Automatically detect and create clips using ClipsAI
-2. **Manual selection mode**: Manually specify clip boundaries by time or segment numbers
-
-Both modes are configured via JSON files.
+The clips configuration system supports manual clip selection via JSON files. You can specify clip boundaries either by time or by segment numbers.
 
 ---
 
 ## File Format: `clips.json`
 
-### Mode 1: Auto-Define Clips (Default)
-
-When you want the app to automatically find clips after transcription:
-
-```json
-{
-  "mode": "auto",
-  "max_clips": 6,
-  "description": "Use ClipsAI to automatically detect interesting clips"
-}
-```
-
-**Parameters:**
-- `mode` (string, required): Set to `"auto"`
-- `max_clips` (integer, optional): Maximum number of clips to detect. Default: 6
-- `description` (string, optional): Human-readable description
-
----
-
-### Mode 2: Manual Selection by Time
+### Manual Selection by Time
 
 Manually specify clip boundaries using absolute timestamps (in seconds):
 
@@ -56,7 +32,7 @@ Manually specify clip boundaries using absolute timestamps (in seconds):
 ```
 
 **Parameters:**
-- `mode` (string, required): Set to `"manual"`
+- `mode` (string, optional): Set to `"manual"` (can be omitted, manual is default)
 - `selection_type` (string, required): Set to `"time"`
 - `clips` (array, required): List of clip definitions
   - `name` (string, required): **Detailed description with two parts:**
@@ -67,7 +43,7 @@ Manually specify clip boundaries using absolute timestamps (in seconds):
 
 ---
 
-### Mode 3: Manual Selection by Segment Numbers
+### Manual Selection by Segment Numbers
 
 Manually specify clip boundaries using segment indices (1-indexed):
 
@@ -91,7 +67,8 @@ Manually specify clip boundaries using segment indices (1-indexed):
 ```
 
 **Parameters:**
-- `mode` (string, required): Set to `"manual"`
+
+- `mode` (string, optional): Set to `"manual"` (can be omitted, manual is default)
 - `selection_type` (string, required): Set to `"segments"`
 - `clips` (array, required): List of clip definitions
   - `name` (string, required): **Detailed description with two parts:**
@@ -107,20 +84,30 @@ Manually specify clip boundaries using segment indices (1-indexed):
 ### Step 1: Select Video File
 Click "Select File" to choose your video. The app will transcribe it and show segments.
 
-### Step 2: Choose Configuration Method
+### Step 2: Create Clips
 
-**Option A: Use Auto-Define (Simplest)**
-1. Let ClipsAI automatically find clips
-2. Modify them manually as needed
-3. Export clips
+**Option A: Use Claude Scene Detection**
+
+1. Use the Claude terminal panel to run scene detection
+2. Claude will analyze the transcript and suggest clips
+3. The clips will automatically load into the app
+4. Modify them if needed
+5. Export clips
 
 **Option B: Load Manual Configuration**
+
 1. Create a `clips.json` file with your manual selections
 2. Click "Load Clips Config"
 3. Select your `clips.json` file
 4. The app loads your defined clips
 5. Modify them if needed
 6. Export clips
+
+**Option C: Create Clips Manually**
+
+1. Click "New" to create clips by selecting segment ranges
+2. Use "Set Start" and "Set End" to adjust boundaries
+3. Export clips when ready
 
 ### Step 3: Modify (Optional)
 - Use "Set Start" and "Set End" buttons to adjust clip boundaries
@@ -134,17 +121,7 @@ Click "Export All" to export the final clips
 
 ## Examples
 
-### Example 1: Auto-Define with 8 Clips Maximum
-
-File: `clips.json`
-```json
-{
-  "mode": "auto",
-  "max_clips": 8
-}
-```
-
-### Example 2: Manual Selection by Time
+### Example 1: Manual Selection by Time
 
 File: `interview_clips.json`
 ```json
@@ -176,7 +153,7 @@ File: `interview_clips.json`
 }
 ```
 
-### Example 3: Manual Selection by Segments
+### Example 2: Manual Selection by Segments
 
 File: `podcast_clips.json`
 ```json
@@ -236,8 +213,8 @@ Look at the first and last segments in your range:
 - `start_segment` must be less than or equal to `end_segment`
 - Segment numbers are 1-indexed (first segment is 1, not 0)
 - Time values are in seconds (float)
-- `mode` must be either `"auto"` or `"manual"`
-- `selection_type` must be `"time"` or `"segments"` (required for manual mode)
+- `mode` field is optional (defaults to `"manual"`)
+- `selection_type` must be `"time"` or `"segments"` (required)
 
 ---
 
@@ -257,4 +234,4 @@ Suggested locations:
 1. **For interviews**: Use segments - easier to count visually in the UI
 2. **For precise editing**: Use time - exact to the millisecond
 3. **For batch processing**: Create template JSON files for different video types
-4. **Testing**: Start with auto-define, then export/save as JSON to see the format
+4. **For scene detection**: Use Claude terminal panel to analyze transcripts and get AI-suggested clips

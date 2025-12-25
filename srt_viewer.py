@@ -36,6 +36,8 @@ class SRTViewer(QTextEdit):
         super().__init__(parent)
         self.setReadOnly(True)
         self.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
+        # Set white background to prevent orange/red default background
+        self.setStyleSheet("QTextEdit { background-color: #ffffff; color: #000000; }")
         self._highlighter = SRTSyntaxHighlighter(self.document())
         self._segments: List[SrtSegment] = []
         self._block_to_segment: Dict[int, int] = {}

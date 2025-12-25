@@ -1,4 +1,4 @@
 PyQt6[multimedia]>=6.7,<6.8
-clipsai
+smartcut
 numpy
 pandas

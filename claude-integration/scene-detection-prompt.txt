@@ -30,7 +30,7 @@ Gib ZUERST eine kurze Analyse im Chat aus (was du gefunden hast), und dann **am 
   "selection_type": "time",
   "clips": [
     {
-      "name": "Kurzer beschreibender Titel der Szene",
+      "name": "Einprägsamer Titel der Szene\n\nZusammenfassung: [1-2 Sätze was in dem Clip passiert und worum es geht]\n\nBegründung: [Warum ist das ein besonders guter Clip für Social Media? Was macht ihn interessant/wertvoll für Zuschauer?]",
       "start_time": 23.5,
       "end_time": 78.2
     }
@@ -38,7 +38,14 @@ Gib ZUERST eine kurze Analyse im Chat aus (was du gefunden hast), und dann **am 
 }
 ```
 
-**Wichtig:**
+**Wichtig für das "name" Feld:**
+- **Erste Zeile:** Kurzer, einprägsamer Titel (z.B. "Die Macht der Gewohnheiten")
+- **Zweite Zeile:** Leerzeile (durch \n\n getrennt)
+- **Dritte Zeile:** "Zusammenfassung: [Beschreibe in 1-2 Sätzen worum es in dem Clip geht]"
+- **Vierte Zeile:** Leerzeile (durch \n\n getrennt)
+- **Fünfte Zeile:** "Begründung: [Erkläre warum das ein starker Clip ist - was ist der Mehrwert für den Zuschauer?]"
+
+**Weitere Anforderungen:**
 - Zeiten in **Sekunden** (float), nicht HH:MM:SS
 - `start_time` und `end_time` müssen exakte Werte aus der SRT-Datei sein
 - Jeder Clip sollte 60-240 Sekunden lang sein
