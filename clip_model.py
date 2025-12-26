@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 import subprocess
-from typing import Iterable, List, Optional
+from typing import List, Optional
 
 from srt_utils import SrtSegment
 
@@ -18,10 +18,7 @@ class Clip:
     segment_end_index: int = 0    # Index of last segment in clip
 
 
-class ClipsAIWrapper:
-    def __init__(self, use_clipsai: bool = True) -> None:
-        pass
-
+class ClipOperations:
     def trim_clip(
         self,
         source_path: Path,

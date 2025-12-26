@@ -32,11 +32,11 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QColor
 
 from faster_whisper_transcriber import FasterWhisperTranscriber, TranscriptionResult
-from clip_model import Clip, ClipsAIWrapper
+from clip_model import Clip, ClipOperations
 from logger import setup_logging
 from preview_player import PreviewPlayer
 from importlib import util as importlib_util
-from srt_viewer import SRTViewer
+from srt_viewer import SRTViewerWithSearch
 from srt_utils import parse_srt
 from time_utils import format_timestamp
 from clip_list_widget import ClipListWidget
@@ -97,12 +97,13 @@ class ClipEditor(QMainWindow):
         logger.info("Icon manager initialized")
 
         logger.info("Initializing AI VideoClipper")
+        self._check_dependencies()
 
         logger.info("Setting up faster-whisper transcriber...")
         self.transcriber = FasterWhisperTranscriber(progress_callback=self._log_progress)
         logger.info("✓ Transcriber initialized")
 
-        self.clip_wrapper: ClipsAIWrapper | None = None
+        self.clip_wrapper: ClipOperations | None = None
 
         self.video_path: Path | None = None
         self.transcription = None
@@ -114,6 +115,7 @@ class ClipEditor(QMainWindow):
         # Transcription progress animation
         self._progress_timer: QTimer | None = None
         self._progress_dots: int = 0
+        self._progress_message: str = "Transkription läuft"
 
         self._build_ui()
 
@@ -158,6 +160,7 @@ class ClipEditor(QMainWindow):
         self.preview_player = PreviewPlayer()
         self.preview_player.user_marker_changed.connect(self._on_preview_markers_changed)
         self.preview_player.marker_changed.connect(self._on_preview_markers_changed)
+        self.preview_player.position_changed.connect(self.srt_viewer_highlight)
         left_layout.addWidget(self.preview_player)
 
         # Edit toolbar (Start, End, Duplicate, Split buttons above SRT)
@@ -204,8 +207,8 @@ class ClipEditor(QMainWindow):
         edit_toolbar.addWidget(self.preview_player.marker_widget, stretch=1)
         left_layout.addLayout(edit_toolbar, stretch=0)
 
-        # SRT Viewer (fills remaining space)
-        self.srt_viewer = SRTViewer()
+        # SRT Viewer with search (fills remaining space)
+        self.srt_viewer = SRTViewerWithSearch()
         self.srt_viewer.marker_changed.connect(self.on_marker_changed)
         self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
         left_layout.addWidget(self.srt_viewer, stretch=1)
@@ -258,6 +261,38 @@ class ClipEditor(QMainWindow):
         right_container_layout.addLayout(body_layout)
         main_layout.addWidget(right_container, stretch=7)
 
+        self.setCentralWidget(container)
+
+        self._finish_build_ui()
+
+    def _check_dependencies(self) -> None:
+        required = {
+            "faster_whisper": "Transcription (faster-whisper)",
+            "PyQt6": "UI (PyQt6)",
+        }
+        optional = {
+            "mediapipe": "Face analysis (mediapipe)",
+            "cv2": "Face analysis (opencv-python)",
+            "whisperx": "Alignment (WhisperX env)",
+        }
+        missing_required = []
+        for module, label in required.items():
+            if importlib_util.find_spec(module) is None:
+                missing_required.append(f"{label}: {module}")
+        if missing_required:
+            logger.error("[DEPS] Missing required modules:")
+            for item in missing_required:
+                logger.error("[DEPS]   - %s", item)
+        missing_optional = []
+        for module, label in optional.items():
+            if importlib_util.find_spec(module) is None:
+                missing_optional.append(f"{label}: {module}")
+        if missing_optional:
+            logger.warning("[DEPS] Optional modules not found:")
+            for item in missing_optional:
+                logger.warning("[DEPS]   - %s", item)
+
+    def _finish_build_ui(self) -> None:
         # Add logging dock widget (without title bar)
         log_dock = QDockWidget(self)
         log_dock.setTitleBarWidget(QWidget())  # Hide title bar
@@ -288,8 +323,6 @@ class ClipEditor(QMainWindow):
         # Connect logging signal to display
         self.log_emitter.log_message.connect(self.on_log_message)
 
-        self.setCentralWidget(container)
-
     def on_log_message(self, message: str) -> None:
         """Display log message in the log window."""
         self.log_display.append(message)
@@ -313,7 +346,7 @@ class ClipEditor(QMainWindow):
     def _update_progress_animation(self) -> None:
         """Update the animated dots in status label."""
         dots = "." * (self._progress_dots % 4)  # 0-3 dots cycling
-        self._set_status(f"Transkription läuft{dots}", is_running=True)
+        self._set_status(f"{self._progress_message}{dots}", is_running=True)
         self._progress_dots += 1
 
     def _stop_progress_animation(self) -> None:
@@ -404,6 +437,11 @@ class ClipEditor(QMainWindow):
         self.preview_player.load_media(file_path)
 
         logger.info("Starting transcription worker...")
+        external_srt = self._find_external_srt(self.video_path)
+        if external_srt:
+            self._progress_message = "SRT gefunden, lade Untertitel"
+        else:
+            self._progress_message = "Transkription läuft"
         self._start_progress_animation()
         self._run_worker(self._transcribe_and_find_clips, self.on_transcription_ready, self.on_error)
 
@@ -459,9 +497,9 @@ class ClipEditor(QMainWindow):
 
         return result, clips
 
-    def _get_clip_wrapper(self) -> ClipsAIWrapper:
+    def _get_clip_wrapper(self) -> ClipOperations:
         if self.clip_wrapper is None:
-            self.clip_wrapper = ClipsAIWrapper()
+            self.clip_wrapper = ClipOperations()
         return self.clip_wrapper
 
     def _load_embedded_transcription(self, source_path: Path) -> TranscriptionResult | None:
@@ -507,6 +545,8 @@ class ClipEditor(QMainWindow):
         Checks for:
         - video.mp4 -> video.srt
         - video.mp4 -> video.de.srt (language-specific)
+        - video.mp4 -> video.mp4.srt (double suffix)
+        - case-insensitive matches in the same directory
 
         Returns path to SRT file if found, None otherwise.
         """
@@ -516,12 +556,35 @@ class ClipEditor(QMainWindow):
             logger.info(f"[SUBTITLES] Found external SRT: {srt_path.name}")
             return srt_path
 
+        # Check for double suffix (video.mp4.srt)
+        double_suffix = source_path.with_suffix(source_path.suffix + ".srt")
+        if double_suffix.exists() and double_suffix.is_file():
+            logger.info(f"[SUBTITLES] Found external SRT (double suffix): {double_suffix.name}")
+            return double_suffix
+
         # Check for language-specific SRT files (e.g., video.de.srt)
         for lang in ['de', 'en', 'ger', 'deu']:
             lang_srt = source_path.with_suffix(f'.{lang}.srt')
             if lang_srt.exists() and lang_srt.is_file():
                 logger.info(f"[SUBTITLES] Found language-specific SRT: {lang_srt.name}")
                 return lang_srt
+
+        # Fallback: scan for any SRT in the same directory containing the stem (case-insensitive)
+        candidates = []
+        try:
+            for path in source_path.parent.iterdir():
+                if not path.is_file():
+                    continue
+                if path.suffix.lower() != ".srt":
+                    continue
+                if source_path.stem.lower() in path.name.lower():
+                    candidates.append(path)
+        except OSError:
+            candidates = []
+        if candidates:
+            candidates.sort(key=lambda p: len(p.name))
+            logger.info(f"[SUBTITLES] Found SRT candidates: {[p.name for p in candidates]}")
+            return candidates[0]
 
         logger.debug(f"[SUBTITLES] No external SRT file found for: {source_path.name}")
         return None
@@ -693,7 +756,6 @@ class ClipEditor(QMainWindow):
         try:
             self.srt_viewer.set_segments(result.segments)
             logger.info(f"[DISPLAY] ✓ set_segments() completed")
-            logger.info(f"[DISPLAY] SRT viewer now has {len(self.srt_viewer._segments)} segments")
         except Exception as e:
             logger.error(f"[DISPLAY] Failed to set segments: {e}")
             import traceback
@@ -1380,7 +1442,7 @@ class ClipEditor(QMainWindow):
         current_clip.segment_end_index = end_idx
 
         logger.info(f"[MARKER_SYNC] Updating SRT highlight to segments {start_idx}-{end_idx}")
-        self.srt_viewer.highlight_segment_range(start_idx, end_idx, auto_scroll=False)
+        self.srt_viewer.highlight_segment_range(start_idx, end_idx, auto_scroll=True)
         logger.info(f"[MARKER_SYNC] ✓ SRT highlight updated")
 
     def on_marker_changed(self, start_seconds: float, end_seconds: float) -> None:

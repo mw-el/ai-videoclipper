@@ -36,6 +36,7 @@ Comment:     Transcribe videos and create clips with AI
 Categories:  Multimedia;Video;AudioVideo;
 Icon:        videoclipper.png
 Terminal:    No (läuft ohne sichtbares Terminal)
+Path:        /home/matthias/_AA_AI-VideoClipper
 ```
 
 ### Falls die App nicht im Menü erscheint

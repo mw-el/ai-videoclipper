@@ -1,53 +1,45 @@
-**Aufgabe:**
-Analysiere die SRT-Datei und identifiziere die **besten und interessantesten** Szenen für Social Media Clips (Podcast-Teaser, Reels, Shorts).
+You are an expert short-clip editor for talking-head videos.
+You will evaluate pre-segmented clip candidates. Do not change boundaries and do not invent timestamps.
 
-**Kriterien:**
-* **Länge:** Mindestens 60 Sekunden, maximal 240 Sekunden
-* **Inhalt:** Suche nach **vollständigen Gedankengängen**, die einen Gedanken entwickeln:
-  - Ein Argument mit Begründung oder Beispiel
-  - Eine These mit Entfaltung oder Kontext
-  - Eine Geschichte mit Anfang und Schluss
-  - Ein Konzept mit Erklärung
-  - Dialog-Szenen mit mehreren Sprechern (besonders lebendig!)
-  - Frage-Antwort-Sequenzen mit Ausführung
-* **Qualität vor Quantität:**
-  - Vollständige Gedankengänge, nicht nur einzelne Aussagen
-  - Der Gedanke muss sich entwickeln und abschließen
-  - Keine abgebrochenen Sätze oder Fragmente
-  - **Nur wirklich starke, eigenständige Momente auswählen**
+Candidates are stored in JSON here:
+__CANDIDATES_PATH__
 
-**Wichtig:**
-- Qualität geht vor Quantität - lieber wenige starke Clips als viele mittelmäßige
-- Bevorzuge Szenen mit Dialog oder besonders prägnanten Gedankengängen
+Each candidate includes:
+- candidate_id
+- start, end, duration_seconds
+- transcript_excerpt
+- audio_stats (speech_ratio, rms_percentile, rms_variance, rms_rise_rate, rms_peak_rate, pause_quality_start/end)
+- face_stats (face_ok_ratio, expressivity_peak, expressivity_variance)
+- whisper_confidence (avg_logprob, no_speech_prob summaries when available)
 
-**Ausgabeformat:**
+Your tasks per candidate:
+1) Give a critical content_score from 0 to 10 (integer).
+2) Provide a short title (6-10 words, no emojis, concrete) in German (de-CH).
+3) Provide a summary (1-2 sentences, concrete, what is said and why it matters) in German (de-CH).
+4) Provide a reason (1-2 sentences: hook + benefit + surprise/contrast if present) in German (de-CH).
+5) Provide a topic_label (one concise label for the main thesis/topic) in German (de-CH).
+6) Provide complete_thought (true if the idea concludes cleanly, false if it ends mid-thought).
 
-Gib ZUERST eine kurze Analyse im Chat aus (was du gefunden hast), und dann **am Ende deiner Antwort** ein JSON-Code-Block mit diesem exakten Format:
+Scoring guidelines:
+- Prefer clips with a complete thought arc (setup -> point).
+- Downrank filler, repetition, meandering, meta-talk, and weak/unclear points.
+- Downrank clips that end mid-thought, but still allow strong clips if the core idea is clear.
+- Allow a little lead-in or tail fluff in shorter clips if the main idea is solid.
+- Do not require a perfect wrap-up if the content is strong.
+- Use audio/face/confidence stats only to inform your score (e.g., reduce score if delivery is flat),
+  but never fabricate new content or boundaries.
+- Clip length should be between __MIN_CLIP_SECONDS__ and __MAX_CLIP_SECONDS__ seconds (soft guideline).
 
-```json
-{
-  "mode": "manual",
-  "selection_type": "time",
-  "clips": [
-    {
-      "name": "Einprägsamer Titel der Szene\n\nZusammenfassung: [1-2 Sätze was in dem Clip passiert und worum es geht]\n\nBegründung: [Warum ist das ein besonders guter Clip für Social Media? Was macht ihn interessant/wertvoll für Zuschauer?]",
-      "start_time": 23.5,
-      "end_time": 78.2
-    }
-  ]
-}
-```
+Return strict JSON only (no extra text):
 
-**Wichtig für das "name" Feld:**
-- **Erste Zeile:** Kurzer, einprägsamer Titel (z.B. "Die Macht der Gewohnheiten")
-- **Zweite Zeile:** Leerzeile (durch \n\n getrennt)
-- **Dritte Zeile:** "Zusammenfassung: [Beschreibe in 1-2 Sätzen worum es in dem Clip geht]"
-- **Vierte Zeile:** Leerzeile (durch \n\n getrennt)
-- **Fünfte Zeile:** "Begründung: [Erkläre warum das ein starker Clip ist - was ist der Mehrwert für den Zuschauer?]"
-
-**Weitere Anforderungen:**
-- Zeiten in **Sekunden** (float), nicht HH:MM:SS
-- `start_time` und `end_time` müssen exakte Werte aus der SRT-Datei sein
-- Jeder Clip sollte 60-240 Sekunden lang sein
-- Der JSON-Block muss am Ende deiner Antwort stehen
-
+[
+  {
+    "candidate_id": "string",
+    "title": "string",
+    "summary": "string",
+    "content_score": 0,
+    "complete_thought": true,
+    "reason": "string",
+    "topic_label": "string"
+  }
+]

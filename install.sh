@@ -15,10 +15,19 @@ fi
 source ~/miniconda3/etc/profile.d/conda.sh
 conda env create -f environment.yml || conda env update -f environment.yml
 conda activate ai-videoclipper
+pip install -r requirements.txt
 
 if ! bash -lc "source ~/miniconda3/etc/profile.d/conda.sh && conda activate atrain && command -v aTrain_core >/dev/null"; then
   echo "WARNING: aTrain_core not found. Install aTrainCore in the atrain env."
 fi
+
+echo ""
+echo "Optional WhisperX (separate env to avoid AV/Torch conflicts):"
+echo "  source ~/miniconda3/etc/profile.d/conda.sh"
+echo "  conda create -y -n ai-videoclipper-whisperx python=3.10"
+echo "  conda activate ai-videoclipper-whisperx"
+echo "  pip install whisperx"
+echo "  conda run -n ai-videoclipper-whisperx python whisperx_align.py --help"
 
 if [ ! -d .git ]; then
   git init

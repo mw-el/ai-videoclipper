@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Dict, List
 
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QColor, QTextCharFormat, QSyntaxHighlighter, QTextCursor
-from PyQt6.QtWidgets import QTextEdit
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtGui import QColor, QTextCharFormat, QSyntaxHighlighter, QTextCursor, QTextDocument
+from PyQt6.QtWidgets import QTextEdit, QWidget, QHBoxLayout, QLineEdit, QPushButton, QVBoxLayout, QLabel
 
 from srt_utils import SrtSegment
 from time_utils import format_srt_timestamp
@@ -99,7 +99,7 @@ class SRTViewer(QTextEdit):
             self.setExtraSelections([])
             self._current_segment_index = None
 
-    def highlight_segment(self, segment_index: int) -> None:
+    def highlight_segment(self, segment_index: int, auto_scroll: bool = True) -> None:
         blocks = self._segment_to_blocks.get(segment_index)
         if not blocks:
             return
@@ -121,6 +121,13 @@ class SRTViewer(QTextEdit):
         selection.format = fmt
         self.setExtraSelections([selection])
         self._current_segment_index = segment_index
+
+        # Auto-scroll to show highlighted segment at top
+        if auto_scroll:
+            # Position cursor at start of first block
+            scroll_cursor = QTextCursor(first_block)
+            self.setTextCursor(scroll_cursor)
+            self.ensureCursorVisible()
 
     def highlight_segment_range(self, start_index: int, end_index: int, auto_scroll: bool = True) -> None:
         """Highlight a range of segments (for showing active clip).
@@ -235,3 +242,146 @@ class SRTViewer(QTextEdit):
         if self._highlighted_range_start is not None and self._highlighted_range_end is not None:
             return (self._highlighted_range_start, self._highlighted_range_end)
         return None
+
+    def clear(self) -> None:
+        """Clear all content and reset state."""
+        self.setPlainText("")
+        self._segments = []
+        self._block_to_segment.clear()
+        self._segment_to_blocks.clear()
+        self._current_segment_index = None
+        self._highlighted_range_start = None
+        self._highlighted_range_end = None
+        self.setExtraSelections([])
+
+    def search_text(self, search_term: str, forward: bool = True) -> bool:
+        """Search for text in SRT content.
+
+        Args:
+            search_term: Text to search for
+            forward: If True, search forward; if False, search backward
+
+        Returns:
+            True if match found, False otherwise
+        """
+        if not search_term:
+            return False
+
+        flags = QTextDocument.FindFlag(0)
+        if not forward:
+            flags |= QTextDocument.FindFlag.FindBackward
+
+        # Get current cursor position
+        cursor = self.textCursor()
+
+        # Search from current position
+        found_cursor = self.document().find(search_term, cursor, flags)
+
+        if not found_cursor.isNull():
+            self.setTextCursor(found_cursor)
+            self.ensureCursorVisible()
+            return True
+        else:
+            # Wrap around search
+            if forward:
+                cursor = QTextCursor(self.document())  # Start from beginning
+            else:
+                cursor = QTextCursor(self.document())
+                cursor.movePosition(QTextCursor.MoveOperation.End)  # Start from end
+
+            found_cursor = self.document().find(search_term, cursor, flags)
+            if not found_cursor.isNull():
+                self.setTextCursor(found_cursor)
+                self.ensureCursorVisible()
+                return True
+
+        return False
+
+
+class SRTViewerWithSearch(QWidget):
+    """SRT Viewer with integrated search bar."""
+
+    # Forward signals from SRTViewer
+    marker_changed = pyqtSignal(float, float)
+    segment_clicked = pyqtSignal(int)
+    highlight_range_changed = pyqtSignal(int, int)
+
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+
+        # Create layout
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(4)
+
+        # Search bar
+        search_layout = QHBoxLayout()
+        search_layout.setSpacing(4)
+
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("SRT durchsuchen...")
+        self.search_input.returnPressed.connect(self._search_next)
+        search_layout.addWidget(self.search_input)
+
+        self.prev_button = QPushButton("◀")
+        self.prev_button.setMaximumWidth(40)
+        self.prev_button.setToolTip("Vorheriges Ergebnis")
+        self.prev_button.clicked.connect(self._search_previous)
+        search_layout.addWidget(self.prev_button)
+
+        self.next_button = QPushButton("▶")
+        self.next_button.setMaximumWidth(40)
+        self.next_button.setToolTip("Nächstes Ergebnis")
+        self.next_button.clicked.connect(self._search_next)
+        search_layout.addWidget(self.next_button)
+
+        self.search_status = QLabel("")
+        self.search_status.setStyleSheet("color: #666; font-size: 10px;")
+        search_layout.addWidget(self.search_status)
+
+        layout.addLayout(search_layout)
+
+        # SRT Viewer
+        self.srt_viewer = SRTViewer()
+        layout.addWidget(self.srt_viewer)
+
+        # Forward signals
+        self.srt_viewer.marker_changed.connect(self.marker_changed)
+        self.srt_viewer.segment_clicked.connect(self.segment_clicked)
+        self.srt_viewer.highlight_range_changed.connect(self.highlight_range_changed)
+
+    def _search_next(self) -> None:
+        search_term = self.search_input.text()
+        if search_term:
+            found = self.srt_viewer.search_text(search_term, forward=True)
+            self.search_status.setText("Gefunden" if found else "Nicht gefunden")
+
+    def _search_previous(self) -> None:
+        search_term = self.search_input.text()
+        if search_term:
+            found = self.srt_viewer.search_text(search_term, forward=False)
+            self.search_status.setText("Gefunden" if found else "Nicht gefunden")
+
+    # Delegate methods to SRTViewer
+    def set_segments(self, segments: List[SrtSegment]) -> None:
+        self.srt_viewer.set_segments(segments)
+
+    def highlight_for_time(self, seconds: float) -> None:
+        self.srt_viewer.highlight_for_time(seconds)
+
+    def highlight_segment(self, segment_index: int, auto_scroll: bool = True) -> None:
+        self.srt_viewer.highlight_segment(segment_index, auto_scroll)
+
+    def highlight_segment_range(self, start_index: int, end_index: int, auto_scroll: bool = True) -> None:
+        self.srt_viewer.highlight_segment_range(start_index, end_index, auto_scroll)
+
+    def get_segment_at_index(self, index: int) -> SrtSegment | None:
+        return self.srt_viewer.get_segment_at_index(index)
+
+    def get_current_highlight_range(self) -> tuple[int, int] | None:
+        return self.srt_viewer.get_current_highlight_range()
+
+    def clear(self) -> None:
+        self.srt_viewer.clear()
+        self.search_input.clear()
+        self.search_status.setText("")

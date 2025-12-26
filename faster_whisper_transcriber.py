@@ -37,6 +37,7 @@ class TranscriptionResult:
     srt_path: Optional[Path]  # Path to generated SRT file (if saved)
     segments: List[SrtSegment]
     text: str
+    json_path: Optional[Path] = None
 
 
 class FasterWhisperTranscriber:
@@ -83,7 +84,9 @@ class FasterWhisperTranscriber:
         # Create temp directory for output
         temp_dir = Path(tempfile.gettempdir()) / "faster_whisper_tmp"
         temp_dir.mkdir(parents=True, exist_ok=True)
-        temp_srt = temp_dir / f"transcription_{int(time.time())}.srt"
+        timestamp = int(time.time())
+        temp_srt = temp_dir / f"transcription_{timestamp}.srt"
+        temp_json = temp_dir / f"transcription_{timestamp}.json"
 
         log_and_print(f"Temp SRT will be saved to: {temp_srt}")
 
@@ -95,6 +98,22 @@ from faster_whisper import WhisperModel
 model = WhisperModel("large-v3-turbo", device="cuda", compute_type="float32")
 segments, info = model.transcribe(r"{source_path}", language="{language}", task="{task}")
 segments = list(segments)
+
+# Save as JSON
+data = {{
+    "segments": [
+        {{
+            "start": seg.start,
+            "end": seg.end,
+            "text": seg.text.strip(),
+            "avg_logprob": getattr(seg, "avg_logprob", None),
+            "no_speech_prob": getattr(seg, "no_speech_prob", None),
+        }}
+        for seg in segments
+    ]
+}}
+with open(r"{temp_json}", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=True, indent=2)
 
 # Save as SRT
 with open(r"{temp_srt}", "w", encoding="utf-8") as f:
@@ -156,6 +175,10 @@ print("OK")
             raise TranscriptionError("SRT file was not created")
 
         log_and_print(f"SRT file size: {temp_srt.stat().st_size} bytes")
+        if temp_json.exists():
+            log_and_print(f"Transcript JSON saved: {temp_json}")
+        else:
+            log_and_print("WARNING: Transcript JSON was not created", "WARNING")
 
         log_and_print("Parsing SRT file...")
 
@@ -170,7 +193,7 @@ print("OK")
         if self.progress_callback:
             self.progress_callback(f"✓ Transcription complete: {len(segments)} segments")
 
-        return TranscriptionResult(srt_path=temp_srt, segments=segments, text=text)
+        return TranscriptionResult(srt_path=temp_srt, segments=segments, text=text, json_path=temp_json)
 
     def save_srt(self, segments: List[SrtSegment], output_path: Path) -> Path:
         """Save segments to an SRT file."""

@@ -29,3 +29,6 @@ output/
 *.wav
 *.srt
 *.vtt
+
+# Models
+assets/mediapipe/

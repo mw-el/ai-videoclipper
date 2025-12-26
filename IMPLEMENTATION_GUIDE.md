@@ -17,9 +17,9 @@
    - GPU acceleration support (CUDA, float32)
 
 3. **Clip Discovery**
-   - ClipsAI integration for intelligent clip detection
-   - Fallback algorithm if ClipsAI unavailable
-   - 6 clips maximum per video (configurable)
+   - Local candidate generation from audio VAD + transcript
+   - Claude scores candidates (semantic packaging only)
+   - Final clips are imported as a JSON config (time-based)
 
 4. **Output Organization**
    - Automatic output folder in source video directory
@@ -40,6 +40,7 @@ AI-VideoClipper/
 ├── clips_editor.py              # Main UI application
 ├── faster_whisper_transcriber.py # Transcription engine
 ├── clip_model.py                # Clip finding & export
+├── scene_detection_pipeline.py  # Scene detection + candidate ranking
 ├── srt_viewer.py                # Transcript display widget
 ├── preview_player.py            # Video preview widget
 ├── srt_utils.py                 # SRT parsing utilities

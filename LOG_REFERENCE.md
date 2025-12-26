@@ -84,12 +84,12 @@ Calling faster-whisper process (this will take 30-60 seconds)...
 [WORKER] Finished signal emitted
 Transcription completed in 30.5 seconds (return code: 0)
 ✓ Transcription complete: 65 segments
-Finding clips using ClipsAI...
-Found 6 clips
+Creating default full-video clip...
+Created 1 default full-video clip
 ```
 
-**What it means:** Transcription succeeded, segments parsed, clips found
-**Expected:** Should see COMPLETE, result info, signal emission, and clip count
+**What it means:** Transcription succeeded, segments parsed, default clip created
+**Expected:** Should see COMPLETE, result info, signal emission, and clip count (1 by default)
 **If stuck here:** Signal might not be received by main thread
 
 ---
@@ -219,9 +219,9 @@ Search log for:
 
 Search log for:
 1. `✓ Transcription complete: X segments` ← Count should be > 0
-2. `Found X clips` ← Should be > 0 (or fallback algorithm used)
+2. `Created 1 default full-video clip` ← Should appear after transcription
 3. If segments=0, transcription failed
-4. If clips=0, ClipsAI failed and fallback returned nothing
+4. If clips=0, check for errors in scene detection or config load
 
 ### "Stuck on transcribing"
 
