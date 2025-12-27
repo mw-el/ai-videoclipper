@@ -251,13 +251,15 @@ class SceneDetectionPipeline:
             candidate_id = candidate["candidate_id"]
             start = float(candidate["start"])
             end = float(candidate["end"])
-            alignment = self._whisperx_align_candidate(
-                video_path,
-                candidate_id,
-                start,
-                end,
-                transcript_segments,
-            )
+            # Skip WhisperX alignment for now - will be done at export time
+            # alignment = self._whisperx_align_candidate(
+            #     video_path,
+            #     candidate_id,
+            #     start,
+            #     end,
+            #     transcript_segments,
+            # )
+            alignment = None  # Use fallback offsets instead of word-level alignment
             final_start, final_end, meta = self._refine_boundaries(
                 start,
                 end,

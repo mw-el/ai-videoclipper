@@ -48,6 +48,10 @@ class SRTViewer(QTextEdit):
         self._hook_start_index = None  # Hook segment start index
         self._hook_end_index = None    # Hook segment end index
 
+        # Enable context menu
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._show_context_menu)
+
     def set_segments(self, segments: List[SrtSegment]) -> None:
         import logging
         logger = logging.getLogger("ai_videoclipper")
@@ -102,8 +106,8 @@ class SRTViewer(QTextEdit):
                     self.highlight_segment(idx)
                 return
         if self._current_segment_index is not None:
-            self.setExtraSelections([])
             self._current_segment_index = None
+            self._update_highlighting()
 
     def highlight_segment(self, segment_index: int, auto_scroll: bool = True) -> None:
         blocks = self._segment_to_blocks.get(segment_index)
@@ -115,18 +119,8 @@ class SRTViewer(QTextEdit):
         if not first_block.isValid() or not last_block.isValid():
             return
 
-        cursor = QTextCursor(first_block)
-        cursor.setPosition(last_block.position() + last_block.length() - 1, QTextCursor.MoveMode.KeepAnchor)
-
-        selection = QTextEdit.ExtraSelection()
-        selection.cursor = cursor
-        # Set format explicitly to override any default selection colors
-        fmt = QTextCharFormat()
-        fmt.setBackground(QColor("#fff3bf"))  # Yellow highlight for current position
-        fmt.setForeground(QColor("#000000"))  # Black text on yellow background
-        selection.format = fmt
-        self.setExtraSelections([selection])
         self._current_segment_index = segment_index
+        self._update_highlighting()
 
         # Auto-scroll to show highlighted segment at top
         if auto_scroll:
@@ -153,24 +147,30 @@ class SRTViewer(QTextEdit):
             # Validate indices
             if start_index < 0 or end_index < 0:
                 logger.error(f"[SRT_VIEWER] Invalid indices: start_index={start_index}, end_index={end_index}")
-                self.setExtraSelections([])
+                self._highlighted_range_start = None
+                self._highlighted_range_end = None
+                self._update_highlighting()
                 return
 
             if start_index >= len(self._segments) or end_index >= len(self._segments):
                 logger.error(f"[SRT_VIEWER] Indices out of range: start_index={start_index}, end_index={end_index}, total_segments={len(self._segments)}")
-                self.setExtraSelections([])
+                self._highlighted_range_start = None
+                self._highlighted_range_end = None
+                self._update_highlighting()
                 return
 
             if start_index > end_index:
                 logger.error(f"[SRT_VIEWER] start_index > end_index: {start_index} > {end_index}")
-                self.setExtraSelections([])
+                self._highlighted_range_start = None
+                self._highlighted_range_end = None
+                self._update_highlighting()
                 return
 
             self._highlighted_range_start = start_index
             self._highlighted_range_end = end_index
             logger.info(f"[SRT_VIEWER] Range validated, collecting blocks...")
 
-            # Collect all blocks in range
+            # Collect all blocks in range for scroll position
             all_blocks = []
             for seg_idx in range(start_index, end_index + 1):
                 blocks = self._segment_to_blocks.get(seg_idx, [])
@@ -181,32 +181,21 @@ class SRTViewer(QTextEdit):
 
             if not all_blocks:
                 logger.warning(f"[SRT_VIEWER] No blocks found for range {start_index}-{end_index}")
-                self.setExtraSelections([])
+                self._update_highlighting()
                 return
 
             doc = self.document()
             first_block = doc.findBlockByNumber(all_blocks[0])
-            last_block = doc.findBlockByNumber(all_blocks[-1])
 
-            logger.info(f"[SRT_VIEWER] first_block valid={first_block.isValid()}, last_block valid={last_block.isValid()}")
+            logger.info(f"[SRT_VIEWER] first_block valid={first_block.isValid()}")
 
-            if not first_block.isValid() or not last_block.isValid():
-                logger.error(f"[SRT_VIEWER] Invalid blocks after lookup")
-                self.setExtraSelections([])
+            if not first_block.isValid():
+                logger.error(f"[SRT_VIEWER] Invalid first block")
+                self._update_highlighting()
                 return
 
-            # Create selection for range
-            cursor = QTextCursor(first_block)
-            cursor.setPosition(last_block.position() + last_block.length() - 1, QTextCursor.MoveMode.KeepAnchor)
-
-            selection = QTextEdit.ExtraSelection()
-            selection.cursor = cursor
-            # Set format explicitly to override any default selection colors
-            fmt = QTextCharFormat()
-            fmt.setBackground(QColor("#c3f0ca"))  # Green highlight for active clip
-            fmt.setForeground(QColor("#000000"))  # Black text on green background
-            selection.format = fmt
-            self.setExtraSelections([selection])
+            # Update highlighting with new range
+            self._update_highlighting()
             logger.info(f"[SRT_VIEWER] Highlight applied successfully")
 
             # Emit signal to notify about range change
@@ -216,6 +205,7 @@ class SRTViewer(QTextEdit):
             if auto_scroll:
                 logger.debug(f"[SRT_VIEWER] Auto-scrolling...")
                 self.verticalScrollBar().setValue(0)  # Reset scroll
+                cursor = QTextCursor(first_block)
                 self.setTextCursor(cursor)
                 self.ensureCursorVisible()
                 logger.info(f"[SRT_VIEWER] Auto-scroll complete")
@@ -261,30 +251,85 @@ class SRTViewer(QTextEdit):
         self._apply_hook_formatting()
 
     def _apply_hook_formatting(self) -> None:
-        """Apply bold formatting to hook segments."""
+        """Apply bold formatting to hook segments.
+
+        This is called after set_hook_range() to visually mark hook segments.
+        We need to refresh extraSelections to include hook highlighting.
+        """
         if (self._hook_start_index is None or
             self._hook_end_index is None or
             not self._segments):
+            # No hook set, just update current highlighting
+            self._update_highlighting()
             return
 
-        # Create cursor and format for bold text
-        cursor = QTextCursor(self.document())
-        bold_format = QTextCharFormat()
-        bold_format.setFontWeight(700)  # Bold
-        bold_format.setForeground(QColor("#1a5490"))  # Darker blue for hook
+        # Trigger a refresh of all highlighting
+        self._update_highlighting()
 
-        # Apply bold to all blocks in hook range
-        for seg_idx in range(self._hook_start_index, self._hook_end_index + 1):
-            blocks = self._segment_to_blocks.get(seg_idx, [])
+    def _update_highlighting(self) -> None:
+        """Update all visual highlighting (segments + hooks)."""
+        selections = []
+
+        # 1. Add hook highlighting (background)
+        if (self._hook_start_index is not None and
+            self._hook_end_index is not None):
+            hook_format = QTextEdit.ExtraSelection()
+            hook_format.format.setBackground(QColor("#e3f2fd"))  # Light blue background
+            hook_format.format.setFontWeight(700)  # Bold
+            hook_format.cursor = QTextCursor(self.document())
+
+            # Select all hook segments
+            for seg_idx in range(self._hook_start_index, self._hook_end_index + 1):
+                blocks = self._segment_to_blocks.get(seg_idx, [])
+                for block_num in blocks:
+                    block = self.document().findBlockByNumber(block_num)
+                    if block.isValid():
+                        cursor = QTextCursor(block)
+                        cursor.movePosition(
+                            QTextCursor.MoveOperation.EndOfBlock,
+                            QTextCursor.MoveMode.KeepAnchor
+                        )
+                        selection = QTextEdit.ExtraSelection()
+                        selection.format.setBackground(QColor("#e3f2fd"))
+                        selection.format.setFontWeight(700)
+                        selection.cursor = cursor
+                        selections.append(selection)
+
+        # 2. Add segment range highlighting (if active)
+        if (self._highlighted_range_start is not None and
+            self._highlighted_range_end is not None):
+            for seg_idx in range(self._highlighted_range_start, self._highlighted_range_end + 1):
+                blocks = self._segment_to_blocks.get(seg_idx, [])
+                for block_num in blocks:
+                    block = self.document().findBlockByNumber(block_num)
+                    if block.isValid():
+                        cursor = QTextCursor(block)
+                        cursor.movePosition(
+                            QTextCursor.MoveOperation.EndOfBlock,
+                            QTextCursor.MoveMode.KeepAnchor
+                        )
+                        selection = QTextEdit.ExtraSelection()
+                        selection.format.setBackground(QColor("#fff3cd"))  # Yellow for selection
+                        selection.cursor = cursor
+                        selections.append(selection)
+
+        # 3. Add current segment highlighting (if active)
+        if self._current_segment_index is not None:
+            blocks = self._segment_to_blocks.get(self._current_segment_index, [])
             for block_num in blocks:
                 block = self.document().findBlockByNumber(block_num)
                 if block.isValid():
-                    cursor.setPosition(block.position())
+                    cursor = QTextCursor(block)
                     cursor.movePosition(
                         QTextCursor.MoveOperation.EndOfBlock,
                         QTextCursor.MoveMode.KeepAnchor
                     )
-                    cursor.mergeCharFormat(bold_format)
+                    selection = QTextEdit.ExtraSelection()
+                    selection.format.setBackground(QColor("#c3f0ca"))  # Green for current
+                    selection.cursor = cursor
+                    selections.append(selection)
+
+        self.setExtraSelections(selections)
 
     def clear(self) -> None:
         """Clear all content and reset state."""
@@ -297,7 +342,50 @@ class SRTViewer(QTextEdit):
         self._highlighted_range_end = None
         self._hook_start_index = None
         self._hook_end_index = None
-        self.setExtraSelections([])
+        self._update_highlighting()
+
+    def _show_context_menu(self, position) -> None:
+        """Show context menu for hook management."""
+        from PyQt6.QtWidgets import QMenu
+
+        # Check if we have a highlighted range
+        if self._highlighted_range_start is None or self._highlighted_range_end is None:
+            return  # No selection, no menu
+
+        menu = QMenu(self)
+
+        # Check if current selection is already the hook
+        is_hook = (self._hook_start_index == self._highlighted_range_start and
+                   self._hook_end_index == self._highlighted_range_end)
+
+        if is_hook:
+            clear_action = menu.addAction("Hook entfernen")
+            clear_action.triggered.connect(self._clear_hook)
+        else:
+            set_action = menu.addAction("Als Hook festlegen")
+            set_action.triggered.connect(self._set_hook_from_selection)
+
+            if self._hook_start_index is not None:
+                menu.addSeparator()
+                clear_action = menu.addAction("Hook entfernen")
+                clear_action.triggered.connect(self._clear_hook)
+
+        menu.exec(self.mapToGlobal(position))
+
+    def _set_hook_from_selection(self) -> None:
+        """Set the currently highlighted range as hook."""
+        if self._highlighted_range_start is not None and self._highlighted_range_end is not None:
+            self.set_hook_range(self._highlighted_range_start, self._highlighted_range_end)
+            import logging
+            logger = logging.getLogger("ai_videoclipper")
+            logger.info(f"[SRT] Hook set to segments {self._hook_start_index}-{self._hook_end_index}")
+
+    def _clear_hook(self) -> None:
+        """Clear the hook range."""
+        self.set_hook_range(None, None)
+        import logging
+        logger = logging.getLogger("ai_videoclipper")
+        logger.info("[SRT] Hook cleared")
 
     def search_text(self, search_term: str, forward: bool = True) -> bool:
         """Search for text in SRT content.
