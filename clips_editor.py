@@ -207,6 +207,20 @@ class ClipEditor(QMainWindow):
         edit_toolbar.addWidget(self.preview_player.marker_widget, stretch=1)
         left_layout.addLayout(edit_toolbar, stretch=0)
 
+        # Hook status label (above SRT viewer)
+        self.hook_status_label = QLabel("Hook: nicht festgelegt")
+        self.hook_status_label.setStyleSheet("""
+            QLabel {
+                background-color: #f8f9fa;
+                padding: 4px 8px;
+                border-radius: 3px;
+                font-size: 11px;
+                color: #666;
+            }
+        """)
+        self.hook_status_label.setMaximumHeight(24)
+        left_layout.addWidget(self.hook_status_label, stretch=0)
+
         # SRT Viewer with search (fills remaining space)
         self.srt_viewer = SRTViewerWithSearch()
         self.srt_viewer.marker_changed.connect(self.on_marker_changed)
@@ -400,6 +414,55 @@ class ClipEditor(QMainWindow):
             self.status_label.setStyleSheet(self._active_status_style)
         else:
             self.status_label.setStyleSheet(self._default_status_style)
+
+    def update_hook_status(self, hook_info: dict | None = None) -> None:
+        """Update hook status label based on hook information.
+
+        Args:
+            hook_info: Dictionary with hook data (use_hook, hook_start, hook_end, hook_reason)
+                      or None to clear hook status
+        """
+        if not hook_info:
+            self.hook_status_label.setText("Hook: nicht festgelegt")
+            self.hook_status_label.setStyleSheet("""
+                QLabel {
+                    background-color: #f8f9fa;
+                    padding: 4px 8px;
+                    border-radius: 3px;
+                    font-size: 11px;
+                    color: #666;
+                }
+            """)
+            return
+
+        use_hook = hook_info.get("use_hook", False)
+        if use_hook:
+            hook_start = hook_info.get("hook_start", 0)
+            hook_end = hook_info.get("hook_end", 0)
+            duration = hook_end - hook_start
+            self.hook_status_label.setText(f"Hook: {hook_start:.1f}s - {hook_end:.1f}s ({duration:.1f}s)")
+            self.hook_status_label.setStyleSheet("""
+                QLabel {
+                    background-color: #e3f2fd;
+                    padding: 4px 8px;
+                    border-radius: 3px;
+                    font-size: 11px;
+                    color: #1565c0;
+                    font-weight: bold;
+                }
+            """)
+        else:
+            reason = hook_info.get("hook_reason", "Kein geeigneter Hook gefunden")
+            self.hook_status_label.setText(f"Hook: {reason}")
+            self.hook_status_label.setStyleSheet("""
+                QLabel {
+                    background-color: #fff3cd;
+                    padding: 4px 8px;
+                    border-radius: 3px;
+                    font-size: 11px;
+                    color: #856404;
+                }
+            """)
 
     def select_file(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
@@ -1035,6 +1098,28 @@ class ClipEditor(QMainWindow):
             logger.info(f"[CLAUDE] Loading {num_clips} clips (selection_type: {selection_type})")
 
             self._load_manual_clips(config)
+
+            # Handle hook info if present
+            hook_info = config.get("hook_info")
+            if hook_info:
+                logger.info(f"[CLAUDE] Hook info found: use_hook={hook_info.get('use_hook')}")
+                self.update_hook_status(hook_info)
+
+                # Set hook range in SRT viewer if hook is used
+                if hook_info.get("use_hook") and self.transcription:
+                    hook_start = hook_info.get("hook_start", 0)
+                    hook_end = hook_info.get("hook_end", 0)
+
+                    # Find segment indices for hook times
+                    hook_start_idx = self._find_segment_index_for_time(hook_start, prefer_start=True)
+                    hook_end_idx = self._find_segment_index_for_time(hook_end, prefer_start=False)
+
+                    if hook_start_idx is not None and hook_end_idx is not None:
+                        self.srt_viewer.set_hook_range(hook_start_idx, hook_end_idx)
+                        logger.info(f"[CLAUDE] Hook range set in SRT: segments {hook_start_idx}-{hook_end_idx}")
+            else:
+                logger.info("[CLAUDE] No hook info in config")
+                self.update_hook_status(None)
 
             logger.info(f"[CLAUDE] ✓ Successfully loaded {len(self.clips)} clips from config")
             self.populate_clips()

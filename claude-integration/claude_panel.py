@@ -706,7 +706,28 @@ class ClaudePanel(QWidget):
                 ranking["top_candidates"],
                 self._video_path,
             )
+
+            # Run hook extraction if we have a top candidate
+            hook_info = None
+            if refined and len(refined) > 0:
+                hook_info = self._extract_hook(refined[0], bundle)
+                output += "\n=== Hook Extraction ===\n"
+                output += f"Hook found: {hook_info.get('use_hook', False)}\n"
+                if hook_info.get("use_hook"):
+                    output += f"  Start: {hook_info['hook_start']:.1f}s\n"
+                    output += f"  End: {hook_info['hook_end']:.1f}s\n"
+                    output += f"  Score: {hook_info['hook_score']:.1f}\n"
+                    output += f"  Reason: {hook_info['hook_reason']}\n"
+                else:
+                    output += f"  Reason: {hook_info.get('hook_reason', 'No hook found')}\n"
+                output += "\n"
+
             config = pipeline.build_clip_config(refined)
+
+            # Add hook info to config
+            if hook_info:
+                config["hook_info"] = hook_info
+
             output += "\n=== Final Clips Config ===\n```json\n"
             output += json.dumps(config, indent=2, ensure_ascii=True)
             output += "\n```\n"
@@ -1141,6 +1162,93 @@ class ClaudePanel(QWidget):
             # Remove checkmark
             original_text = button.text().replace(" ✓", "")
             button.setText(original_text)
+
+    def _extract_hook(self, main_clip: dict, bundle: dict) -> dict:
+        """Extract hook from enriched candidates for the main clip.
+
+        Args:
+            main_clip: The top-ranked clip to extract hook from
+            bundle: Analysis bundle with enriched candidates
+
+        Returns:
+            Dictionary with hook information (use_hook, hook_start, hook_end, etc.)
+        """
+        logger.info("[HOOK] Starting hook extraction")
+
+        hook_prompt = self._load_prompt("hook-extraction-prompt.txt")
+        if not hook_prompt:
+            logger.warning("[HOOK] Hook extraction prompt not found, skipping")
+            return {
+                "use_hook": False,
+                "hook_score": 0.0,
+                "hook_start": 0.0,
+                "hook_end": 0.0,
+                "hook_transcript": "",
+                "hook_reason": "Hook extraction prompt not found",
+                "hook_candidate_id": None
+            }
+
+        # Get enriched candidates path
+        candidates_path = self._analysis_artifact_path("analysis_clip_candidates_enriched")
+        if not candidates_path or not candidates_path.exists():
+            logger.warning("[HOOK] Enriched candidates file not found")
+            return {
+                "use_hook": False,
+                "hook_score": 0.0,
+                "hook_start": 0.0,
+                "hook_end": 0.0,
+                "hook_transcript": "",
+                "hook_reason": "Enriched candidates not available",
+                "hook_candidate_id": None
+            }
+
+        hook_prompt = hook_prompt.replace("__CANDIDATES_PATH__", str(candidates_path.resolve()))
+
+        cmd = [
+            "claude",
+            "-p", hook_prompt,
+            "--allowedTools", "Read,Grep",
+        ]
+
+        logger.info("[HOOK] Running Claude hook extraction")
+        try:
+            result = subprocess.run(
+                cmd,
+                cwd=str(self._context_dir) if self._context_dir else str(self._work_dir),
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+        except subprocess.TimeoutExpired:
+            logger.error("[HOOK] Hook extraction timed out")
+            return {
+                "use_hook": False,
+                "hook_score": 0.0,
+                "hook_start": 0.0,
+                "hook_end": 0.0,
+                "hook_transcript": "",
+                "hook_reason": "Hook extraction timed out",
+                "hook_candidate_id": None
+            }
+
+        output = result.stdout if result.returncode == 0 else result.stderr
+        payloads = self._parse_json_payloads(output)
+        hook_data = next((payload for payload in payloads if isinstance(payload, dict) and "use_hook" in payload), None)
+
+        if hook_data:
+            logger.info(f"[HOOK] Hook extraction complete: use_hook={hook_data.get('use_hook')}")
+            return hook_data
+        else:
+            logger.warning("[HOOK] No valid hook JSON found in output")
+            return {
+                "use_hook": False,
+                "hook_score": 0.0,
+                "hook_start": 0.0,
+                "hook_end": 0.0,
+                "hook_transcript": "",
+                "hook_reason": "No valid hook data in Claude output",
+                "hook_candidate_id": None
+            }
 
     def _save_scene_settings(self) -> None:
         store = self._load_scene_settings_store()
