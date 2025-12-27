@@ -31,6 +31,7 @@ class SRTViewer(QTextEdit):
     marker_changed = pyqtSignal(float, float)
     segment_clicked = pyqtSignal(int)  # Emitted when user clicks on a segment
     highlight_range_changed = pyqtSignal(int, int)  # Emitted when highlight range changes (start_idx, end_idx)
+    hook_changed = pyqtSignal(object, object)  # Emitted when hook range changes (start_idx, end_idx) - can be None
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -379,6 +380,8 @@ class SRTViewer(QTextEdit):
             import logging
             logger = logging.getLogger("ai_videoclipper")
             logger.info(f"[SRT] Hook set to segments {self._hook_start_index}-{self._hook_end_index}")
+            # Emit signal for manual hook change
+            self.hook_changed.emit(self._hook_start_index, self._hook_end_index)
 
     def _clear_hook(self) -> None:
         """Clear the hook range."""
@@ -386,6 +389,8 @@ class SRTViewer(QTextEdit):
         import logging
         logger = logging.getLogger("ai_videoclipper")
         logger.info("[SRT] Hook cleared")
+        # Emit signal for manual hook removal
+        self.hook_changed.emit(None, None)
 
     def search_text(self, search_term: str, forward: bool = True) -> bool:
         """Search for text in SRT content.
@@ -438,6 +443,7 @@ class SRTViewerWithSearch(QWidget):
     marker_changed = pyqtSignal(float, float)
     segment_clicked = pyqtSignal(int)
     highlight_range_changed = pyqtSignal(int, int)
+    hook_changed = pyqtSignal(object, object)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -482,6 +488,7 @@ class SRTViewerWithSearch(QWidget):
         self.srt_viewer.marker_changed.connect(self.marker_changed)
         self.srt_viewer.segment_clicked.connect(self.segment_clicked)
         self.srt_viewer.highlight_range_changed.connect(self.highlight_range_changed)
+        self.srt_viewer.hook_changed.connect(self.hook_changed)
 
     def _search_next(self) -> None:
         search_term = self.search_input.text()

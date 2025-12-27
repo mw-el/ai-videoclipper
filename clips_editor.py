@@ -225,6 +225,7 @@ class ClipEditor(QMainWindow):
         self.srt_viewer = SRTViewerWithSearch()
         self.srt_viewer.marker_changed.connect(self.on_marker_changed)
         self.srt_viewer.segment_clicked.connect(self._on_srt_segment_clicked)
+        self.srt_viewer.hook_changed.connect(self._on_hook_changed)
         left_layout.addWidget(self.srt_viewer, stretch=1)
 
         body_layout.addWidget(left_panel, stretch=7)
@@ -463,6 +464,34 @@ class ClipEditor(QMainWindow):
                     color: #856404;
                 }
             """)
+
+    def _on_hook_changed(self, start_idx: int | None, end_idx: int | None) -> None:
+        """Handle manual hook changes from SRT viewer.
+
+        Args:
+            start_idx: Start segment index of hook, or None if cleared
+            end_idx: End segment index of hook, or None if cleared
+        """
+        if start_idx is None or end_idx is None:
+            # Hook cleared
+            logger.info("[HOOK] Manual hook cleared")
+            self.update_hook_status(None)
+        else:
+            # Hook set manually - calculate time range
+            if self.transcription and start_idx < len(self.transcription.segments) and end_idx < len(self.transcription.segments):
+                hook_start = self.transcription.segments[start_idx].start
+                hook_end = self.transcription.segments[end_idx].end
+
+                hook_info = {
+                    "use_hook": True,
+                    "hook_start": hook_start,
+                    "hook_end": hook_end,
+                    "hook_score": 0.0,  # Manual hooks have no score
+                    "hook_reason": "Manuell festgelegt",
+                    "hook_candidate_id": None
+                }
+                logger.info(f"[HOOK] Manual hook set: {hook_start:.1f}s - {hook_end:.1f}s (segments {start_idx}-{end_idx})")
+                self.update_hook_status(hook_info)
 
     def select_file(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
