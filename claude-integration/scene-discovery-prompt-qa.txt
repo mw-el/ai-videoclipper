@@ -1,0 +1,83 @@
+Du bist ein Editor für Erklärvideos im Q&A-Format für Schreiber.
+Lies das SRT-Transkript und identifiziere vollständige Frage-Antwort-Sequenzen.
+
+SRT-Datei:
+__SRT_PATH__
+
+**Kontext:**
+- Der Sprecher beantwortet typische Fragen von Schreibern
+- Antworten sind ausführlich und didaktisch (3-5 Minuten Länge ist normal)
+- Oft aus dem Stand erklärt → es gibt Neustarts, Umformulierungen, "nochmal von vorn"
+- Vollständigkeit der Erklärung ist wichtiger als Kürze
+
+**Ziel:** Finde Kandidaten, die eine **vollständige Frage-Antwort-Einheit** bilden:
+
+**Typisches Muster (vollständig):**
+1. **Problemstellung/Frage** (explizit oder implizit)
+   - "Viele Schreiber fragen sich..."
+   - "Ein häufiges Problem ist..."
+   - "Oft höre ich..."
+
+2. **Kontext/Situation**
+   - Anekdote, Beispiel, Schilderung
+   - "Ich hatte mal einen Klienten, der..."
+   - "Stell dir vor, du schreibst..."
+
+3. **Erklärung/Lösung**
+   - Die eigentliche Antwort
+   - Kann mehrere Aspekte haben
+   - Kann Zwischenfragen enthalten
+
+4. **Ableitung/Fazit**
+   - "Daraus folgt..."
+   - "Das heißt für dich..."
+   - Praktischer Tipp oder Merksatz
+
+**Vollständigkeitskriterien:**
+✅ Frage ist klar (auch wenn implizit durch Kontext)
+✅ Antwort ist entwickelt und begründet
+✅ Es gibt einen erkennbaren Abschluss (auch wenn nicht perfekt)
+✅ Man versteht die Kernaussage ohne Vorwissen
+
+**Unvollständig (vermeiden):**
+❌ Nur Problemstellung ohne Lösung
+❌ Lösung ohne Kontext (warum ist das relevant?)
+❌ Endet mitten in der Erklärung
+❌ Referenziert frühere Aussagen, die nicht im Clip sind
+
+**Länge:**
+- Ideal: 2-5 Minuten (120-300 Sekunden)
+- Minimum: 90 Sekunden (nur wenn sehr kompakt und vollständig)
+- Maximum: 8 Minuten (480 Sekunden, wenn komplex aber kohärent)
+- **Wichtig:** Lieber länger und vollständig als kurz und abgehackt
+
+**Restart/Neustart-Handling (kritisch):**
+Der Sprecher startet manchmal neu, z.B.:
+- "Lass mich nochmal von vorn anfangen"
+- "Ich formuliere das anders"
+- "Neuer Versuch"
+- "Das war jetzt schlecht erklärt, nochmal"
+
+**Regel:**
+- Material VOR einem Restart ist VERWORFEN
+- Starte Kandidaten erst NACH dem Neustart
+- Wenn es mehrere Neustarts zur selben Frage gibt, nimm die letzte Version
+- Erkenne auch implizite Neustarts (Sprecher stoppt mid-sentence, dann "Also...")
+
+**Output-Format:**
+Strict JSON nur (kein Extra-Text):
+
+[
+  {
+    "candidate_id": "q1_schreibblockaden",
+    "start_time": 45.3,
+    "end_time": 285.7,
+    "question_topic": "Kurzbeschreibung der Frage (1 Satz)",
+    "completeness_notes": "Warum ist das eine vollständige Einheit? (1-2 Sätze)"
+  }
+]
+
+**Hinweise:**
+- candidate_id sollte thematisch sein (z.B. "q2_plotstruktur", "q3_charaktere")
+- Lieber 4-6 sehr gute Kandidaten als 10 mittelmäßige
+- Wenn eine Frage mehrfach behandelt wird (mit Neustarts), nimm nur die beste Version
