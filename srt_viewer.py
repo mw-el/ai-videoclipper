@@ -45,6 +45,8 @@ class SRTViewer(QTextEdit):
         self._current_segment_index = None
         self._highlighted_range_start = None  # For range highlighting (clip boundaries)
         self._highlighted_range_end = None
+        self._hook_start_index = None  # Hook segment start index
+        self._hook_end_index = None    # Hook segment end index
 
     def set_segments(self, segments: List[SrtSegment]) -> None:
         import logging
@@ -85,6 +87,10 @@ class SRTViewer(QTextEdit):
         self.setPlainText("\n".join(lines).strip() + "\n")
         self._current_segment_index = None
         self.setExtraSelections([])
+
+        # Apply bold formatting to hook segments
+        self._apply_hook_formatting()
+
         logger.info(f"[SRT_VIEWER] Display updated with {len(self._segments)} segments and {len(lines)} display lines")
 
     def highlight_for_time(self, seconds: float) -> None:
@@ -243,6 +249,43 @@ class SRTViewer(QTextEdit):
             return (self._highlighted_range_start, self._highlighted_range_end)
         return None
 
+    def set_hook_range(self, start_index: int | None, end_index: int | None) -> None:
+        """Set which segments are the hook (will be shown in bold).
+
+        Args:
+            start_index: First segment index of hook (inclusive), or None to clear
+            end_index: Last segment index of hook (inclusive), or None to clear
+        """
+        self._hook_start_index = start_index
+        self._hook_end_index = end_index
+        self._apply_hook_formatting()
+
+    def _apply_hook_formatting(self) -> None:
+        """Apply bold formatting to hook segments."""
+        if (self._hook_start_index is None or
+            self._hook_end_index is None or
+            not self._segments):
+            return
+
+        # Create cursor and format for bold text
+        cursor = QTextCursor(self.document())
+        bold_format = QTextCharFormat()
+        bold_format.setFontWeight(700)  # Bold
+        bold_format.setForeground(QColor("#1a5490"))  # Darker blue for hook
+
+        # Apply bold to all blocks in hook range
+        for seg_idx in range(self._hook_start_index, self._hook_end_index + 1):
+            blocks = self._segment_to_blocks.get(seg_idx, [])
+            for block_num in blocks:
+                block = self.document().findBlockByNumber(block_num)
+                if block.isValid():
+                    cursor.setPosition(block.position())
+                    cursor.movePosition(
+                        QTextCursor.MoveOperation.EndOfBlock,
+                        QTextCursor.MoveMode.KeepAnchor
+                    )
+                    cursor.mergeCharFormat(bold_format)
+
     def clear(self) -> None:
         """Clear all content and reset state."""
         self.setPlainText("")
@@ -252,6 +295,8 @@ class SRTViewer(QTextEdit):
         self._current_segment_index = None
         self._highlighted_range_start = None
         self._highlighted_range_end = None
+        self._hook_start_index = None
+        self._hook_end_index = None
         self.setExtraSelections([])
 
     def search_text(self, search_term: str, forward: bool = True) -> bool:
@@ -380,6 +425,9 @@ class SRTViewerWithSearch(QWidget):
 
     def get_current_highlight_range(self) -> tuple[int, int] | None:
         return self.srt_viewer.get_current_highlight_range()
+
+    def set_hook_range(self, start_index: int | None, end_index: int | None) -> None:
+        self.srt_viewer.set_hook_range(start_index, end_index)
 
     def clear(self) -> None:
         self.srt_viewer.clear()

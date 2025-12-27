@@ -63,20 +63,23 @@ class ClipListWidget(QWidget):
         logger = logging.getLogger("ai_videoclipper")
         logger.info(f"[CLIP_LIST] set_clips() called with {len(clips)} clips")
 
-        self.clips = clips
+        # Sort clips chronologically by start_time
+        sorted_clips = sorted(clips, key=lambda c: c.start_time)
+
+        self.clips = sorted_clips
         self.clip_list.clear()
         self.current_clip_index = -1
 
-        for i, clip in enumerate(clips):
+        for i, clip in enumerate(sorted_clips):
             try:
                 self._add_clip_row(i, clip)
-                logger.info(f"[CLIP_LIST] Added clip row {i + 1}/{len(clips)}")
+                logger.info(f"[CLIP_LIST] Added clip row {i + 1}/{len(sorted_clips)}")
             except Exception as e:
                 logger.error(f"[CLIP_LIST] Failed to add clip row {i}: {e}", exc_info=True)
                 raise
 
         # Select first clip by default
-        if clips:
+        if sorted_clips:
             logger.info(f"[CLIP_LIST] Setting current row to 0...")
             try:
                 self.clip_list.setCurrentRow(0)
@@ -100,9 +103,14 @@ class ClipListWidget(QWidget):
         # Combine segment range with time to save space: "Seg 5-12: 00:15 - 00:42"
         segment_nums = f"Seg {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
+        # Build clip title with optional score
+        clip_title = f"Clip {index + 1} ({duration_seconds:.0f}s)"
+        if clip.score is not None:
+            clip_title += f" [Score: {clip.score:.1f}]"
+
         # Build HTML-formatted text for rich formatting
         html_parts = [
-            f"<b>Clip {index + 1} ({duration_seconds:.0f}s)</b><br>",
+            f"<b>{clip_title}</b><br>",
             f"{segment_nums}: {start_time} – {end_time}"
         ]
 
@@ -248,9 +256,14 @@ class ClipListWidget(QWidget):
             # Combine segment range with time (same format as _add_clip_row)
             segment_nums = f"Seg {clip.segment_start_index + 1}-{clip.segment_end_index + 1}"
 
+            # Build clip title with optional score (same as in _add_clip_row)
+            clip_title = f"Clip {clip_index + 1} ({duration_seconds:.0f}s)"
+            if clip.score is not None:
+                clip_title += f" [Score: {clip.score:.1f}]"
+
             # Build HTML-formatted text (same as in _add_clip_row)
             html_parts = [
-                f"<b>Clip {clip_index + 1} ({duration_seconds:.0f}s)</b><br>",
+                f"<b>{clip_title}</b><br>",
                 f"{segment_nums}: {start_time} – {end_time}"
             ]
 
