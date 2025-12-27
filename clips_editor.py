@@ -1537,10 +1537,6 @@ class ClipEditor(QMainWindow):
         if not self.transcription or not self.transcription.segments:
             logger.warning("[MARKER_SYNC] No transcription available")
             return
-        current_clip = self.clip_list_widget.get_current_clip()
-        if not current_clip:
-            logger.warning("[MARKER_SYNC] No current clip selected")
-            return
 
         start_idx = self._find_segment_index_for_time(start_seconds, prefer_start=True)
         end_idx = self._find_segment_index_for_time(end_seconds, prefer_start=False)
@@ -1550,10 +1546,27 @@ class ClipEditor(QMainWindow):
         if start_idx > end_idx:
             start_idx, end_idx = end_idx, start_idx
 
-        current_clip.start_time = start_seconds
-        current_clip.end_time = end_seconds
-        current_clip.segment_start_index = start_idx
-        current_clip.segment_end_index = end_idx
+        current_clip = self.clip_list_widget.get_current_clip()
+        if not current_clip:
+            # No clip exists - create a new one automatically
+            logger.info("[MARKER_SYNC] No current clip - creating new clip automatically")
+            new_clip = Clip(
+                start_time=start_seconds,
+                end_time=end_seconds,
+                text="Manual Clip",
+                segment_start_index=start_idx,
+                segment_end_index=end_idx
+            )
+            self.clips.append(new_clip)
+            self.populate_clips()  # Refresh the clip list
+            logger.info(f"[MARKER_SYNC] ✓ Created new clip: {start_seconds:.2f}s - {end_seconds:.2f}s")
+        else:
+            # Update existing clip
+            current_clip.start_time = start_seconds
+            current_clip.end_time = end_seconds
+            current_clip.segment_start_index = start_idx
+            current_clip.segment_end_index = end_idx
+            logger.info(f"[MARKER_SYNC] ✓ Updated existing clip")
 
         logger.info(f"[MARKER_SYNC] Updating SRT highlight to segments {start_idx}-{end_idx}")
         self.srt_viewer.highlight_segment_range(start_idx, end_idx, auto_scroll=True)
