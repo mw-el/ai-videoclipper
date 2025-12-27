@@ -372,6 +372,31 @@ class ClaudePanel(QWidget):
         self._settings_button.clicked.connect(self._open_scene_settings)
         StyleManager.apply_colored_icon_button_style(self._settings_button, Colors.DARK_GRAY)
 
+        # Analysis step buttons
+        self._srt_button = QPushButton("SRT")
+        self._srt_button.setToolTip("Generate or load SRT transcription")
+        self._srt_button.clicked.connect(self._run_srt_analysis)
+        StyleManager.apply_button_style(self._srt_button)
+        self._srt_button.setEnabled(False)
+
+        self._audio_button = QPushButton("Audio")
+        self._audio_button.setToolTip("Run audio analysis (VAD, RMS, pauses)")
+        self._audio_button.clicked.connect(self._run_audio_analysis)
+        StyleManager.apply_button_style(self._audio_button)
+        self._audio_button.setEnabled(False)
+
+        self._face_button = QPushButton("Face")
+        self._face_button.setToolTip("Run face detection and expressivity analysis")
+        self._face_button.clicked.connect(self._run_face_analysis)
+        StyleManager.apply_button_style(self._face_button)
+        self._face_button.setEnabled(False)
+
+        # Content type selector
+        self._content_type_combo = QComboBox()
+        self._content_type_combo.addItem("Erklärvideos", "qa")
+        self._content_type_combo.addItem("Social Media", "social")
+        self._content_type_combo.setToolTip("Select content type for scene detection")
+
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(6)
@@ -385,10 +410,22 @@ class ClaudePanel(QWidget):
         header_row.addWidget(self._copy_button)
         header_row.addWidget(self._clear_button)
         header_row.addWidget(self._settings_button)
-        header_row.addWidget(self._prompt_button)
         header_row.addWidget(self._start_button)
         header_row.addWidget(self._stop_button)
         layout.addLayout(header_row)
+
+        # Analysis control row
+        analysis_row = QHBoxLayout()
+        analysis_row.setSpacing(4)
+        analysis_row.addWidget(QLabel("Analyse:"))
+        analysis_row.addWidget(self._srt_button)
+        analysis_row.addWidget(self._audio_button)
+        analysis_row.addWidget(self._face_button)
+        analysis_row.addStretch()
+        analysis_row.addWidget(self._content_type_combo)
+        analysis_row.addWidget(self._prompt_button)
+        layout.addLayout(analysis_row)
+
         self._terminal = ClaudeTerminalWidget(self._work_dir)
         layout.addWidget(self._terminal, stretch=1)
 
@@ -447,13 +484,96 @@ class ClaudePanel(QWidget):
         self._video_path = video_path
         self._srt_path = srt_path
         ready = self._srt_path is not None and self._srt_path.exists()
+        has_video = self._video_path is not None and self._video_path.exists()
+
+        # Enable analysis buttons when video is loaded
+        self._srt_button.setEnabled(has_video)
+        self._audio_button.setEnabled(has_video)
+        self._face_button.setEnabled(has_video)
+
+        # Enable scene selection button when SRT is ready
         self._prompt_button.setEnabled(ready)
+
         if ready:
             self._status_label.setText("Subtitles ready.")
         else:
             self._status_label.setText("Waiting for subtitles.")
         self._update_analysis_status()
         self._write_context_files()
+
+    def _run_srt_analysis(self) -> None:
+        """Generate or load SRT transcription."""
+        if not self._video_path:
+            QMessageBox.information(self, "SRT Analysis", "Kein Video geladen.")
+            return
+
+        # TODO: Implement SRT generation/loading
+        # For now, just show message
+        QMessageBox.information(
+            self,
+            "SRT Analysis",
+            "SRT-Generierung wird implementiert.\n\n"
+            "Aktuell: SRT wird automatisch bei Video-Auswahl erstellt."
+        )
+
+    def _run_audio_analysis(self) -> None:
+        """Run audio analysis (VAD, RMS, pauses)."""
+        if not self._video_path:
+            QMessageBox.information(self, "Audio Analysis", "Kein Video geladen.")
+            return
+
+        if not self._context_dir:
+            QMessageBox.warning(self, "Audio Analysis", "Kontext-Verzeichnis nicht verfügbar.")
+            return
+
+        self._status_label.setText("Running audio analysis...")
+        # Run just audio analysis step
+        from scene_detection_pipeline import SceneDetectionPipeline, SceneDetectionConfig
+
+        config = self._build_scene_config(face_required=False, face_enabled=False)
+        pipeline = SceneDetectionPipeline(self._context_dir, config)
+
+        try:
+            audio_data = pipeline._analyze_audio(self._video_path)
+            logger.info(f"[AUDIO] Analysis complete: {len(audio_data.get('speech_segments', []))} speech segments")
+            self._status_label.setText("✓ Audio analysis complete")
+            self._update_analysis_status()
+        except Exception as e:
+            logger.error(f"[AUDIO] Analysis failed: {e}")
+            self._status_label.setText(f"Audio analysis failed: {e}")
+
+    def _run_face_analysis(self) -> None:
+        """Run face detection and expressivity analysis."""
+        if not self._video_path:
+            QMessageBox.information(self, "Face Analysis", "Kein Video geladen.")
+            return
+
+        if not self._context_dir:
+            QMessageBox.warning(self, "Face Analysis", "Kontext-Verzeichnis nicht verfügbar.")
+            return
+
+        self._status_label.setText("Running face analysis...")
+        # Run just face analysis step
+        from scene_detection_pipeline import SceneDetectionPipeline, SceneDetectionConfig, FaceAnalysisError
+
+        config = self._build_scene_config(face_required=True, face_enabled=True)
+        pipeline = SceneDetectionPipeline(self._context_dir, config)
+
+        try:
+            face_data = pipeline._analyze_face(self._video_path)
+            if face_data:
+                logger.info(f"[FACE] Analysis complete: {len(face_data.get('series', []))} frames")
+                self._status_label.setText("✓ Face analysis complete")
+            else:
+                self._status_label.setText("Face analysis skipped (no face detected)")
+            self._update_analysis_status()
+        except FaceAnalysisError as e:
+            logger.error(f"[FACE] Analysis failed: {e}")
+            QMessageBox.warning(self, "Face Analysis", f"Face analysis failed:\n\n{e}")
+            self._status_label.setText("Face analysis failed")
+        except Exception as e:
+            logger.error(f"[FACE] Unexpected error: {e}")
+            self._status_label.setText(f"Face analysis error: {e}")
 
     def _run_scene_detection_headless(self) -> None:
         """Run Claude Code in headless mode for scene detection."""
