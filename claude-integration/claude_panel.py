@@ -1061,6 +1061,87 @@ class ClaudePanel(QWidget):
         else:
             self._analysis_status_label.setText("Analyse geladen: " + ", ".join(available))
 
+        # Update analysis button status indicators
+        self._update_analysis_button_status()
+
+    def _update_analysis_button_status(self) -> None:
+        """Update visual status of analysis buttons based on available data files."""
+        if not self._video_path:
+            return
+
+        # Check SRT status
+        srt_exists = self._srt_path and self._srt_path.exists()
+        self._set_button_status(self._srt_button, srt_exists)
+
+        # Check Audio analysis status (any audio artifact)
+        audio_exists = any([
+            self._analysis_artifact_path("analysis_audio_pack"),
+            self._analysis_artifact_path("analysis_audio_vad"),
+            self._analysis_artifact_path("analysis_audio_rms"),
+        ]) and any([
+            p.exists() if p else False for p in [
+                self._analysis_artifact_path("analysis_audio_pack"),
+                self._analysis_artifact_path("analysis_audio_vad"),
+                self._analysis_artifact_path("analysis_audio_rms"),
+            ]
+        ])
+        self._set_button_status(self._audio_button, audio_exists)
+
+        # Check Face analysis status
+        face_path = self._analysis_artifact_path("analysis_face")
+        face_exists = face_path and face_path.exists()
+        self._set_button_status(self._face_button, face_exists)
+
+    def _set_button_status(self, button: QPushButton, completed: bool) -> None:
+        """Set button visual status: green if todo, gray with checkmark if completed."""
+        if completed:
+            # Completed: gray background with green checkmark
+            button.setStyleSheet("""
+                QPushButton {
+                    background-color: #b0b0b0;
+                    color: white;
+                    border: none;
+                    border-radius: 3px;
+                    padding: 4px 8px;
+                    font-weight: bold;
+                }
+                QPushButton:hover {
+                    background-color: #909090;
+                }
+                QPushButton:disabled {
+                    background-color: #d0d0d0;
+                    color: #888888;
+                }
+            """)
+            # Add checkmark to text
+            original_text = button.text().replace(" ✓", "")  # Remove old checkmark if present
+            button.setText(f"{original_text} ✓")
+        else:
+            # Todo: bright green to attract attention
+            button.setStyleSheet("""
+                QPushButton {
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 3px;
+                    padding: 4px 8px;
+                    font-weight: bold;
+                }
+                QPushButton:hover {
+                    background-color: #45a049;
+                }
+                QPushButton:pressed {
+                    background-color: #3d8b40;
+                }
+                QPushButton:disabled {
+                    background-color: #a0a0a0;
+                    color: #cccccc;
+                }
+            """)
+            # Remove checkmark
+            original_text = button.text().replace(" ✓", "")
+            button.setText(original_text)
+
     def _save_scene_settings(self) -> None:
         store = self._load_scene_settings_store()
         store[self._scene_settings_name] = self._scene_settings.copy()
